@@ -116,6 +116,7 @@ extern jvmtiEnv* g_zomdroid_jvmti_env;
 extern jobject g_zomdroid_main_class_loader;
 extern Renderer g_zomdroid_renderer;
 extern const char* g_zomdroid_vulkan_driver_name;
+extern pthread_mutex_t g_jni_lib_mutex;
 
 typedef struct {
     ANativeWindow* native_window;
