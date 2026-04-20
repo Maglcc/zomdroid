@@ -8,6 +8,7 @@
 #include "logger.h"
 #include "wrapped_jni.h"
 #include "emulation.h"
+#include "zomdroid_globals.h"
 
 #include "box64/src/include/box64context.h"
 #include "box64/src/include/x64emu.h"
