@@ -380,8 +380,11 @@ void* zomdroid_emulation_bridge_jni_symbol(EmulatedLib *lib, uint64_t fn, const 
     int code_size = 0;
     assemble_box64_jni_trampoline(&code, &code_size, arg_types, ret_type, fn);
 
-    void* mem = NULL;
+    if (!code) return NULL;
 
+    pthread_mutex_lock(&g_jni_lib_mutex);
+
+    void* mem = NULL;
     // find a page with enough space for the code
     for (int i = 0; i < lib->page_count; i++) {
         if (lib->page_code_size[i] + code_size <= page_size) {
@@ -390,48 +393,37 @@ void* zomdroid_emulation_bridge_jni_symbol(EmulatedLib *lib, uint64_t fn, const 
             break;
         }
     }
-
     // or allocate a new one
     if (mem == NULL) {
         mem = mmap(NULL, page_size, PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         if (mem == MAP_FAILED) {
             LOGE("Failed to mmap memory: %s", strerror(errno));
             free(code);
+            pthread_mutex_unlock(&g_jni_lib_mutex);
             return NULL;
         }
-
         int new_page_count = lib->page_count + 1;
-
         void** new_mapped_pages = realloc(lib->mapped_pages, new_page_count * sizeof(*lib->mapped_pages));
         int* new_page_code_size = realloc(lib->page_code_size, new_page_count * sizeof(*lib->page_code_size));
-
         if (!new_mapped_pages || !new_page_code_size) {
             LOGE("Failed to reallocate memory: %s", strerror(errno));
-
             munmap(mem, page_size);
-
             if (new_mapped_pages) lib->mapped_pages = new_mapped_pages;
             if (new_page_code_size) lib->page_code_size = new_page_code_size;
-
             free(code);
+            pthread_mutex_unlock(&g_jni_lib_mutex);
             return NULL;
         }
-
         lib->mapped_pages = new_mapped_pages;
         lib->page_code_size = new_page_code_size;
-
         lib->mapped_pages[lib->page_count] = mem;
         lib->page_code_size[lib->page_count] = code_size;
-
         lib->page_count = new_page_count;
     }
-
     memcpy(mem, code, code_size);
-
     free(code);
-
+    pthread_mutex_unlock(&g_jni_lib_mutex);
     __builtin___clear_cache(mem, mem + code_size);
-
     return mem;
 }
 
