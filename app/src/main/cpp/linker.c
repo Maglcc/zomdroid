@@ -21,7 +21,7 @@
 
 #define BUF_SIZE 1024
 
-#define JNI_SIG_CACHE_SIZE 32 //64
+#define JNI_SIG_CACHE_SIZE 64
 
 typedef struct {
     char* sym;  // key
