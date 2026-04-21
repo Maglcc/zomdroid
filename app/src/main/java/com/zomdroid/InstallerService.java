@@ -744,24 +744,34 @@ public class InstallerService extends Service implements TaskProgressListener {
         // Уже пропатчено
         if (disabled.exists()) return;
 
-        if (!target.renameTo(disabled)) {
-            Log.e(LOG_TAG, "42.15 patch: failed to rename original MainScreenState.class");
+        long classSize = target.length();
+        String patchAsset;
+        if (classSize >= 33100 && classSize <= 33500) {
+            patchAsset = "patches/MainScreenState_42_17.class";
+        } else if (classSize >= 32700 && classSize <= 33100) {
+            patchAsset = "patches/MainScreenState_42_15.class";
+        } else {
+            Log.w(LOG_TAG, "Unknown MainScreenState version, size=" + classSize + ", skipping patch");
             return;
         }
 
-        try (InputStream src = getAssets().open("patches/MainScreenState.class");
+        if (!target.renameTo(disabled)) {
+            Log.e(LOG_TAG, "printSpecs patch: failed to rename original MainScreenState.class");
+            return;
+        }
+
+        try (InputStream src = getAssets().open(patchAsset);
              FileOutputStream out = new FileOutputStream(target)) {
             byte[] buf = new byte[4096];
             int n;
             while ((n = src.read(buf)) != -1) out.write(buf, 0, n);
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Failed to apply printSpecs patch for 42.15", e);
-            // Откатываем переименование
+            Log.e(LOG_TAG, "Failed to apply printSpecs patch, asset=" + patchAsset, e);
             disabled.renameTo(target);
             return;
         }
 
-        Log.i(LOG_TAG, "42.15 patch: patched MainScreenState.class");
+        Log.i(LOG_TAG, "printSpecs patch applied: " + patchAsset + " (size=" + classSize + ")");
     }
 
     private void extractProjectZomboidJarSimple(GameInstance gameInstance) throws IOException {
