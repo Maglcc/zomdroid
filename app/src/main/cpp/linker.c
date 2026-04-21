@@ -21,7 +21,7 @@
 
 #define BUF_SIZE 1024
 
-#define JNI_SIG_CACHE_SIZE 32 //64
+#define JNI_SIG_CACHE_SIZE 64
 
 typedef struct {
     char* sym;  // key
@@ -31,6 +31,7 @@ typedef struct {
 static JniSigCacheEntry g_jni_sig_cache[JNI_SIG_CACHE_SIZE];
 static int g_jni_sig_cache_next = 0;
 static pthread_mutex_t g_jni_sig_cache_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t g_jni_lib_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static const char* jni_sig_cache_get(const char* sym) {
     const char* result = NULL;
