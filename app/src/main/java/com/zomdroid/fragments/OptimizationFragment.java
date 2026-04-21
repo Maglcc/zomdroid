@@ -169,30 +169,10 @@ public class OptimizationFragment extends Fragment {
                         @Override
                         public void onItemSelected(android.widget.AdapterView<?> parent,
                                                    View view, int position, long id) {
-                            int instanceIndex = instances.size() > 1 ? position - 1 : position;
-                            if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                                binding.optimizationBannerIv.setImageResource(R.drawable.banner_default);
-                                return;
-                            }
-                            GameInstance selected = instances.get(instanceIndex);
-                            int bannerRes;
-                            switch (selected.getPresetName()) {
-                                case "Build 42.12+":
-                                    bannerRes = R.drawable.banner_build42_12;
-                                    break;
-                                case "Build 42":
-                                    bannerRes = R.drawable.banner_build42;
-                                    break;
-                                default:
-                                    bannerRes = R.drawable.banner_build41;
-                                    break;
-                            }
-                            binding.optimizationBannerIv.setImageResource(bannerRes);
                         }
 
                         @Override
                         public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                            binding.optimizationBannerIv.setImageResource(R.drawable.banner_default);
                         }
                     });
 
