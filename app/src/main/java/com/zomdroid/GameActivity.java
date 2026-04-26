@@ -81,7 +81,7 @@ public class GameActivity extends AppCompatActivity implements GamepadManager.Ga
         binding = ActivityGameBinding.inflate(getLayoutInflater());
         // Give focus to game surface to ensure it receives input events
         setContentView(binding.getRoot());
-
+        getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //binding.getRoot().setOnApplyWindowInsetsListener((v, insets) -> {
         //    boolean imeVisible = insets.isVisible(WindowInsets.Type.ime());
         //    systemKeyboardVisible = imeVisible;
