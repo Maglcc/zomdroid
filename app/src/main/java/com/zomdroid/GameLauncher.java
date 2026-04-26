@@ -56,24 +56,26 @@ public class GameLauncher {
                     //Os.setenv("FD_DEV_FEATURES", "enable_tp_ubwc_flag_hint=1", false);
                 }
                 break;
-            /*case NG_GL4ES: {
-                Os.setenv("LIBGL_ES", "3", true);
+            case NG_GL4ES: {
+                //Os.setenv("LIBGL_ES", "3", true);
                 //Os.setenv("LIBGL_GL", "21", true); // если нужен OpenGL 2.1 для движка
                 //Os.setenv("LIBGL_NOBANNER", "0", true);
                 //Os.setenv("LIBGL_SILENTSTUB", "0", true); // если хотите убрать шум
                 //Os.setenv("LIBGL_FB", "2", true);
                 //Os.setenv("LIBGL_FBONOALPHA", "1", true);
-                Os.setenv("ZOMDROID_GLES_MAJOR", "3", true);
-                Os.setenv("ZOMDROID_GLES_MINOR", "1", true);
                 //Os.setenv("LIBGL_SIMPLE_SHADERCONV", "1", true);
-                Os.setenv("LIBGL_DBGSHADERCONV", "15", true);
+                //Os.setenv("LIBGL_DBGSHADERCONV", "15", true);
                 // Force SPIRV-Cross path instead of old ConvertShader
                 // Without this, esversion stays 200 and shaders go through
                 // the old converter that doesn't understand modern GLSL
                 //Os.setenv("LIBGL_VGPU_FORCE", "1", true);
-                Os.setenv("LIBGL_VGPU_PRECISION", "1", true);
-              break;
-            }*/
+                //Os.setenv("LIBGL_VGPU_PRECISION", "1", true);
+                Os.setenv("ZOMDROID_GLES_MAJOR", "3", false);
+                Os.setenv("ZOMDROID_GLES_MINOR", "0", false); 
+                Os.setenv("LIBGL_ES", "3", false);
+                Os.setenv("LIBGL_MIPMAP", "1", false);
+                break;
+            }
             default: {
                 Os.setenv("ZOMDROID_GLES_MAJOR", "2", false);
                 Os.setenv("ZOMDROID_GLES_MINOR", "1", false);
