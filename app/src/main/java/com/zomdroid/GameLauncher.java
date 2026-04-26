@@ -71,9 +71,11 @@ public class GameLauncher {
                 //Os.setenv("LIBGL_VGPU_FORCE", "1", true);
                 //Os.setenv("LIBGL_VGPU_PRECISION", "1", true);
                 Os.setenv("ZOMDROID_GLES_MAJOR", "3", false);
-                Os.setenv("ZOMDROID_GLES_MINOR", "0", false); 
+                Os.setenv("ZOMDROID_GLES_MINOR", "0", false);
                 Os.setenv("LIBGL_ES", "3", false);
                 Os.setenv("LIBGL_MIPMAP", "1", false);
+                Os.setenv("LIBGL_LOGSHADERERROR", "1", false);
+                Os.setenv("LIBGL_VGPU_DUMP", "1", false);
                 break;
             }
             default: {
@@ -171,7 +173,7 @@ public class GameLauncher {
     }
 
     private static boolean isLegacyRendererNeedingJre21(LauncherPreferences.Renderer r) {
-        boolean result = (r == LauncherPreferences.Renderer.GL4ES);
+        boolean result = (r == LauncherPreferences.Renderer.GL4ES) || (r == LauncherPreferences.Renderer.NG_GL4ES);
 
         if (BuildConfig.DEBUG) {
             Log.i("Zomdroid", "isLegacyRendererNeedingJre21: " + result + ", Renderer: " + r.name());
