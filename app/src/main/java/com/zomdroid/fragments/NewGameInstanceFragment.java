@@ -28,6 +28,7 @@ import com.zomdroid.game.GameInstance;
 import com.zomdroid.game.InstallationPreset;
 import com.zomdroid.game.GameInstanceManager;
 import com.zomdroid.game.PresetManager;
+import com.zomdroid.LauncherPreferences;
 
 import java.nio.file.FileSystemException;
 import java.util.ArrayList;
