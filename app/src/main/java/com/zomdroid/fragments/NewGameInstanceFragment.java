@@ -233,7 +233,12 @@ public class NewGameInstanceFragment extends Fragment {
 
             int presetIndex = binding.newGameInstancePresetS.getSelectedItemPosition() - 1;
             InstallationPreset selectedPreset = PresetManager.getPresets().get(presetIndex);
-
+            
+            // Auto-set renderer based on build version
+            if ("42".equals(selectedPreset.buildVersion)) {
+                LauncherPreferences.requireSingleton().setRenderer(LauncherPreferences.Renderer.ZINK_ZFA);
+            }
+    
             GameInstance gameInstance;
             try {
                 gameInstance = new GameInstance(name, selectedPreset);
