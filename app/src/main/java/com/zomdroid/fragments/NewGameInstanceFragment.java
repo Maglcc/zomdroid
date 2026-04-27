@@ -112,6 +112,7 @@ public class NewGameInstanceFragment extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
 
+        binding.newGameInstanceBannerIv.setImageResource(R.drawable.banner_default);
         // Populate preset spinner with empty first item
         List<Object> presetItems = new ArrayList<>();
         presetItems.add(getString(R.string.new_game_instance_select_preset));
