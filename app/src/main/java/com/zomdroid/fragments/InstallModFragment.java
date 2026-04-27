@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.zomdroid.C;
 import com.zomdroid.InstallerService;
 import com.zomdroid.R;
 import com.zomdroid.databinding.FragmentInstallModBinding;
@@ -34,6 +36,7 @@ import com.zomdroid.game.GameInstanceManager;
 import android.graphics.Typeface;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -128,6 +131,9 @@ public class InstallModFragment extends Fragment {
                 taskProgressDialog.dismiss()
         );
 
+        // Default banner — always show before any early return
+        binding.installModBannerIv.setImageResource(R.drawable.banner_default);
+
         instances = GameInstanceManager.requireSingleton().getInstances();
 
         if (instances == null || instances.isEmpty()) {
@@ -140,7 +146,7 @@ public class InstallModFragment extends Fragment {
         // Spinner population
         List<String> names = new ArrayList<>();
         if (instances.size() > 1) {
-            names.add(getString(R.string.select_instance)); // holder
+            names.add(getString(R.string.select_instance));
         }
         for (GameInstance gi : instances) {
             names.add(gi.getName());
@@ -160,7 +166,7 @@ public class InstallModFragment extends Fragment {
                                        View view, int position, long id) {
                 int instanceIndex = instances.size() > 1 ? position - 1 : position;
                 if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                    binding.installModBannerIv.setVisibility(View.INVISIBLE);
+                    binding.installModBannerIv.setImageResource(R.drawable.banner_default);
                     binding.installModBannerOverlay.setVisibility(View.INVISIBLE);
                     return;
                 }
@@ -178,28 +184,27 @@ public class InstallModFragment extends Fragment {
                         break;
                 }
                 binding.installModBannerIv.setImageResource(bannerRes);
-                binding.installModBannerIv.setVisibility(View.VISIBLE);
                 binding.installModBannerOverlay.setVisibility(View.VISIBLE);
             }
-    
+
             @Override
             public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                binding.installModBannerIv.setVisibility(View.INVISIBLE);
+                binding.installModBannerIv.setImageResource(R.drawable.banner_default);
                 binding.installModBannerOverlay.setVisibility(View.INVISIBLE);
             }
         });
+
         if (instances.size() == 1) {
             binding.installModInstanceSpinner.setSelection(0);
         }
 
-        // Browse button
+        // Browse button (ZIP)
         binding.installModBrowseIb.setOnClickListener(v ->
                 actionOpenModsLauncher.launch(ZIP_MIME)
         );
 
-        // Install button
+        // Install button (ZIP)
         binding.installModInstallBtn.setOnClickListener(v -> {
-
             if (modZipUri == null) {
                 Toast.makeText(requireContext(),
                         R.string.game_instance_no_file_selected,
@@ -208,7 +213,6 @@ public class InstallModFragment extends Fragment {
             }
 
             int position = binding.installModInstanceSpinner.getSelectedItemPosition();
-            // если инстансов > 1, первый элемент — заглушка, сдвигаем индекс
             int instanceIndex = instances.size() > 1 ? position - 1 : position;
 
             if (instanceIndex < 0 || instanceIndex >= instances.size()) {
@@ -240,6 +244,7 @@ public class InstallModFragment extends Fragment {
             bindInstallerService();
         });
 
+        // ZIP help button
         binding.installModZipHelpIb.setOnClickListener(v -> {
             MaterialAlertDialogBuilder builder =
                     new MaterialAlertDialogBuilder(requireContext())
@@ -248,10 +253,48 @@ public class InstallModFragment extends Fragment {
                             .setPositiveButton(android.R.string.ok, null);
 
             AlertDialog dialog = builder.show();
-
             TextView messageView = dialog.findViewById(android.R.id.message);
             if (messageView != null) {
                 messageView.setTypeface(Typeface.MONOSPACE);
+            }
+        });
+
+        // Manual install help button
+        binding.installModManualHelpIb.setOnClickListener(v -> {
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.install_mod_manual_help_title)
+                    .setMessage(R.string.install_mod_manual_help_message)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+        });
+
+        // Open mods folder button
+        binding.installModOpenFolderBtn.setOnClickListener(v -> {
+            int position = binding.installModInstanceSpinner.getSelectedItemPosition();
+            int instanceIndex = instances.size() > 1 ? position - 1 : position;
+
+            if (instanceIndex < 0 || instanceIndex >= instances.size()) {
+                Toast.makeText(requireContext(), getString(R.string.select_instance), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            GameInstance selected = instances.get(instanceIndex);
+            String modsPath = selected.getHomePath() + "/Zomboid/mods";
+            File modsDir = new File(modsPath);
+            if (!modsDir.exists()) modsDir.mkdirs();
+
+            try {
+                Uri folderUri = DocumentsContract.buildDocumentUri(
+                        C.STORAGE_PROVIDER_AUTHORITY,
+                        modsDir.getAbsolutePath()
+                );
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(folderUri, DocumentsContract.Document.MIME_TYPE_DIR);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(Intent.createChooser(intent, null));
+            } catch (Exception e) {
+                Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -300,7 +343,6 @@ public class InstallModFragment extends Fragment {
         }
 
         taskProgressDialogBinding.progressDialogOkMb.setVisibility(View.GONE);
-
         taskProgressDialog.show();
     }
 
@@ -321,7 +363,6 @@ public class InstallModFragment extends Fragment {
 
         taskProgressDialogBinding.progressDialogProgressLpi.setVisibility(View.GONE);
         taskProgressDialogBinding.progressDialogOkMb.setVisibility(View.VISIBLE);
-
         taskProgressDialog.show();
     }
 
