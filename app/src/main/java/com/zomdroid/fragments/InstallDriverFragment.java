@@ -137,7 +137,7 @@ public class InstallDriverFragment extends Fragment {
         taskProgressDialogBinding.progressDialogOkMb.setOnClickListener(v ->
                 taskProgressDialog.dismiss()
         );
-
+        binding.installDriverBannerIv.setImageResource(R.drawable.banner_default);
         binding.installDriverBrowseIb.setOnClickListener(v ->
                 actionOpenDriverLauncher.launch(new String[]{"application/octet-stream", "*/*"})
         );
