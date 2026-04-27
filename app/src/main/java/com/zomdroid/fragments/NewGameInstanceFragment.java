@@ -40,6 +40,8 @@ public class NewGameInstanceFragment extends Fragment {
 
     private boolean isPresetSelected = false;
 
+    private enum GpuVendor { QUALCOMM, MEDIATEK, UNKNOWN }
+
     // URIs for selected ZIP files
     private Uri gameFilesZipUri = null;
     private Uri nativeLibsZipUri = null;
@@ -154,24 +156,35 @@ public class NewGameInstanceFragment extends Fragment {
 
                 // Show preset info dialog
                 int titleRes;
-                int messageRes;
+                String baseMessage;
                 switch (preset.name) {
                     case "Build 42.12+":
                         titleRes = R.string.preset_dialog_title_b4212;
-                        messageRes = R.string.preset_dialog_message_b4212;
+                        baseMessage = getString(R.string.preset_dialog_message_b4212);
                         break;
                     case "Build 42":
                         titleRes = R.string.preset_dialog_title_b42;
-                        messageRes = R.string.preset_dialog_message_b42;
+                        baseMessage = getString(R.string.preset_dialog_message_b42);
                         break;
                     default:
                         titleRes = R.string.preset_dialog_title_b41;
-                        messageRes = R.string.preset_dialog_message_b41;
+                        baseMessage = getString(R.string.preset_dialog_message_b41);
                         break;
                 }
+
+                // Append GPU hint for Build 42
+                if ("42".equals(preset.buildVersion)) {
+                    GpuVendor gpu = detectGpuVendor();
+                    if (gpu == GpuVendor.QUALCOMM) {
+                        baseMessage += "\n\n" + getString(R.string.preset_dialog_gpu_hint_qualcomm);
+                    } else if (gpu == GpuVendor.MEDIATEK) {
+                        baseMessage += "\n\n" + getString(R.string.preset_dialog_gpu_hint_mediatek);
+                    }
+                }
+                
                 new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                         .setTitle(titleRes)
-                        .setMessage(messageRes)
+                        .setMessage(baseMessage)
                         .setPositiveButton(R.string.dialog_button_ok, null)
                         .show();
             }
@@ -291,5 +304,26 @@ public class NewGameInstanceFragment extends Fragment {
             cursor.close();
         }
         return fileName;
+    }    
+
+    private GpuVendor detectGpuVendor() {
+        try {
+            java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.FileReader("/proc/cpuinfo"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String lower = line.toLowerCase();
+                if (lower.contains("qualcomm") || lower.contains("snapdragon")) {
+                    reader.close();
+                    return GpuVendor.QUALCOMM;
+                }
+                if (lower.contains("mediatek") || lower.contains("dimensity") || lower.contains("helio")) {
+                    reader.close();
+                    return GpuVendor.MEDIATEK;
+                }
+            }
+            reader.close();
+        } catch (Exception ignored) {}
+        return GpuVendor.UNKNOWN;
     }
 }
