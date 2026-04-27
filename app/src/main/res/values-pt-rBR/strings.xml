@@ -407,4 +407,21 @@
     <!-- CPU/GPU autodetect -->
     <string name="preset_dialog_gpu_hint_qualcomm">Snapdragon detectado. O renderizador ZINK_ZFA foi definido automaticamente. Recomendamos selecionar o driver Freedreno/Turnip nas Configurações do aplicativo para melhores resultados.</string>
     <string name="preset_dialog_gpu_hint_mediatek">MediaTek detectado. O renderizador ZINK_ZFA foi definido, mas o suporte ao ZINK em GPUs Mali varia. Se o jogo não iniciar, tente ativar o driver gráfico ANGLE integrado nas Opções do desenvolvedor.</string>
+
+    <!-- Manual Mods installation -->
+    <string name="install_mod_manual_group">Instalação manual</string>
+    <string name="install_mod_manual_hint">Copie a pasta do mod para a pasta mods dentro da pasta Zomboid. Crie a pasta mods se ela não existir (em minúsculas). A pasta do mod não deve conter pastas extras de agrupamento.</string>
+    <string name="install_mod_open_folder">Abrir pasta de mods</string>
+    <string name="install_mod_manual_help_title">Instalação manual</string>
+    <string name="install_mod_manual_help_message">
+        \u2705 Estrutura correta:\n\n
+        ModName/\n
+        \u00A0\u00A0mod.info\n
+        \u00A0\u00A0media/\n
+        \u00A0\u00A0scripts/\n\n
+        \u274C Incorreto — pasta extra de agrupamento:\n\n
+        Downloads/\n
+        \u00A0\u00A0ModName/\n
+        \u00A0\u00A0\u00A0\u00A0mod.info
+    </string>
 </resources>
