@@ -408,4 +408,25 @@
     <!-- CPU/GPU autodetect -->
     <string name="preset_dialog_gpu_hint_qualcomm">Snapdragon detected. ZINK_ZFA renderer has been set automatically. We recommend selecting a Freedreno/Turnip driver in the app Settings for best results.</string>
     <string name="preset_dialog_gpu_hint_mediatek">MediaTek detected. ZINK_ZFA renderer has been set, but ZINK support on Mali GPUs varies. If the game doesn\'t start, try to activate ANGLE built-in graphical driver in the Developer options.</string>
+
+    <!-- Manual mods installation -->
+    <string name="install_mod_manual_group">Manual installation</string>
+    <string name="install_mod_manual_hint">Copy mod folder to the mods folder inside the Zomboid folder. Create the mods folder if it doesn\'t exist (lowercase "mods"). Mod folder must not contain any extra wrapper folders.</string>
+    <string name="install_mod_open_folder">Open mods folder</string>
+    <string name="install_mod_manual_help_title">Manual installation</string>
+    <string name="install_mod_manual_help_message">
+        \u2705 Correct structure:\n\n
+        ModName/\n
+        \u00A0\u00A0mod.info\n
+        \u00A0\u00A0media/\n
+        \u00A0\u00A0scripts/\n\n
+        \u274C Incorrect — extra wrapper folder:\n\n
+        Downloads/\n
+        \u00A0\u00A0ModName/\n
+        \u00A0\u00A0\u00A0\u00A0mod.info\n\n
+        \u274C Incorrect — missing mod root:\n\n
+        media/\n
+        scripts/\n
+        (no mod.info in root)
+    </string>
 </resources>
