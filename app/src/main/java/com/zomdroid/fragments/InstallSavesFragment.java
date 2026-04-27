@@ -177,6 +177,11 @@ public class InstallSavesFragment extends Fragment {
                 names
         );
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        
+        binding.installSavesBannerIv.setImageResource(R.drawable.banner_default);
+        binding.installSavesBannerIv.setVisibility(View.VISIBLE);
+        binding.installSavesBannerOverlay.setVisibility(View.VISIBLE);
+        
         binding.installSavesInstanceSpinner.setAdapter(adapter);
         binding.installSavesInstanceSpinner.setOnItemSelectedListener(
             new android.widget.AdapterView.OnItemSelectedListener() {
@@ -185,8 +190,8 @@ public class InstallSavesFragment extends Fragment {
                                            View view, int position, long id) {
                     int instanceIndex = instances.size() > 1 ? position - 1 : position;
                     if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                        binding.installSavesBannerIv.setVisibility(View.INVISIBLE);
-                        binding.installSavesBannerOverlay.setVisibility(View.INVISIBLE);
+                        binding.installSavesBannerIv.setVisibility(View.VISIBLE);
+                        binding.installSavesBannerOverlay.setVisibility(View.VISIBLE);
                         return;
                     }
                     GameInstance selected = instances.get(instanceIndex);
