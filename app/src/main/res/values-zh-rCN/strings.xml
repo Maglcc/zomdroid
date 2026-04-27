@@ -401,4 +401,21 @@
     <!-- CPU/GPU autodetect -->
     <string name="preset_dialog_gpu_hint_qualcomm">检测到骁龙处理器。ZINK_ZFA 渲染器已自动设置。建议在应用设置中选择 Freedreno/Turnip 驱动以获得最佳效果。</string>
     <string name="preset_dialog_gpu_hint_mediatek">检测到联发科处理器。已设置 ZINK_ZFA 渲染器，但 ZINK 在 Mali GPU 上的支持情况不稳定。如果游戏无法启动，请尝试在开发者选项中启用内置 ANGLE 图形驱动。</string>
+
+    <!-- Manual mods installation -->
+    <string name="install_mod_manual_group">手动安装</string>
+    <string name="install_mod_manual_hint">将模组文件夹复制到 Zomboid 文件夹内的 mods 文件夹中。如果 mods 文件夹不存在，请创建它（小写）。模组文件夹不应包含多余的外层文件夹。</string>
+    <string name="install_mod_open_folder">打开模组文件夹</string>
+    <string name="install_mod_manual_help_title">手动安装</string>
+    <string name="install_mod_manual_help_message">
+        \u2705 正确的结构：\n\n
+        ModName/\n
+        \u00A0\u00A0mod.info\n
+        \u00A0\u00A0media/\n
+        \u00A0\u00A0scripts/\n\n
+        \u274C 错误 — 多余的外层文件夹：\n\n
+        Downloads/\n
+        \u00A0\u00A0ModName/\n
+        \u00A0\u00A0\u00A0\u00A0mod.info
+    </string>
 </resources>
