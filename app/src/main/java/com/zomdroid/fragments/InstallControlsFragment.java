@@ -170,6 +170,11 @@ public class InstallControlsFragment extends Fragment {
                 names
         );
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+
+        binding.installControlsBannerIv.setImageResource(R.drawable.banner_default);
+        binding.installControlsBannerIv.setVisibility(View.VISIBLE);
+        binding.installControlsBannerOverlay.setVisibility(View.VISIBLE);
+        
         binding.installControlsInstanceSpinner.setAdapter(adapter);
         binding.installControlsInstanceSpinner.setOnItemSelectedListener(
         new android.widget.AdapterView.OnItemSelectedListener() {
@@ -178,8 +183,8 @@ public class InstallControlsFragment extends Fragment {
                                        View view, int position, long id) {
                 int instanceIndex = instances.size() > 1 ? position - 1 : position;
                 if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                    binding.installControlsBannerIv.setVisibility(View.INVISIBLE);
-                    binding.installControlsBannerOverlay.setVisibility(View.INVISIBLE);
+                    binding.installControlsBannerIv.setVisibility(View.VISIBLE);
+                    binding.installControlsBannerOverlay.setVisibility(View.VISIBLE);
                     return;
                 }
                 GameInstance selected = instances.get(instanceIndex);
