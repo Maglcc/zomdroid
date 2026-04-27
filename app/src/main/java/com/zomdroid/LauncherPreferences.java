@@ -17,7 +17,7 @@ public class LauncherPreferences {
     transient private SharedPreferences sharedPreferences;
     transient private Gson gson;
 
-    private float renderScale = 0.65f;
+    private float renderScale = 0.75f;
     private Renderer renderer = Renderer.GL4ES;
     private VulkanDriver vulkanDriver = VulkanDriver.SYSTEM_DEFAULT;
     private boolean isDebug = false;
