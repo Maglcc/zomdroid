@@ -400,5 +400,5 @@
 
     <!-- CPU/GPU autodetect -->
     <string name="preset_dialog_gpu_hint_qualcomm">检测到骁龙处理器。ZINK_ZFA 渲染器已自动设置。建议在应用设置中选择 Freedreno/Turnip 驱动以获得最佳效果。</string>
-    <string name="preset_dialog_gpu_hint_mediatek">检测到联发科处理器。已设置 ZINK_ZFA，但 ZINK 在 Mali GPU 上的支持情况不稳定。如果游戏无法启动，请尝试在开发者选项中启用内置 ANGLE 图形驱动。</string>
+    <string name="preset_dialog_gpu_hint_mediatek">检测到联发科处理器。已设置 ZINK_ZFA 渲染器，但 ZINK 在 Mali GPU 上的支持情况不稳定。如果游戏无法启动，请尝试在开发者选项中启用内置 ANGLE 图形驱动。</string>
 </resources>
