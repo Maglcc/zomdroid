@@ -141,13 +141,17 @@ public class ExportLogFragment extends Fragment {
         for (GameInstance gi : instances) {
             names.add(gi.getName());
         }
-
+        
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 requireContext(),
                 R.layout.spinner_item,
                 names
         );
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        binding.exportLogBannerIv.setImageResource(R.drawable.banner_default);
+        binding.exportLogBannerIv.setVisibility(View.VISIBLE);
+        binding.exportLogBannerOverlay.setVisibility(View.VISIBLE);
+        
         binding.exportLogInstanceSpinner.setAdapter(adapter);
         binding.exportLogInstanceSpinner.setOnItemSelectedListener(
             new android.widget.AdapterView.OnItemSelectedListener() {
@@ -156,8 +160,8 @@ public class ExportLogFragment extends Fragment {
                                        View view, int position, long id) {
                 int instanceIndex = instances.size() > 1 ? position - 1 : position;
                 if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                    binding.exportLogBannerIv.setVisibility(View.INVISIBLE);
-                    binding.exportLogBannerOverlay.setVisibility(View.INVISIBLE);
+                    binding.exportLogBannerIv.setVisibility(View.VISIBLE);
+                    binding.exportLogBannerOverlay.setVisibility(View.VISIBLE);
                     return;
                 }
                 GameInstance selected = instances.get(instanceIndex);
