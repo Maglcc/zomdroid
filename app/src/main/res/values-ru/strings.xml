@@ -407,4 +407,21 @@
     <!-- CPU/GPU autodetect -->
     <string name="preset_dialog_gpu_hint_qualcomm">Обнаружен Snapdragon. Рендерер ZINK_ZFA установлен автоматически. Рекомендуем выбрать драйвер Freedreno/Turnip в настройках приложения для лучшего результата.</string>
     <string name="preset_dialog_gpu_hint_mediatek">Обнаружен MediaTek. Рендерер ZINK_ZFA установлен, но поддержка ZINK на Mali-видеочипах нестабильна. Если игра не запускается, попробуйте активировать встроенный графический драйвер ANGLE в настройках разработчика.</string>
+
+    <!-- Manual mods installation -->
+    <string name="install_mod_manual_group">Ручная установка</string>
+    <string name="install_mod_manual_hint">Скопируйте папку мода в папку mods внутри папки Zomboid. Создайте папку mods, если её нет (строчными буквами). Папка мода не должна содержать лишних вложенных папок.</string>
+    <string name="install_mod_open_folder">Открыть папку модов</string>
+    <string name="install_mod_manual_help_title">Ручная установка</string>
+    <string name="install_mod_manual_help_message">
+        \u2705 Правильная структура:\n\n
+        ModName/\n
+        \u00A0\u00A0mod.info\n
+        \u00A0\u00A0media/\n
+        \u00A0\u00A0scripts/\n\n
+        \u274C Неверно — лишняя папка-обёртка:\n\n
+        Downloads/\n
+        \u00A0\u00A0ModName/\n
+        \u00A0\u00A0\u00A0\u00A0mod.info
+    </string>
 </resources>
