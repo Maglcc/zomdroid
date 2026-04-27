@@ -407,5 +407,5 @@
 
     <!-- CPU/GPU autodetect -->
     <string name="preset_dialog_gpu_hint_qualcomm">Snapdragon detected. ZINK_ZFA renderer has been set automatically. We recommend selecting a Freedreno/Turnip driver in the app Settings for best results.</string>
-    <string name="preset_dialog_gpu_hint_mediatek">MediaTek detected. ZINK_ZFA has been set, but ZINK support on Mali GPUs varies. If the game doesn\'t start, try to activate ANGLE built-in graphical driver in the Developer options.</string>
+    <string name="preset_dialog_gpu_hint_mediatek">MediaTek detected. ZINK_ZFA renderer has been set, but ZINK support on Mali GPUs varies. If the game doesn\'t start, try to activate ANGLE built-in graphical driver in the Developer options.</string>
 </resources>
