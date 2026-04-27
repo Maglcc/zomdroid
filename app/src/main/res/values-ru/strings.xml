@@ -403,4 +403,8 @@
     <string name="mod_fix_double_path_hint">Фикс для модов билда 42 с ошибкой пути на Android. Известные моды: Tsar\'s Common Library (ID: 3402491515), Simple Flashlight on Belt (ID: 3394588830).</string>
     <string name="mod_fix_help_title">Что это за фикс?</string>
     <string name="mod_fix_help_message">Некоторые моды для билда 42 используют структуру папок, которая вызывает конфликт путей на Android из-за чувствительности к регистру. Игра ищет файлы по двойному пути и не может их найти.\n\nФикс устанавливает мод дважды — один раз с оригинальными именами папок, второй раз со всеми именами в нижнем регистре — чтобы игра находила файлы независимо от того, какой путь использует.\n\nИзвестные проблемные моды:\n• Tsar\'s Common Library — ID: 3402491515\n• [B42] Simple Flashlight on Belt — ID: 3394588830\n\nКак использовать: скачайте мод из Steam Workshop, заархивируйте папку мода как есть и загрузите сюда.</string>
+
+    <!-- CPU/GPU autodetect -->
+    <string name="preset_dialog_gpu_hint_qualcomm">Обнаружен Snapdragon. Рендерер ZINK_ZFA установлен автоматически. Рекомендуем выбрать драйвер Freedreno/Turnip в настройках приложения для лучшего результата.</string>
+    <string name="preset_dialog_gpu_hint_mediatek">Обнаружен MediaTek. Рендерер ZINK_ZFA установлен, но поддержка ZINK на Mali-видеочипах нестабильна. Если игра не запускается, попробуйте активировать встроенный графический драйвер ANGLE в настройках разработчика.</string>
 </resources>
