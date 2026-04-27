@@ -176,7 +176,9 @@ public class NewGameInstanceFragment extends Fragment {
                 // Append GPU hint for Build 42
                 if ("42".equals(preset.buildVersion)) {
                     GpuVendor gpu = detectGpuVendor();
-                    Toast.makeText(requireContext(), "GPU: " + gpu.name(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(),
+                        "GPU: " + gpu.name() + " | HW: " + android.os.Build.HARDWARE + " | BOARD: " + android.os.Build.BOARD,
+                        Toast.LENGTH_LONG).show();
                     if (gpu == GpuVendor.QUALCOMM) {
                         baseMessage += "\n\n" + getString(R.string.preset_dialog_gpu_hint_qualcomm);
                     } else if (gpu == GpuVendor.MEDIATEK) {
@@ -309,6 +311,7 @@ public class NewGameInstanceFragment extends Fragment {
     }    
 
     private GpuVendor detectGpuVendor() {
+        // Try /proc/cpuinfo first
         try {
             java.io.BufferedReader reader = new java.io.BufferedReader(
                     new java.io.FileReader("/proc/cpuinfo"));
@@ -326,6 +329,25 @@ public class NewGameInstanceFragment extends Fragment {
             }
             reader.close();
         } catch (Exception ignored) {}
+    
+        // Fallback: android.os.Build fields
+        String[] buildFields = {
+            android.os.Build.HARDWARE,
+            android.os.Build.BOARD,
+            android.os.Build.SOC_MODEL,     // API 31+
+            android.os.Build.SOC_MANUFACTURER // API 31+
+        };
+        for (String field : buildFields) {
+            if (field == null) continue;
+            String lower = field.toLowerCase();
+            if (lower.contains("qcom") || lower.contains("qualcomm") || lower.contains("snapdragon")) {
+                return GpuVendor.QUALCOMM;
+            }
+            if (lower.contains("mt") || lower.contains("mediatek") || lower.contains("dimensity") || lower.contains("helio")) {
+                return GpuVendor.MEDIATEK;
+            }
+        }
+    
         return GpuVendor.UNKNOWN;
     }
 }
