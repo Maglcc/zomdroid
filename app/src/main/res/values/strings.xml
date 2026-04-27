@@ -423,10 +423,6 @@
         \u274C Incorrect — extra wrapper folder:\n\n
         Downloads/\n
         \u00A0\u00A0ModName/\n
-        \u00A0\u00A0\u00A0\u00A0mod.info\n\n
-        \u274C Incorrect — missing mod root:\n\n
-        media/\n
-        scripts/\n
-        (no mod.info in root)
+        \u00A0\u00A0\u00A0\u00A0mod.info
     </string>
 </resources>
