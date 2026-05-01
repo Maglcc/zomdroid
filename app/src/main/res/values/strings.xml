@@ -425,4 +425,26 @@
         \u00A0\u00A0ModName/\n
         \u00A0\u00A0\u00A0\u00A0mod.info
     </string>
+
+    <!-- ===== SMART IMPORT strings ===== -->
+    <string name="install_mod_smart_group">Smart Import</string>
+    <string name="install_mod_smart_hint">Automatically finds the mod folder inside the ZIP, even if wrapped in extra folders (e.g. from Skymods). Applies fixes for mods with scripts or models.</string>
+    <string name="install_mod_smart_help_title">Smart Import</string>
+    <string name="install_mod_smart_help_message">Smart Import extracts the correct mod folder from any ZIP structure.\n\nIt detects the mod root by looking for mod.info, media/ or common/ folders — no matter how many wrapper folders surround it.\n\nFor mods with scripts/ or models_X/ folders, a lowercase copy is also installed automatically to fix Android path issues.</string>
+    <string name="install_mod_smart_install">Import</string>
+    <string name="install_mod_smart_title">Smart import…</string>
+    <string name="install_mod_smart_done">Mod imported successfully</string>
+    <string name="install_mod_smart_no_root">Could not find a mod folder in this ZIP. Make sure the archive contains mod.info, media/ or common/.</string>
+    <string name="extracting">Extracting…</string>
+
+    <!-- ===== CONTROLS EDITOR LAUNCH strings ===== -->
+    <string name="controls_editor_bg_group">Background Image (optional)</string>
+    <string name="controls_editor_bg_hint">Load a screenshot from the game to use as the editor background. Makes it easier to position buttons exactly where you want them.</string>
+    <string name="controls_editor_bg_clear">Remove background</string>
+    <string name="controls_editor_bg_saved">Background image saved</string>
+    <string name="controls_editor_bg_cleared">Background removed</string>
+    <string name="controls_editor_bg_error">Failed to save background: %1$s</string>
+    <string name="controls_editor_open_group">Editor</string>
+    <string name="controls_editor_open_hint">Open the controls editor to drag, resize and configure on-screen buttons.</string>
+    <string name="controls_editor_open_btn">Open editor</string>
 </resources>

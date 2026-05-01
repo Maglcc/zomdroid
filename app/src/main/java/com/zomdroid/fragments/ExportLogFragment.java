@@ -128,6 +128,9 @@ public class ExportLogFragment extends Fragment {
                 taskProgressDialog.dismiss()
         );
 
+        // Default banner — always show before any early return
+        binding.exportLogBannerIv.setImageResource(R.drawable.banner_default);
+
         instances = GameInstanceManager.requireSingleton().getInstances();
         if (instances == null || instances.isEmpty()) {
             Toast.makeText(requireContext(), "No game instances found", Toast.LENGTH_SHORT).show();
@@ -149,8 +152,6 @@ public class ExportLogFragment extends Fragment {
         );
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         binding.exportLogBannerIv.setImageResource(R.drawable.banner_default);
-        binding.exportLogBannerIv.setVisibility(View.VISIBLE);
-        binding.exportLogBannerOverlay.setVisibility(View.VISIBLE);
         
         binding.exportLogInstanceSpinner.setAdapter(adapter);
         binding.exportLogInstanceSpinner.setOnItemSelectedListener(
@@ -160,8 +161,8 @@ public class ExportLogFragment extends Fragment {
                                        View view, int position, long id) {
                 int instanceIndex = instances.size() > 1 ? position - 1 : position;
                 if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                    binding.exportLogBannerIv.setVisibility(View.VISIBLE);
-                    binding.exportLogBannerOverlay.setVisibility(View.VISIBLE);
+                    binding.exportLogBannerIv.setImageResource(R.drawable.banner_default);
+                    binding.exportLogBannerOverlay.setVisibility(View.INVISIBLE);
                     return;
                 }
                 GameInstance selected = instances.get(instanceIndex);
@@ -178,13 +179,13 @@ public class ExportLogFragment extends Fragment {
                         break;
                 }
                 binding.exportLogBannerIv.setImageResource(bannerRes);
-                binding.exportLogBannerIv.setVisibility(View.VISIBLE);
+                //binding.exportLogBannerIv.setVisibility(View.VISIBLE);
                 binding.exportLogBannerOverlay.setVisibility(View.VISIBLE);
             }
     
             @Override
             public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                binding.exportLogBannerIv.setVisibility(View.INVISIBLE);
+                binding.exportLogBannerIv.setImageResource(R.drawable.banner_default);
                 binding.exportLogBannerOverlay.setVisibility(View.INVISIBLE);
             }
         });

@@ -126,6 +126,9 @@ public class ModFixesFragment extends Fragment {
                         .setPositiveButton(R.string.dialog_button_ok, null)
                         .show());
 
+        // Default banner — always show before any early return
+        binding.modFixesBannerIv.setImageResource(R.drawable.banner_default);
+
         // Instance spinner
         instances = GameInstanceManager.requireSingleton().getInstances();
 
@@ -140,6 +143,7 @@ public class ModFixesFragment extends Fragment {
             for (GameInstance gi : instances) {
                 names.add(gi.getName());
             }
+
             ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     requireContext(),
                     R.layout.spinner_item,
@@ -148,36 +152,38 @@ public class ModFixesFragment extends Fragment {
             binding.modFixesInstanceSpinner.setAdapter(adapter);
 
             binding.modFixesInstanceSpinner.setOnItemSelectedListener(
-                new android.widget.AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(android.widget.AdapterView<?> parent,
-                                               View view, int position, long id) {
-                        int instanceIndex = instances.size() > 1 ? position - 1 : position;
-                        if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                            binding.modFixesBannerIv.setImageResource(R.drawable.banner_default);
-                            return;
+                    new android.widget.AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(android.widget.AdapterView<?> parent,
+                                                   View view, int position, long id) {
+                            int instanceIndex = instances.size() > 1 ? position - 1 : position;
+                            if (instanceIndex < 0 || instanceIndex >= instances.size()) {
+                                // No instance selected — show default banner
+                                binding.modFixesBannerIv.setImageResource(R.drawable.banner_default);
+                                return;
+                            }
+                            // Update banner to match selected instance's build
+                            GameInstance selected = instances.get(instanceIndex);
+                            int bannerRes;
+                            switch (selected.getPresetName()) {
+                                case "Build 42.12+":
+                                    bannerRes = R.drawable.banner_build42_12;
+                                    break;
+                                case "Build 42":
+                                    bannerRes = R.drawable.banner_build42;
+                                    break;
+                                default:
+                                    bannerRes = R.drawable.banner_build41;
+                                    break;
+                            }
+                            binding.modFixesBannerIv.setImageResource(bannerRes);
                         }
-                        GameInstance selected = instances.get(instanceIndex);
-                        int bannerRes;
-                        switch (selected.getPresetName()) {
-                            case "Build 42.12+":
-                                bannerRes = R.drawable.banner_build42_12;
-                                break;
-                            case "Build 42":
-                                bannerRes = R.drawable.banner_build42;
-                                break;
-                            default:
-                                bannerRes = R.drawable.banner_build41;
-                                break;
-                        }
-                        binding.modFixesBannerIv.setImageResource(bannerRes);
-                    }
 
-                    @Override
-                    public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                        binding.modFixesBannerIv.setImageResource(R.drawable.banner_default);
-                    }
-                });
+                        @Override
+                        public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                            binding.modFixesBannerIv.setImageResource(R.drawable.banner_default);
+                        }
+                    });
 
             if (instances.size() == 1) {
                 binding.modFixesInstanceSpinner.setSelection(0);
@@ -216,6 +222,10 @@ public class ModFixesFragment extends Fragment {
             installerIntent.putExtra(
                     InstallerService.EXTRA_GAME_INSTANCE_NAME,
                     selectedInstance.getName());
+            // Pass build version so InstallerService can choose the correct install strategy
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_BUILD_VERSION,
+                    selectedInstance.getBuildVersion());
             installerIntent.putExtra(
                     InstallerService.EXTRA_MODS_URI,
                     modZipUri);

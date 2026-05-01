@@ -44,13 +44,16 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.nio.charset.StandardCharsets;
 
 public class InstallerService extends Service implements TaskProgressListener {
     private static final String LOG_TAG = InstallerService.class.getName();
     private static final String CHANNEL_ID = "com.zomdroid.InstallerService.NOTIFICATION_CHANNEL";
     private static final int NOTIFICATION_ID = 1;
+
+    // Intent action broadcast when service starts
     public static final String ACTION_STARTED = "com.zomdroid.InstallerService.ACTION_STARTED";
+
+    // Intent extras
     public static final String EXTRA_COMMAND = "com.zomdroid.InstallerService.EXTRA_COMMAND";
     public static final String EXTRA_GAME_INSTANCE_NAME = "com.zomdroid.InstallerService.EXTRA_GAME_INSTANCE_NAME";
     public static final String EXTRA_ARCHIVE_URI = "com.zomdroid.InstallerService.EXTRA_ARCHIVE_URI";
@@ -60,6 +63,8 @@ public class InstallerService extends Service implements TaskProgressListener {
     public static final String EXTRA_CONTROLS_URI = "com.zomdroid.InstallerService.EXTRA_CONTROLS_URI";
     public static final String EXTRA_OUTPUT_URI = "com.zomdroid.InstallerService.EXTRA_OUTPUT_URI";
     public static final String EXTRA_DRIVER_URI = "com.zomdroid.InstallerService.EXTRA_DRIVER_URI";
+    // Build version of the target instance ("41" or "42"), used by mod fix to choose install strategy
+    public static final String EXTRA_BUILD_VERSION = "com.zomdroid.InstallerService.EXTRA_BUILD_VERSION";
 
     private final IBinder binder = new LocalBinder();
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -71,7 +76,8 @@ public class InstallerService extends Service implements TaskProgressListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "GameInstallerServiceChannel", NotificationManager.IMPORTANCE_LOW);
+        NotificationChannel channel = new NotificationChannel(
+                CHANNEL_ID, "GameInstallerServiceChannel", NotificationManager.IMPORTANCE_LOW);
 
         notificationManager = NotificationManagerCompat.from(this);
         notificationManager.createNotificationChannel(channel);
@@ -81,61 +87,54 @@ public class InstallerService extends Service implements TaskProgressListener {
 
         Task task = Task.values()[intent.getIntExtra(EXTRA_COMMAND, 0)];
         switch (task) {
-            case CREATE_GAME_INSTANCE: {
+            case CREATE_GAME_INSTANCE:
                 doCreateGameInstance(intent);
                 break;
-            }
-            case DELETE_GAME_INSTANCE: {
+            case DELETE_GAME_INSTANCE:
                 doDeleteGameInstance(intent);
                 break;
-            }
-            case INSTALL_DEPENDENCIES: {
+            case INSTALL_DEPENDENCIES:
                 doInstallDependencies(intent);
                 break;
-            }
-            case INSTALL_MOD_TO_INSTANCE: {
+            case INSTALL_MOD_TO_INSTANCE:
                 doInstallModToInstance(intent);
                 break;
-            }
-            case INSTALL_CONTROLS_TO_INSTANCE: {
+            case INSTALL_CONTROLS_TO_INSTANCE:
                 doInstallControlsToInstance(intent);
                 break;
-            }
-            case INSTALL_SAVES_TO_INSTANCE: {
+            case INSTALL_SAVES_TO_INSTANCE:
                 doInstallSavesToInstance(intent);
                 break;
-            }
-            case EXPORT_SAVES_FROM_INSTANCE: {
+            case EXPORT_SAVES_FROM_INSTANCE:
                 doExportSavesFromInstance(intent);
                 break;
-            }
-            case EXPORT_CONTROLS_FROM_INSTANCE: {
+            case EXPORT_CONTROLS_FROM_INSTANCE:
                 doExportControlsFromInstance(intent);
                 break;
-            }
-            case IMPORT_CUSTOM_DRIVER: {
+            case IMPORT_CUSTOM_DRIVER:
                 doImportCustomDriver(intent);
                 break;
-            }
-            case EXPORT_CUSTOM_DRIVER: {
+            case EXPORT_CUSTOM_DRIVER:
                 doExportCustomDriver(intent);
                 break;
-            }
-            case EXPORT_LOG: {
+            case EXPORT_LOG:
                 doExportLog(intent);
                 break;
-            }
-            case INSTALL_BETTERFPS: {
+            case INSTALL_BETTERFPS:
                 doInstallBetterFps(intent);
                 break;
-            }
-            case INSTALL_MOD_WITH_FIX: {
-                doInstallModWithFix(intent); break;
-            }
+            case INSTALL_MOD_WITH_FIX:
+                doInstallModWithFix(intent);
+                break;
+            case INSTALL_MOD_SMART:
+                doInstallModSmart(intent);
+                break;
         }
 
         return START_NOT_STICKY;
     }
+
+    // -------------------- CREATE GAME INSTANCE --------------------
 
     private void doCreateGameInstance(Intent intent) {
         String taskTitle = getString(R.string.dialog_title_creating_instance);
@@ -166,7 +165,7 @@ public class InstallerService extends Service implements TaskProgressListener {
         executorService.submit(() -> {
             try {
                 installGameFromZip(gameInstance, gameFilesArchiveUri);
-                // 42.13 extra jar unpack
+                // 42.13+: extract projectzomboid.jar if present
                 extractProjectZomboidJarSimple(gameInstance);
 
                 // Added in 1.3.2 for native game libs
@@ -196,9 +195,9 @@ public class InstallerService extends Service implements TaskProgressListener {
                     System.out.println("No native libraries provided — skipping multiplayer setup");
                 }
 
-                // 42.13 problematic lib renaming
+                // 42.13: rename problematic native libs
                 maybeDisableLibFor42(gameInstance);
-                // 42.15 fix for printSpecs()
+                // 42.15/42.17: patch printSpecs() crash
                 maybePatchPrintSpecsFor4215(gameInstance);
 
             } catch (Exception e) {
@@ -210,6 +209,8 @@ public class InstallerService extends Service implements TaskProgressListener {
             finish(getString(R.string.dialog_title_instance_created), null);
         });
     }
+
+    // -------------------- DELETE GAME INSTANCE --------------------
 
     private void doDeleteGameInstance(Intent intent) {
         String taskTitle = getString(R.string.dialog_title_deleting_game_instance);
@@ -244,6 +245,8 @@ public class InstallerService extends Service implements TaskProgressListener {
         });
     }
 
+    // -------------------- INSTALL DEPENDENCIES --------------------
+
     private void doInstallDependencies(Intent intent) {
         String taskTitle = getString(R.string.dialog_title_installing_dependencies);
 
@@ -258,7 +261,6 @@ public class InstallerService extends Service implements TaskProgressListener {
 
             Type mapType = new TypeToken<HashMap<String, Long>>() {}.getType();
             HashMap<String, Long> oldBundlesHashesMap = gson.fromJson(bundlesJson, mapType);
-
             HashMap<String, Long> newBundlesHashesMap = new HashMap<>();
 
             // --- JRE 21 ---
@@ -267,7 +269,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                 Long jre21HashNew = FileUtils.generateCRC32ForAsset(this, C.assets.BUNDLES_JRE21);
                 newBundlesHashesMap.put(C.assets.BUNDLES_JRE21, jre21HashNew);
 
-                // Reinstall only if the bundle changed (CRC mismatch) or not installed yet.
+                // Reinstall only if the bundle changed (CRC mismatch) or not installed yet
                 if (jre21HashOld == null || !jre21HashOld.equals(jre21HashNew)) {
                     String jre21Path = AppStorage.requireSingleton().getHomePath() + "/" + C.deps.JRE_21;
                     File jre21Dir = new File(jre21Path);
@@ -288,7 +290,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                 Long jre25HashNew = FileUtils.generateCRC32ForAsset(this, C.assets.BUNDLES_JRE25);
                 newBundlesHashesMap.put(C.assets.BUNDLES_JRE25, jre25HashNew);
 
-                // Reinstall only if the bundle changed (CRC mismatch) or not installed yet.
+                // Reinstall only if the bundle changed (CRC mismatch) or not installed yet
                 if (jre25HashOld == null || !jre25HashOld.equals(jre25HashNew)) {
                     String jre25Path = AppStorage.requireSingleton().getHomePath() + "/" + C.deps.JRE_25;
                     File jre25Dir = new File(jre25Path);
@@ -383,14 +385,14 @@ public class InstallerService extends Service implements TaskProgressListener {
                 File modsRootDir = new File(modsRootPath);
                 if (!modsRootDir.exists()) modsRootDir.mkdirs();
 
-                // temp dir рядом (внутри homePath, чтобы move сработал чаще)
+                // Temp dir next to mods folder for faster atomic move
                 File tempDir = new File(gameInstance.getHomePath(), "tmp_mods_import_" + System.currentTimeMillis());
                 if (!tempDir.mkdirs()) {
                     throw new RuntimeException("Failed to create temp dir: " + tempDir.getAbsolutePath());
                 }
 
                 try {
-                    // 1) extract zip -> temp
+                    // 1) Extract ZIP to temp dir
                     try (InputStream modsStream = getContentResolver().openInputStream(modsArchiveUri)) {
                         FileUtils.extractZipToDisk(
                                 modsStream,
@@ -400,17 +402,15 @@ public class InstallerService extends Service implements TaskProgressListener {
                         );
                     }
 
-                    // 2) detect mod folders
+                    // 2) Detect mod folders at top level
                     File[] top = listDirs(tempDir);
-
                     java.util.List<File> mods = new java.util.ArrayList<>();
 
-                    // mods directly at top-level
                     for (File d : top) {
                         if (isModFolder(d)) mods.add(d);
                     }
 
-                    // if none found and there's exactly one wrapper dir -> scan one level deeper
+                    // If none found and there's exactly one wrapper dir, scan one level deeper
                     if (mods.isEmpty() && top.length == 1) {
                         File[] inner = listDirs(top[0]);
                         for (File d : inner) {
@@ -422,14 +422,14 @@ public class InstallerService extends Service implements TaskProgressListener {
                         throw new IllegalArgumentException("No valid mods found in ZIP (mod.info missing).");
                     }
 
-                    // 3) install each mod folder
+                    // 3) Install each mod folder
                     for (File modDir : mods) {
                         File target = new File(modsRootDir, modDir.getName());
                         moveOrReplace(modDir, target);
                     }
 
                 } finally {
-                    // cleanup whatever remains (e.g., wrapper dir)
+                    // Cleanup temp dir
                     FileUtils.deleteDirectory(tempDir);
                 }
 
@@ -488,6 +488,8 @@ public class InstallerService extends Service implements TaskProgressListener {
         });
     }
 
+    // -------------------- INSTALL CONTROLS TO INSTANCE --------------------
+
     private void doInstallControlsToInstance(Intent intent) {
         String taskTitle = getString(R.string.dialog_title_installing_controls);
 
@@ -514,20 +516,16 @@ public class InstallerService extends Service implements TaskProgressListener {
 
         executorService.submit(() -> {
             try {
-                // "home -> game -> controls"
                 String controlsDirPath = gameInstance.getGamePath() + "/controls";
                 File controlsDir = new File(controlsDirPath);
                 if (!controlsDir.exists()) controlsDir.mkdirs();
 
                 File outFile = new File(controlsDir, "controls.json");
-
                 boolean found = false;
 
                 try (InputStream is = getContentResolver().openInputStream(controlsArchiveUri)) {
-                    if (is == null)
-                        throw new IllegalStateException("openInputStream returned null");
+                    if (is == null) throw new IllegalStateException("openInputStream returned null");
                     try (ZipInputStream zis = new ZipInputStream(is)) {
-
                         ZipEntry e;
                         byte[] buf = new byte[64 * 1024];
 
@@ -535,11 +533,9 @@ public class InstallerService extends Service implements TaskProgressListener {
                             if (e.isDirectory()) continue;
 
                             String name = e.getName();
-                            // ловим и "controls.json", и "something/controls.json"
+                            // Accept both "controls.json" and "something/controls.json"
                             if (name != null && name.toLowerCase().endsWith("controls.json")) {
-                                //byte[] buf = new byte[64 * 1024];
                                 java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-
                                 int r;
                                 while ((r = zis.read(buf)) != -1) {
                                     baos.write(buf, 0, r);
@@ -547,13 +543,13 @@ public class InstallerService extends Service implements TaskProgressListener {
 
                                 byte[] jsonBytes = baos.toByteArray();
 
-                                // 1) пишем файл
+                                // Write to file
                                 try (OutputStream os = new FileOutputStream(outFile, false)) {
                                     os.write(jsonBytes);
                                     os.flush();
                                 }
 
-                                // 2) пишем SharedPreferences (перезапишет текущий layout в памяти)
+                                // Also update SharedPreferences so controls apply immediately
                                 String json = new String(jsonBytes, java.nio.charset.StandardCharsets.UTF_8);
                                 getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
                                         .edit()
@@ -581,6 +577,8 @@ public class InstallerService extends Service implements TaskProgressListener {
         });
     }
 
+    // -------------------- EXPORT CONTROLS FROM INSTANCE --------------------
+
     private void doExportControlsFromInstance(Intent intent) {
         String taskTitle = getString(R.string.dialog_title_exporting_controls);
 
@@ -601,7 +599,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                 File controlsDir = new File(gameInstance.getGamePath(), "controls");
 
                 if (!controlsDir.exists()) {
-                    // нечего экспортировать (дефолтный layout, controls/ не создавался)
+                    // Nothing to export — default layout, controls/ was never created
                     finish(getString(R.string.dialog_title_controls_export_skipped_default), null);
                     return;
                 }
@@ -618,172 +616,7 @@ public class InstallerService extends Service implements TaskProgressListener {
         });
     }
 
-    private void finish(String title, String message) {
-        this.taskState.postValue(new TaskState(title, message, -1, 0, true, false));
-    }
-
-    private void finishWithError(String title, String error) {
-        Log.e(LOG_TAG, error);
-        this.taskState.postValue(new TaskState(title, error, -1, 0, false, true));
-    }
-
-    private void installGameFromZip(GameInstance gameInstance, Uri zipUri) throws IOException {
-        ContentResolver contentResolver = getApplicationContext().getContentResolver();
-        try (InputStream inputStream = contentResolver.openInputStream(zipUri)) {
-            long fileSize = FileUtils.queryFileSize(contentResolver, zipUri);
-            FileUtils.extractZipToDisk(inputStream, gameInstance.getGamePath(), this, fileSize);
-        }
-    }
-
-    @Override
-    public void onTimeout(int startId) {
-        super.onTimeout(startId);
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    private Notification buildNotification(String title) {
-        Intent notificationIntent = new Intent(this, LauncherActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                this,
-                0,
-                notificationIntent,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
-        );
-        notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(title)
-                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-                .setOngoing(true)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(R.mipmap.ic_launcher_foreground)
-                .setAutoCancel(false);
-        return notificationBuilder.build();
-    }
-
-    @Override
-    public void onProgressUpdate(String message, int progress, int progressMax) {
-        if (System.currentTimeMillis() - lastProgressUpdateMs < 500) return;
-        lastProgressUpdateMs = System.currentTimeMillis();
-
-        TaskState currentState = this.taskState.getValue();
-        this.taskState.postValue(new TaskState(currentState == null ? null : currentState.title,
-                message, progress, progressMax, false, false));
-
-        handler.post(() -> {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            if (message != null) {
-                notificationBuilder.setContentText(message);
-            }
-            if (progress < 0)
-                notificationBuilder.setProgress(0, 0, true);
-            else
-                notificationBuilder.setProgress(progressMax, progress, false);
-            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
-        });
-    }
-
-    private void maybeDisableLibFor42(GameInstance gameInstance) {
-        File gameDir = new File(gameInstance.getGamePath());
-        File pzJar = new File(gameDir, "projectzomboid.jar");
-        if (!pzJar.exists()) return; // не 42.13-структура
-    
-        File soDir = new File(gameDir, "android/arm64-v8a");
-    
-        maybeDisableLib(soDir, "libLighting64.so");
-        maybeDisableLib(soDir, "libPZBullet64.so");
-    }
-    
-    private void maybeDisableLib(File soDir, String libName) {
-        File so = new File(soDir, libName);
-        if (!so.exists()) return;
-    
-        File disabled = new File(soDir, libName + ".disabled");
-        if (disabled.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            so.delete();
-            return;
-        }
-    
-        if (!so.renameTo(disabled)) {
-            throw new RuntimeException("Failed to rename " + libName + " for 42.13: " + so.getAbsolutePath());
-        }
-    
-        Log.i(LOG_TAG, "42.13 patch: disabled " + libName + " -> " + disabled.getName());
-    }
-
-    private void maybePatchPrintSpecsFor4215(GameInstance gameInstance) {
-        File oshiDir = new File(gameInstance.getGamePath(), "oshi");
-        if (!oshiDir.exists() || !oshiDir.isDirectory()) return;
-
-        File target = new File(gameInstance.getGamePath(),
-                "zombie/gameStates/MainScreenState.class");
-        if (!target.exists()) return;
-
-        File disabled = new File(gameInstance.getGamePath(),
-                "zombie/gameStates/MainScreenState.class.disabled");
-
-        // Уже пропатчено
-        if (disabled.exists()) return;
-
-        long classSize = target.length();
-        String patchAsset;
-        if (classSize >= 33100 && classSize <= 33500) {
-            patchAsset = "patches/MainScreenState_42_17.class";
-        } else if (classSize >= 32700 && classSize <= 33100) {
-            patchAsset = "patches/MainScreenState_42_15.class";
-        } else {
-            Log.w(LOG_TAG, "Unknown MainScreenState version, size=" + classSize + ", skipping patch");
-            return;
-        }
-
-        if (!target.renameTo(disabled)) {
-            Log.e(LOG_TAG, "printSpecs patch: failed to rename original MainScreenState.class");
-            return;
-        }
-
-        try (InputStream src = getAssets().open(patchAsset);
-             FileOutputStream out = new FileOutputStream(target)) {
-            byte[] buf = new byte[4096];
-            int n;
-            while ((n = src.read(buf)) != -1) out.write(buf, 0, n);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Failed to apply printSpecs patch, asset=" + patchAsset, e);
-            disabled.renameTo(target);
-            return;
-        }
-
-        Log.i(LOG_TAG, "printSpecs patch applied: " + patchAsset + " (size=" + classSize + ")");
-    }
-
-    private void extractProjectZomboidJarSimple(GameInstance gameInstance) throws IOException {
-        File gameDir = new File(gameInstance.getGamePath());
-        File jar = new File(gameDir, "projectzomboid.jar");
-        if (!jar.exists()) return;
-
-        Log.i(LOG_TAG, "42.13 test: extracting projectzomboid.jar using FileUtils");
-        try (InputStream is = new FileInputStream(jar)) {
-            FileUtils.extractZipToDisk(is, gameDir.getAbsolutePath(), this, jar.length());
-        }
-    }
+    // -------------------- EXPORT SAVES FROM INSTANCE --------------------
 
     private void doExportSavesFromInstance(Intent intent) {
         String taskTitle = getString(R.string.dialog_title_exporting_saves);
@@ -819,62 +652,31 @@ public class InstallerService extends Service implements TaskProgressListener {
         });
     }
 
+    // -------------------- IMPORT CUSTOM DRIVER --------------------
 
-    private static boolean isModFolder(File dir) {
-        //return dir != null && dir.isDirectory() && new File(dir, "mod.info").isFile();
-        return dir != null && dir.isDirectory();
-    }
-
-    private static File[] listDirs(File root) {
-        File[] dirs = root.listFiles(File::isDirectory);
-        return (dirs == null) ? new File[0] : dirs;
-    }
-
-    private static void moveOrReplace(File srcDir, File dstDir) throws Exception {
-        if (dstDir.exists()) {
-            FileUtils.deleteDirectory(dstDir); // у тебя уже есть
-        }
-        // Быстро и без копирования (если на том же storage)
-        java.nio.file.Files.move(
-                srcDir.toPath(),
-                dstDir.toPath(),
-                java.nio.file.StandardCopyOption.REPLACE_EXISTING
-        );
-    }
-
-    public LiveData<TaskState> getTaskState() {
-        return taskState;
-    }
-
-    public class LocalBinder extends Binder {
-        public InstallerService getService() {
-            return InstallerService.this;
-        }
-    }
-
-     private void doImportCustomDriver(Intent intent) {
+    private void doImportCustomDriver(Intent intent) {
         String taskTitle = getString(R.string.dialog_title_importing_driver);
- 
+
         startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
         this.taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
- 
+
         Uri driverUri = intent.getParcelableExtra(EXTRA_DRIVER_URI);
         if (driverUri == null) {
             finishWithError(taskTitle, "Driver URI is missing");
             return;
         }
- 
+
         executorService.submit(() -> {
             try {
                 String destPath = AppStorage.requireSingleton().getHomePath()
                         + "/" + C.deps.CUSTOM_DRIVER;
                 File destFile = new File(destPath);
- 
+
                 File parent = destFile.getParentFile();
                 if (parent != null && !parent.exists()) {
                     parent.mkdirs();
                 }
- 
+
                 try (InputStream is = getContentResolver().openInputStream(driverUri);
                      OutputStream os = new java.io.FileOutputStream(destFile, false)) {
                     if (is == null) throw new IllegalStateException("openInputStream returned null");
@@ -884,37 +686,39 @@ public class InstallerService extends Service implements TaskProgressListener {
                         os.write(buf, 0, r);
                     }
                 }
- 
+
                 finish(getString(R.string.dialog_title_driver_imported), null);
             } catch (Exception e) {
                 finishWithError(getString(R.string.dialog_title_failed_to_import_driver), e.toString());
             }
         });
     }
- 
+
+    // -------------------- EXPORT CUSTOM DRIVER --------------------
+
     private void doExportCustomDriver(Intent intent) {
         String taskTitle = getString(R.string.dialog_title_exporting_driver);
- 
+
         startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
         this.taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
- 
+
         Uri outUri = intent.getParcelableExtra(EXTRA_OUTPUT_URI);
         if (outUri == null) {
             finishWithError(taskTitle, "Output URI is missing");
             return;
         }
- 
+
         executorService.submit(() -> {
             try {
                 String srcPath = AppStorage.requireSingleton().getHomePath()
                         + "/" + C.deps.CUSTOM_DRIVER;
                 File srcFile = new File(srcPath);
- 
+
                 if (!srcFile.exists()) {
                     finishWithError(taskTitle, "Custom driver file not found: " + srcPath);
                     return;
                 }
- 
+
                 try (InputStream is = new java.io.FileInputStream(srcFile);
                      OutputStream os = getContentResolver().openOutputStream(outUri)) {
                     if (os == null) throw new IllegalStateException("openOutputStream returned null");
@@ -924,13 +728,15 @@ public class InstallerService extends Service implements TaskProgressListener {
                         os.write(buf, 0, r);
                     }
                 }
- 
+
                 finish(getString(R.string.dialog_title_driver_exported), null);
             } catch (Exception e) {
                 finishWithError(getString(R.string.dialog_title_failed_to_export_driver), e.toString());
             }
         });
     }
+
+    // -------------------- EXPORT LOG --------------------
 
     private void doExportLog(Intent intent) {
         String taskTitle = getString(R.string.dialog_title_exporting_log);
@@ -972,6 +778,8 @@ public class InstallerService extends Service implements TaskProgressListener {
         });
     }
 
+    // -------------------- INSTALL BETTERFPS --------------------
+
     private void doInstallBetterFps(Intent intent) {
         String taskTitle = getString(R.string.optimization_betterfps_installing);
 
@@ -1001,7 +809,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                 String targetFile = targetDir + "/IsoChunkMap.class";
                 String backupFile = targetFile + ".original";
 
-                // Найти IsoChunkMap.class в ZIP
+                // Find IsoChunkMap.class inside ZIP
                 byte[] classBytes = null;
                 try (InputStream is = getContentResolver().openInputStream(archiveUri);
                      ZipInputStream zis = new ZipInputStream(is)) {
@@ -1025,14 +833,14 @@ public class InstallerService extends Service implements TaskProgressListener {
                     return;
                 }
 
-                // Переименовать оригинал если ещё не бэкапнут
+                // Backup original if not already backed up
                 File original = new File(targetFile);
                 File backup = new File(backupFile);
                 if (original.exists() && !backup.exists()) {
                     original.renameTo(backup);
                 }
 
-                // Записать новый файл
+                // Write patched file
                 new File(targetDir).mkdirs();
                 try (FileOutputStream fos = new FileOutputStream(targetFile)) {
                     fos.write(classBytes);
@@ -1046,8 +854,22 @@ public class InstallerService extends Service implements TaskProgressListener {
     }
 
     // ================================================
-    // INSTALL_MOD_WITH_FIX — double path fix for B42 mods
-    // Mirrors the logic of PZModTool bash script by deadgamer182
+    // INSTALL_MOD_WITH_FIX
+    //
+    // Fixes mods that use B42 version folder structure (42/, 42.x/)
+    // and/or contain scripts/ folder causing double-path issues on Android.
+    //
+    // Build 42 strategy:
+    //   - Merge all 42.x version folders into latest
+    //   - Remove root mod.info, logo.png, poster.png (42/mod.info is authoritative)
+    //   - If scripts/ folder present, also create inception (lowercase) copy
+    //     at mods/data/user/0/.../zomboid/mods/<modname_lower>/
+    //
+    // Build 41 strategy:
+    //   - Do NOT merge version folders (42.x content is irrelevant for B41)
+    //   - Do NOT remove root mod.info (it's needed for B41 to load the mod)
+    //   - If scripts/ folder present, also create inception copy (same path structure)
+    //   - Root files (media/, scripts/, mod.info) are preserved for B41 compatibility
     // ================================================
 
     private void doInstallModWithFix(Intent intent) {
@@ -1061,6 +883,7 @@ public class InstallerService extends Service implements TaskProgressListener {
             finishWithError(taskTitle, "Game instance name is missing");
             return;
         }
+
         GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(gameInstanceName);
         if (gameInstance == null) {
             finishWithError(taskTitle, "Game instance not found: " + gameInstanceName);
@@ -1073,10 +896,18 @@ public class InstallerService extends Service implements TaskProgressListener {
             return;
         }
 
+        // Determine install strategy based on instance build version
+        String buildVersion = intent.getStringExtra(EXTRA_BUILD_VERSION);
+        boolean isBuild42 = "42".equals(buildVersion);
+        Log.d("ModFix", "Install strategy: build=" + buildVersion + ", isBuild42=" + isBuild42);
+        Log.d("ModFix", "=== doInstallModWithFix START ===");
+        Log.d("ModFix", "buildVersion=" + buildVersion + ", isBuild42=" + isBuild42);
+        Log.d("ModFix", "archiveUri=" + archiveUri);
+
         executorService.submit(() -> {
             File tmpDir = new File(getCacheDir(), "mod_fix_tmp_" + System.currentTimeMillis());
             try {
-                // Step 1: extract ZIP to temp dir
+                // Step 1: Extract ZIP to temp dir
                 tmpDir.mkdirs();
                 try (InputStream is = getContentResolver().openInputStream(archiveUri);
                      ZipInputStream zis = new ZipInputStream(is)) {
@@ -1094,75 +925,112 @@ public class InstallerService extends Service implements TaskProgressListener {
                             }
                         }
                         zis.closeEntry();
-                    }
-                }
-
-                // Step 2: find mod roots — like bash script's find_mod_names()
-                // A mod root is a direct child directory that contains 42* folders
-                // If tmpDir itself has 42* folders — it's a single mod root (flat ZIP)
-                // Otherwise scan one level deeper for multiple mod roots
-                List<File> modRoots = new ArrayList<>();
-
-                if (hasB42Folders(tmpDir)) {
-                    // flat ZIP: content directly at root
-                    modRoots.add(tmpDir);
-                } else {
-                    File[] topLevel = tmpDir.listFiles(File::isDirectory);
-                    if (topLevel != null) {
-                        for (File f : topLevel) {
-                            if (hasB42Folders(f)) {
-                                modRoots.add(f);
+                        Log.d("ModFix", "Step 1 done. tmpDir contents:");
+                        File[] tmpContents = tmpDir.listFiles();
+                        if (tmpContents != null) {
+                            for (File f : tmpContents) {
+                                Log.d("ModFix", "  " + f.getName() + (f.isDirectory() ? "/" : " [file]"));
                             }
+                        } else {
+                            Log.d("ModFix", "  tmpDir is empty or null!");
                         }
                     }
                 }
 
-                if (modRoots.isEmpty()) {
-                    finishWithError(taskTitle,
-                            getString(R.string.mod_fix_error_not_b42, "unknown"));
-                    return;
+                // Step 2: Find mod roots
+                // For Build 42: a mod root is a directory containing 42/ or 42.x/ folders
+                // For Build 41: a mod root is a directory containing mod.info (or any directory)
+                List<File> modRoots = new ArrayList<>();
+
+                if (isBuild42) {
+                    // B42: look for dirs with 42* version folders
+                    if (hasB42Folders(tmpDir)) {
+                        // Flat ZIP: content directly at root
+                        modRoots.add(tmpDir);
+                    } else {
+                        File[] topLevel = tmpDir.listFiles(File::isDirectory);
+                        if (topLevel != null) {
+                            for (File f : topLevel) {
+                                if (hasB42Folders(f)) modRoots.add(f);
+                            }
+                        }
+                    }
+
+                    if (modRoots.isEmpty()) {
+                        finishWithError(taskTitle,
+                                getString(R.string.mod_fix_error_not_b42, "unknown"));
+                        return;
+                    }
+                } else {
+                    // B41: find mod root by mod.info presence, or fall back to top-level dirs
+                    if (hasModInfo(tmpDir)) {
+                        // Flat ZIP: mod.info at root level
+                        modRoots.add(tmpDir);
+                    } else {
+                        File[] topLevel = tmpDir.listFiles(File::isDirectory);
+                        if (topLevel != null) {
+                            for (File f : topLevel) {
+                                // Accept dirs with mod.info, or if nothing found accept all dirs
+                                if (hasModInfo(f)) modRoots.add(f);
+                            }
+                            // If no mod.info found anywhere, treat all top-level dirs as mods
+                            if (modRoots.isEmpty()) {
+                                for (File f : topLevel) modRoots.add(f);
+                            }
+                        }
+                    }
+
+                    if (modRoots.isEmpty()) {
+                        finishWithError(taskTitle, "No mod folders found in ZIP");
+                        return;
+                    }
                 }
 
                 String modsPath = gameInstance.getHomePath() + "/Zomboid/mods";
                 new File(modsPath).mkdirs();
 
+                // Inception path is same for both build versions
                 String instanceNameLower = gameInstance.getName().toLowerCase();
                 String inceptionRelPath = "data/user/0/com.zomdroid/files/instances/"
                         + instanceNameLower + "/zomboid/mods";
                 File inceptionDir = new File(modsPath, inceptionRelPath);
 
                 for (File modRoot : modRoots) {
-                    // Step 3: determine mod folder name from directory name (like bash script)
-                    // If modRoot == tmpDir (flat ZIP), use ZIP filename
+                    // Step 3: Determine mod name
+                    // If modRoot == tmpDir (flat ZIP), use ZIP filename; otherwise use directory name
                     String modName;
                     if (modRoot.equals(tmpDir)) {
                         modName = extractZipName(archiveUri);
                     } else {
                         modName = modRoot.getName();
                     }
-                    Log.d("ModFix", "Processing mod: " + modName);
+                    Log.d("ModFix", "Processing mod: " + modName + " (isBuild42=" + isBuild42 + ")");
 
-                    // Step 4: check inception BEFORE merge (like bash script scan_inception_flags)
-                    boolean needsInception = hasScriptsFolder(modRoot);
+                    // Step 4: Check if inception copy is needed BEFORE any modifications
+                    // (scripts/ folder or models_X folder causes path issues on Android)
+                    boolean needsInception = needsLowercaseFix(modRoot);
                     Log.d("ModFix", "  needsInception: " + needsInception);
 
-                    // Step 5: merge versions
-                    mergeVersions(modRoot);
+                    if (isBuild42) {
+                        // Step 5a (B42): Merge 42.x version folders and clean up root files
+                        mergeVersionsForB42(modRoot);
+                    }
+                    // Step 5b (B41): No merging needed — root files stay as-is for B41 compatibility
 
-                    Log.d("ModFix", "  After merge:");
+                    Log.d("ModFix", "  After processing:");
                     if (modRoot.listFiles() != null) {
                         for (File f : modRoot.listFiles()) {
                             Log.d("ModFix", "    " + f.getName() + (f.isDirectory() ? "/" : ""));
                         }
                     }
 
-                    // Step 6: install normal case copy
+                    // Step 6: Install normal-case copy
                     File normalDest = new File(modsPath, modName);
                     if (normalDest.exists()) FileUtils.deleteDirectory(normalDest);
                     copyDirectory(modRoot, normalDest);
                     Log.d("ModFix", "  Installed normal: " + normalDest.getAbsolutePath());
 
-                    // Step 7: if needs inception, install lowercase copy inside data/ path
+                    // Step 7: If scripts/ present, also install lowercase inception copy
                     if (needsInception) {
                         inceptionDir.mkdirs();
                         String lowerName = modName.toLowerCase();
@@ -1183,11 +1051,12 @@ public class InstallerService extends Service implements TaskProgressListener {
         });
     }
 
-    // Mirrors merge_versions() from bash script
-    // Merges older 42.x folders into latest, injects root media/ and common/
-    // Deletes old version folders, root media/, logo.png, poster.png, mod.info
-    // Does NOT rename latest → 42 (keeps original version folder name)
-    private void mergeVersions(File modDir) throws IOException {
+    // -------------------- MOD FIX HELPERS --------------------
+
+    // Merge all 42.x version folders into the latest, inject root media/ and common/,
+    // then clean up root files (logo.png, poster.png, mod.info).
+    // Used only for Build 42 installs.
+    private void mergeVersionsForB42(File modDir) throws IOException {
         File[] entries = modDir.listFiles(File::isDirectory);
         if (entries == null) return;
 
@@ -1217,8 +1086,7 @@ public class InstallerService extends Service implements TaskProgressListener {
         File target = new File(modDir, latest);
         target.mkdirs();
 
-        // Merge older versions into latest, oldest first (no overwrite)
-        // newest files take priority
+        // Merge older versions into latest, oldest first (no overwrite — newest wins)
         for (int i = 0; i < versions.size() - 1; i++) {
             File older = new File(modDir, versions.get(i));
             copyDirectoryNoOverwrite(older, target);
@@ -1231,17 +1099,15 @@ public class InstallerService extends Service implements TaskProgressListener {
             FileUtils.deleteDirectory(rootMedia);
         }
 
-        // Inject common/ → latest/ (no overwrite), empty common/ but keep folder
+        // Inject common/ → latest/ (no overwrite), then empty common/ but keep folder
         File rootCommon = new File(modDir, "common");
         if (rootCommon.exists() && rootCommon.isDirectory()) {
             copyDirectoryNoOverwrite(rootCommon, target);
             File[] commonContents = rootCommon.listFiles();
             if (commonContents != null) {
-                for (File f : commonContents) {
-                    FileUtils.deleteDirectory(f);
-                }
+                for (File f : commonContents) FileUtils.deleteDirectory(f);
             }
-            // keep empty common/ folder — same as bash script
+            // Keep empty common/ folder — same behaviour as bash script
         }
 
         // Delete old version folders
@@ -1249,14 +1115,14 @@ public class InstallerService extends Service implements TaskProgressListener {
             FileUtils.deleteDirectory(new File(modDir, versions.get(i)));
         }
 
-        // Cleanup root files — mirrors bash: rm -f logo.png poster.png mod.info
+        // Clean up root files — 42/mod.info is now authoritative
         for (String name : new String[]{"logo.png", "poster.png", "mod.info"}) {
             File f = new File(modDir, name);
             if (f.exists()) f.delete();
         }
     }
 
-    // Returns true if mod folder contains any folder matching 42 or 42.x
+    // Returns true if directory contains any folder matching 42 or 42.x
     private boolean hasB42Folders(File modDir) {
         File[] children = modDir.listFiles(File::isDirectory);
         if (children == null) return false;
@@ -1266,18 +1132,27 @@ public class InstallerService extends Service implements TaskProgressListener {
         return false;
     }
 
-    // Returns true if any subfolder named "scripts" exists anywhere in the tree
-    private boolean hasScriptsFolder(File dir) {
-        if (dir.getName().equals("scripts") && dir.isDirectory()) return true;
+    // Returns true if directory contains a mod.info file directly
+    private static boolean hasModInfo(File dir) {
+        return dir != null && new File(dir, "mod.info").isFile();
+    }
+
+    // Returns true if mod needs a lowercase inception copy:
+    // - has a scripts/ folder (causes double-path issues on Android), OR
+    // - has a models_X folder (uppercase X causes case-sensitive path mismatch on Android)
+    private boolean needsLowercaseFix(File dir) {
+        String name = dir.getName();
+        if (name.equals("scripts") && dir.isDirectory()) return true;
+        if (name.equals("models_X") && dir.isDirectory()) return true;
         File[] children = dir.listFiles();
         if (children == null) return false;
         for (File f : children) {
-            if (f.isDirectory() && hasScriptsFolder(f)) return true;
+            if (f.isDirectory() && needsLowercaseFix(f)) return true;
         }
         return false;
     }
 
-    // Extract mod name from ZIP filename
+    // Extract mod name from ZIP filename via ContentResolver
     private String extractZipName(Uri uri) {
         String name = null;
         try (android.database.Cursor cursor = getContentResolver().query(
@@ -1297,6 +1172,29 @@ public class InstallerService extends Service implements TaskProgressListener {
             name = "mod_" + System.currentTimeMillis();
         }
         return name;
+    }
+
+    // -------------------- GENERIC FILE HELPERS --------------------
+
+    private static boolean isModFolder(File dir) {
+        return dir != null && dir.isDirectory();
+    }
+
+    private static File[] listDirs(File root) {
+        File[] dirs = root.listFiles(File::isDirectory);
+        return (dirs == null) ? new File[0] : dirs;
+    }
+
+    private static void moveOrReplace(File srcDir, File dstDir) throws Exception {
+        if (dstDir.exists()) {
+            FileUtils.deleteDirectory(dstDir);
+        }
+        // Fast atomic move if on same storage partition
+        java.nio.file.Files.move(
+                srcDir.toPath(),
+                dstDir.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+        );
     }
 
     // Copy directory recursively
@@ -1354,6 +1252,322 @@ public class InstallerService extends Service implements TaskProgressListener {
         }
     }
 
+    // -------------------- BUILD-SPECIFIC PATCHES --------------------
+
+    // 42.13: rename problematic native libs that crash on Android
+    private void maybeDisableLibFor42(GameInstance gameInstance) {
+        File gameDir = new File(gameInstance.getGamePath());
+        File pzJar = new File(gameDir, "projectzomboid.jar");
+        if (!pzJar.exists()) return; // Not a 42.13+ structure
+
+        File soDir = new File(gameDir, "android/arm64-v8a");
+        maybeDisableLib(soDir, "libLighting64.so");
+        maybeDisableLib(soDir, "libPZBullet64.so");
+    }
+
+    private void maybeDisableLib(File soDir, String libName) {
+        File so = new File(soDir, libName);
+        if (!so.exists()) return;
+
+        File disabled = new File(soDir, libName + ".disabled");
+        if (disabled.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            so.delete();
+            return;
+        }
+
+        if (!so.renameTo(disabled)) {
+            throw new RuntimeException("Failed to rename " + libName + " for 42.13: " + so.getAbsolutePath());
+        }
+
+        Log.i(LOG_TAG, "42.13 patch: disabled " + libName + " -> " + disabled.getName());
+    }
+
+    // 42.15/42.17: patch printSpecs() crash on Android
+    private void maybePatchPrintSpecsFor4215(GameInstance gameInstance) {
+        File oshiDir = new File(gameInstance.getGamePath(), "oshi");
+        if (!oshiDir.exists() || !oshiDir.isDirectory()) return;
+
+        File target = new File(gameInstance.getGamePath(),
+                "zombie/gameStates/MainScreenState.class");
+        if (!target.exists()) return;
+
+        File disabled = new File(gameInstance.getGamePath(),
+                "zombie/gameStates/MainScreenState.class.disabled");
+
+        // Already patched
+        if (disabled.exists()) return;
+
+        long classSize = target.length();
+        String patchAsset;
+        if (classSize >= 33100 && classSize <= 33500) {
+            patchAsset = "patches/MainScreenState_42_17.class";
+        } else if (classSize >= 32700 && classSize <= 33100) {
+            patchAsset = "patches/MainScreenState_42_15.class";
+        } else {
+            Log.w(LOG_TAG, "Unknown MainScreenState version, size=" + classSize + ", skipping patch");
+            return;
+        }
+
+        if (!target.renameTo(disabled)) {
+            Log.e(LOG_TAG, "printSpecs patch: failed to rename original MainScreenState.class");
+            return;
+        }
+
+        try (InputStream src = getAssets().open(patchAsset);
+             FileOutputStream out = new FileOutputStream(target)) {
+            byte[] buf = new byte[4096];
+            int n;
+            while ((n = src.read(buf)) != -1) out.write(buf, 0, n);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Failed to apply printSpecs patch, asset=" + patchAsset, e);
+            disabled.renameTo(target);
+            return;
+        }
+
+        Log.i(LOG_TAG, "printSpecs patch applied: " + patchAsset + " (size=" + classSize + ")");
+    }
+
+    // 42.13+: extract projectzomboid.jar if present (new fat-jar structure)
+    private void extractProjectZomboidJarSimple(GameInstance gameInstance) throws IOException {
+        File gameDir = new File(gameInstance.getGamePath());
+        File jar = new File(gameDir, "projectzomboid.jar");
+        if (!jar.exists()) return;
+
+        Log.i(LOG_TAG, "42.13+: extracting projectzomboid.jar");
+        try (InputStream is = new FileInputStream(jar)) {
+            FileUtils.extractZipToDisk(is, gameDir.getAbsolutePath(), this, jar.length());
+        }
+    }
+
+    // -------------------- TASK STATE / NOTIFICATION --------------------
+
+    private void finish(String title, String message) {
+        this.taskState.postValue(new TaskState(title, message, -1, 0, true, false));
+    }
+
+    private void finishWithError(String title, String error) {
+        Log.e(LOG_TAG, error);
+        this.taskState.postValue(new TaskState(title, error, -1, 0, false, true));
+    }
+
+    private void installGameFromZip(GameInstance gameInstance, Uri zipUri) throws IOException {
+        ContentResolver contentResolver = getApplicationContext().getContentResolver();
+        try (InputStream inputStream = contentResolver.openInputStream(zipUri)) {
+            long fileSize = FileUtils.queryFileSize(contentResolver, zipUri);
+            FileUtils.extractZipToDisk(inputStream, gameInstance.getGamePath(), this, fileSize);
+        }
+    }
+
+    @Override
+    public void onTimeout(int startId) {
+        super.onTimeout(startId);
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    // INSTALL_MOD_SMART
+    // Intelligently extracts a mod from ZIP regardless of wrapper folders.
+    // Finds the mod root by looking for: mod.info file, media/ folder, or common/ folder.
+    // Then applies needsLowercaseFix check and installs accordingly.
+    private void doInstallModSmart(Intent intent) {
+        String taskTitle = getString(R.string.install_mod_smart_title);
+        startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
+        taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
+
+        executorService.execute(() -> {
+            Uri archiveUri = intent.getParcelableExtra(EXTRA_MODS_URI);
+            String instanceName = intent.getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+            String buildVersion = intent.getStringExtra(EXTRA_BUILD_VERSION);
+            boolean isBuild42 = "42".equals(buildVersion);
+
+            File tmpDir = new File(getCacheDir(), "smart_mod_tmp_" + System.currentTimeMillis());
+            try {
+                tmpDir.mkdirs();
+
+                // Step 1: Extract ZIP to temp
+                onProgressUpdate(getString(R.string.extracting), -1, 0);
+                try (InputStream is = getContentResolver().openInputStream(archiveUri);
+                     ZipInputStream zis = new ZipInputStream(is)) {
+                    ZipEntry entry;
+                    while ((entry = zis.getNextEntry()) != null) {
+                        File outFile = new File(tmpDir, entry.getName());
+                        if (entry.isDirectory()) {
+                            outFile.mkdirs();
+                        } else {
+                            outFile.getParentFile().mkdirs();
+                            try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                                byte[] buf = new byte[8192];
+                                int len;
+                                while ((len = zis.read(buf)) > 0) fos.write(buf, 0, len);
+                            }
+                        }
+                        zis.closeEntry();
+                    }
+                }
+
+                // Step 2: Find mod root — folder containing mod.info, media/, or common/
+                File modRoot = findModRoot(tmpDir);
+                if (modRoot == null) {
+                    finishWithError(taskTitle, getString(R.string.install_mod_smart_no_root));
+                    return;
+                }
+                Log.d("SmartMod", "Found mod root: " + modRoot.getAbsolutePath());
+
+                // Step 3: Determine mod name
+                String modName = modRoot.getName();
+                if (modName.equals(tmpDir.getName())) {
+                    modName = extractZipName(archiveUri);
+                    if (modName != null && modName.endsWith(".zip"))
+                        modName = modName.substring(0, modName.length() - 4);
+                }
+
+                // Step 4: Check if inception copy needed
+                boolean needsInception = needsLowercaseFix(modRoot);
+                Log.d("SmartMod", "needsInception=" + needsInception + ", isBuild42=" + isBuild42);
+
+                // Step 5: Merge 42.x version folders if B42
+                if (isBuild42) {
+                    mergeVersionsForB42(modRoot);
+                }
+
+                // Step 6: Install normal-case copy
+                GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(instanceName);
+                if (gameInstance == null) {
+                    finishWithError(taskTitle, "Game instance not found: " + instanceName);
+                    return;
+                }
+                String modsPath = gameInstance.getHomePath() + "/Zomboid/mods";
+                File modsDir = new File(modsPath);
+                modsDir.mkdirs();
+
+                File normalDest = new File(modsDir, modName);
+                if (normalDest.exists()) FileUtils.deleteDirectory(normalDest);
+                copyDirectory(modRoot, normalDest);
+                Log.d("SmartMod", "Installed normal: " + normalDest.getAbsolutePath());
+
+                // Step 7: If needed, install lowercase inception copy
+                if (needsInception) {
+                    String inceptionRelPath = "data/user/0/com.zomdroid/files/instances/"
+                            + instanceName + "/Zomboid/mods";
+                    File inceptionDir = new File(modsDir, inceptionRelPath);
+                    inceptionDir.mkdirs();
+                    String lowerName = modName.toLowerCase();
+                    File lowerDest = new File(inceptionDir, lowerName);
+                    if (lowerDest.exists()) FileUtils.deleteDirectory(lowerDest);
+                    copyDirectoryLowercase(modRoot, lowerDest);
+                    Log.d("SmartMod", "Installed lowercase: " + lowerDest.getAbsolutePath());
+                }
+
+                finish(getString(R.string.install_mod_smart_done), null);
+
+            } catch (Exception e) {
+                finishWithError(taskTitle, e.toString());
+            } finally {
+                try { FileUtils.deleteDirectory(tmpDir); } catch (Exception ignored) {}
+            }
+        });
+    }
+
+    // Find the mod root inside an extracted ZIP tree.
+    // A valid mod root contains: mod.info, OR a media/ subfolder, OR a common/ subfolder.
+    private File findModRoot(File dir) {
+        if (isModRoot(dir)) return dir;
+        File[] children = dir.listFiles();
+        if (children == null) return null;
+        for (File child : children) {
+            if (child.isDirectory()) {
+                File found = findModRoot(child);
+                if (found != null) return found;
+            }
+        }
+        return null;
+    }
+
+    private boolean isModRoot(File dir) {
+        if (!dir.isDirectory()) return false;
+        File[] files = dir.listFiles();
+        if (files == null) return false;
+        for (File f : files) {
+            String name = f.getName().toLowerCase();
+            if (name.equals("mod.info")) return true;
+            if (f.isDirectory() && (name.equals("media") || name.equals("common"))) return true;
+        }
+        return false;
+    }
+
+    private Notification buildNotification(String title) {
+        Intent notificationIntent = new Intent(this, LauncherActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(title)
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+                .setOngoing(true)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                .setAutoCancel(false);
+        return notificationBuilder.build();
+    }
+
+    @Override
+    public void onProgressUpdate(String message, int progress, int progressMax) {
+        if (System.currentTimeMillis() - lastProgressUpdateMs < 500) return;
+        lastProgressUpdateMs = System.currentTimeMillis();
+
+        TaskState currentState = this.taskState.getValue();
+        this.taskState.postValue(new TaskState(
+                currentState == null ? null : currentState.title,
+                message, progress, progressMax, false, false));
+
+        handler.post(() -> {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            if (message != null) {
+                notificationBuilder.setContentText(message);
+            }
+            if (progress < 0)
+                notificationBuilder.setProgress(0, 0, true);
+            else
+                notificationBuilder.setProgress(progressMax, progress, false);
+            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+        });
+    }
+
+    public LiveData<TaskState> getTaskState() {
+        return taskState;
+    }
+
+    public class LocalBinder extends Binder {
+        public InstallerService getService() {
+            return InstallerService.this;
+        }
+    }
+
+    // -------------------- ENUMS / DATA CLASSES --------------------
+
     public enum Task {
         CREATE_GAME_INSTANCE,
         DELETE_GAME_INSTANCE,
@@ -1367,7 +1581,8 @@ public class InstallerService extends Service implements TaskProgressListener {
         EXPORT_CUSTOM_DRIVER,
         EXPORT_LOG,
         INSTALL_BETTERFPS,
-        INSTALL_MOD_WITH_FIX
+        INSTALL_MOD_WITH_FIX,
+        INSTALL_MOD_SMART
     }
 
     public static class TaskState {

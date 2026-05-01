@@ -8,12 +8,9 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -273,12 +270,12 @@ public class InputControlsView extends View {
             }
         }
 
-        // 2) Если файла нет — пробуем SharedPreferences
+        // If there is no per-game file yet, fall back to the layout saved in SharedPreferences.
         if (json == null) {
             json = this.sharedPreferences.getString(C.shprefs.keys.INPUT_CONTROLS, null);
         }
 
-        // 3) Если и в SharedPreferences пусто — берём дефолт из assets
+        // If nothing was saved yet, load the bundled default gamepad layout.
         if (json == null) {
             try (InputStream is = getContext().getAssets().open(C.assets.DEFAULT_CONTROLS)) {
                 byte[] bytes = new byte[is.available()];
@@ -292,13 +289,11 @@ public class InputControlsView extends View {
 
         if (json == null) return;
 
-        Type type = new TypeToken<ArrayList<ControlElementDescription>>() {}.getType();
-        ArrayList<ControlElementDescription> savedDescriptions = gson.fromJson(json, type);
-        if (savedDescriptions != null) {
-            for (ControlElementDescription description : savedDescriptions) {
-                this.controlElements.add(AbstractControlElement.fromDescription(this, description));
-            }
-        }
+        // Important bug fix:
+        // Loading must replace the current layout, not append to it.
+        // Background ImageView changes can cause extra layout/size passes, and an append-style load
+        // can stack the default gamepad layout and the VKBD layout on top of each other.
+        replaceControlsFromJson(json, false);
     }
 
     public void saveControlElementsToDisk() {
@@ -463,27 +458,40 @@ public class InputControlsView extends View {
     public void replaceControlsFromJson(@Nullable String json, boolean persist) {
         if (json == null) return;
 
-        // сброс выбора/окна настроек, чтобы не остались ссылки на старый элемент
+        // Clear editor state before replacing the layout so old UI references do not point
+        // to controls that are about to be removed.
         if (this.elementSettingsController != null) {
             this.elementSettingsController.hide();
         }
         this.selectedElement = null;
         this.pointerOverElement = null;
 
+        // Important bug fix:
+        // This method is the single "replace layout" path. It always clears the previous controls
+        // before creating new ones, so loading a layout cannot duplicate buttons/sticks.
         this.controlElements.clear();
 
         Type type = new TypeToken<ArrayList<ControlElementDescription>>() {}.getType();
-        ArrayList<ControlElementDescription> savedDescriptions = gson.fromJson(json, type);
+        ArrayList<ControlElementDescription> savedDescriptions;
+        try {
+            savedDescriptions = gson.fromJson(json, type);
+        } catch (RuntimeException e) {
+            Log.d(LOG_TAG, "Failed to parse controls json: " + e);
+            invalidate();
+            return;
+        }
+
         if (savedDescriptions != null) {
             for (ControlElementDescription d : savedDescriptions) {
                 this.controlElements.add(AbstractControlElement.fromDescription(this, d));
             }
         }
 
+        applyInputMode(currentInputMode);
         invalidate();
 
         if (persist) {
-            saveControlElementsToDisk(); // SharedPrefs + файл :contentReference[oaicite:4]{index=4}
+            saveControlElementsToDisk(); // SharedPreferences + game/controls/controls.json
         }
     }
 

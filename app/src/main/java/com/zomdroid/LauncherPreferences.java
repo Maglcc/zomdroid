@@ -17,7 +17,7 @@ public class LauncherPreferences {
     transient private SharedPreferences sharedPreferences;
     transient private Gson gson;
 
-    private float renderScale = 0.75f;
+    private float renderScale = 0.65f;
     private Renderer renderer = Renderer.GL4ES;
     private VulkanDriver vulkanDriver = VulkanDriver.SYSTEM_DEFAULT;
     private boolean isDebug = false;
@@ -149,7 +149,7 @@ public class LauncherPreferences {
     public enum Renderer {
         ZINK_ZFA("libzfa.so"),
         ZINK_OSMESA("libOSMesa.so"),
-        NG_GL4ES("libholy_gl4es.so"),
+        //NG_GL4ES("libholy_gl4es.so"),
         GL4ES("libgl4es.so");
 
         final String libName;

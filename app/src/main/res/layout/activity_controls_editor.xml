@@ -5,6 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/controls_editor_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
     <com.zomdroid.input.InputControlsView
         android:id="@+id/input_controls_v"
         android:layout_width="match_parent"
@@ -119,7 +126,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/element_opacity_sb"
                     app:layout_constraintEnd_toStartOf="@+id/element_toggling_cb"/>
-                    
+
                 <CheckBox
                     android:id="@+id/element_toggling_cb"
                     android:layout_width="wrap_content"

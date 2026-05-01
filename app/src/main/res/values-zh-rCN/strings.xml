@@ -418,4 +418,26 @@
         \u00A0\u00A0ModName/\n
         \u00A0\u00A0\u00A0\u00A0mod.info
     </string>
+
+    <!-- ===== SMART IMPORT strings ===== -->
+    <string name="install_mod_smart_group">智能导入</string>
+    <string name="install_mod_smart_hint">自动从 ZIP 中找到 mod 文件夹，即使它被多余的文件夹包裹（例如来自 Skymods）。自动为含有脚本或模型的 mod 应用修复。</string>
+    <string name="install_mod_smart_help_title">智能导入</string>
+    <string name="install_mod_smart_help_message">智能导入可从任意 ZIP 结构中提取正确的 mod 文件夹。\n\n通过查找 mod.info、media/ 或 common/ 文件夹来定位 mod 根目录，无论外层有多少包装文件夹。\n\n对于含有 scripts/ 或 models_X/ 文件夹的 mod，系统还会自动安装小写副本，以修复 Android 上的路径问题。</string>
+    <string name="install_mod_smart_install">导入</string>
+    <string name="install_mod_smart_title">智能导入中…</string>
+    <string name="install_mod_smart_done">Mod 导入成功</string>
+    <string name="install_mod_smart_no_root">在此 ZIP 中找不到 mod 文件夹。请确认压缩包中包含 mod.info、media/ 或 common/ 文件夹。</string>
+    <string name="extracting">正在解压…</string>
+
+    <!-- ===== CONTROLS EDITOR LAUNCH strings ===== -->
+    <string name="controls_editor_bg_group">背景图片（可选）</string>
+    <string name="controls_editor_bg_hint">从游戏中加载截图作为编辑器背景，方便将按钮放置在合适的位置。</string>
+    <string name="controls_editor_bg_clear">移除背景</string>
+    <string name="controls_editor_bg_saved">背景图片已保存</string>
+    <string name="controls_editor_bg_cleared">背景已移除</string>
+    <string name="controls_editor_bg_error">保存背景失败：%1$s</string>
+    <string name="controls_editor_open_group">编辑器</string>
+    <string name="controls_editor_open_hint">打开控制编辑器，拖动、缩放并配置屏幕上的按钮。</string>
+    <string name="controls_editor_open_btn">打开编辑器</string>
 </resources>

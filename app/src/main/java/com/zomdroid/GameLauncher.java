@@ -56,7 +56,7 @@ public class GameLauncher {
                     //Os.setenv("FD_DEV_FEATURES", "enable_tp_ubwc_flag_hint=1", false);
                 }
                 break;
-            case NG_GL4ES: {
+            /*case NG_GL4ES: {
                 //Os.setenv("LIBGL_ES", "3", true);
                 //Os.setenv("LIBGL_GL", "21", true); // если нужен OpenGL 2.1 для движка
                 //Os.setenv("LIBGL_NOBANNER", "0", true);
@@ -77,7 +77,7 @@ public class GameLauncher {
                 Os.setenv("LIBGL_LOGSHADERERROR", "1", false);
                 Os.setenv("LIBGL_VGPU_DUMP", "1", false);
                 break;
-            }
+            }*/
             default: {
                 Os.setenv("ZOMDROID_GLES_MAJOR", "2", false);
                 Os.setenv("ZOMDROID_GLES_MINOR", "1", false);
@@ -173,7 +173,8 @@ public class GameLauncher {
     }
 
     private static boolean isLegacyRendererNeedingJre21(LauncherPreferences.Renderer r) {
-        boolean result = (r == LauncherPreferences.Renderer.GL4ES) || (r == LauncherPreferences.Renderer.NG_GL4ES);
+        //boolean result = (r == LauncherPreferences.Renderer.GL4ES) || (r == LauncherPreferences.Renderer.NG_GL4ES);
+        boolean result = (r == LauncherPreferences.Renderer.GL4ES);
 
         if (BuildConfig.DEBUG) {
             Log.i("Zomdroid", "isLegacyRendererNeedingJre21: " + result + ", Renderer: " + r.name());

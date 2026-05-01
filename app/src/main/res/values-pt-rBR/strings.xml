@@ -424,4 +424,26 @@
         \u00A0\u00A0ModName/\n
         \u00A0\u00A0\u00A0\u00A0mod.info
     </string>
+
+    <!-- ===== SMART IMPORT strings ===== -->
+    <string name="install_mod_smart_group">Importação Inteligente</string>
+    <string name="install_mod_smart_hint">Encontra automaticamente a pasta do mod dentro do ZIP, mesmo que esteja dentro de pastas extras (ex.: do Skymods). Aplica correções para mods com scripts ou modelos.</string>
+    <string name="install_mod_smart_help_title">Importação Inteligente</string>
+    <string name="install_mod_smart_help_message">A Importação Inteligente extrai a pasta correta do mod de qualquer estrutura ZIP.\n\nA raiz do mod é detectada pela presença de mod.info, pastas media/ ou common/ — independentemente de quantas pastas envoltórias existam.\n\nPara mods com pastas scripts/ ou models_X/, uma cópia em minúsculas também é instalada automaticamente para corrigir problemas de caminho no Android.</string>
+    <string name="install_mod_smart_install">Importar</string>
+    <string name="install_mod_smart_title">Importação inteligente…</string>
+    <string name="install_mod_smart_done">Mod importado com sucesso</string>
+    <string name="install_mod_smart_no_root">Não foi possível encontrar uma pasta de mod neste ZIP. Certifique-se de que o arquivo contém mod.info, media/ ou common/.</string>
+    <string name="extracting">Extraindo…</string>
+
+    <!-- ===== CONTROLS EDITOR LAUNCH strings ===== -->
+    <string name="controls_editor_bg_group">Imagem de fundo (opcional)</string>
+    <string name="controls_editor_bg_hint">Carregue um screenshot do jogo como fundo do editor. Fica mais fácil posicionar os botões exatamente onde quiser.</string>
+    <string name="controls_editor_bg_clear">Remover fundo</string>
+    <string name="controls_editor_bg_saved">Imagem de fundo salva</string>
+    <string name="controls_editor_bg_cleared">Fundo removido</string>
+    <string name="controls_editor_bg_error">Falha ao salvar o fundo: %1$s</string>
+    <string name="controls_editor_open_group">Editor</string>
+    <string name="controls_editor_open_hint">Abra o editor de controles para mover, redimensionar e configurar os botões na tela.</string>
+    <string name="controls_editor_open_btn">Abrir editor</string>
 </resources>

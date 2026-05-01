@@ -151,6 +151,9 @@ public class InstallControlsFragment extends Fragment {
                 taskProgressDialog.dismiss()
         );
 
+        // Default banner — always show before any early return
+        binding.installControlsBannerIv.setImageResource(R.drawable.banner_default);
+
         instances = GameInstanceManager.requireSingleton().getInstances();
         if (instances == null || instances.isEmpty()) {
             Toast.makeText(requireContext(), "No game instances found", Toast.LENGTH_SHORT).show();
@@ -170,10 +173,6 @@ public class InstallControlsFragment extends Fragment {
                 names
         );
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-
-        binding.installControlsBannerIv.setImageResource(R.drawable.banner_default);
-        binding.installControlsBannerIv.setVisibility(View.VISIBLE);
-        binding.installControlsBannerOverlay.setVisibility(View.VISIBLE);
         
         binding.installControlsInstanceSpinner.setAdapter(adapter);
         binding.installControlsInstanceSpinner.setOnItemSelectedListener(
@@ -183,8 +182,8 @@ public class InstallControlsFragment extends Fragment {
                                        View view, int position, long id) {
                 int instanceIndex = instances.size() > 1 ? position - 1 : position;
                 if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                    binding.installControlsBannerIv.setVisibility(View.VISIBLE);
-                    binding.installControlsBannerOverlay.setVisibility(View.VISIBLE);
+                    binding.installControlsBannerIv.setImageResource(R.drawable.banner_default);
+                    binding.installControlsBannerOverlay.setVisibility(View.INVISIBLE);
                     return;
                 }
                 GameInstance selected = instances.get(instanceIndex);
@@ -201,13 +200,13 @@ public class InstallControlsFragment extends Fragment {
                         break;
                 }
                 binding.installControlsBannerIv.setImageResource(bannerRes);
-                binding.installControlsBannerIv.setVisibility(View.VISIBLE);
+                //binding.installControlsBannerIv.setVisibility(View.VISIBLE);
                 binding.installControlsBannerOverlay.setVisibility(View.VISIBLE);
             }
-    
+
             @Override
             public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                binding.installControlsBannerIv.setVisibility(View.INVISIBLE);
+                binding.installControlsBannerIv.setImageResource(R.drawable.banner_default);
                 binding.installControlsBannerOverlay.setVisibility(View.INVISIBLE);
             }
         });

@@ -424,4 +424,26 @@
         \u00A0\u00A0ModName/\n
         \u00A0\u00A0\u00A0\u00A0mod.info
     </string>
+
+    <!-- ===== SMART IMPORT strings ===== -->
+    <string name="install_mod_smart_group">Умный импорт</string>
+    <string name="install_mod_smart_hint">Автоматически находит папку мода внутри ZIP, даже если она обёрнута в лишние папки (например, с Skymods). Применяет фиксы для модов со скриптами или моделями.</string>
+    <string name="install_mod_smart_help_title">Умный импорт</string>
+    <string name="install_mod_smart_help_message">Умный импорт извлекает правильную папку мода из любой структуры ZIP.\n\nКорень мода определяется по наличию mod.info, папок media/ или common/ — вне зависимости от количества вложенных папок.\n\nДля модов с папками scripts/ или models_X/ автоматически создаётся копия в нижнем регистре для исправления проблем с путями на Android.</string>
+    <string name="install_mod_smart_install">Импортировать</string>
+    <string name="install_mod_smart_title">Умный импорт…</string>
+    <string name="install_mod_smart_done">Мод успешно импортирован</string>
+    <string name="install_mod_smart_no_root">Не удалось найти папку мода в этом ZIP. Убедитесь, что архив содержит mod.info, папку media/ или common/.</string>
+    <string name="extracting">Извлечение…</string>
+
+    <!-- ===== CONTROLS EDITOR LAUNCH strings ===== -->
+    <string name="controls_editor_bg_group">Фоновое изображение (необязательно)</string>
+    <string name="controls_editor_bg_hint">Загрузите скриншот из игры как фон редактора. Так легче расставить кнопки именно там, где нужно.</string>
+    <string name="controls_editor_bg_clear">Удалить фон</string>
+    <string name="controls_editor_bg_saved">Фоновое изображение сохранено</string>
+    <string name="controls_editor_bg_cleared">Фон удалён</string>
+    <string name="controls_editor_bg_error">Не удалось сохранить фон: %1$s</string>
+    <string name="controls_editor_open_group">Редактор</string>
+    <string name="controls_editor_open_hint">Откройте редактор управления, чтобы перемещать, масштабировать и настраивать экранные кнопки.</string>
+    <string name="controls_editor_open_btn">Открыть редактор</string>
 </resources>

@@ -109,6 +109,7 @@ public class InstallModFragment extends Fragment {
                 }
             });
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
@@ -160,39 +161,39 @@ public class InstallModFragment extends Fragment {
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         binding.installModInstanceSpinner.setAdapter(adapter);
         binding.installModInstanceSpinner.setOnItemSelectedListener(
-        new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent,
-                                       View view, int position, long id) {
-                int instanceIndex = instances.size() > 1 ? position - 1 : position;
-                if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                    binding.installModBannerIv.setImageResource(R.drawable.banner_default);
-                    binding.installModBannerOverlay.setVisibility(View.INVISIBLE);
-                    return;
-                }
-                GameInstance selected = instances.get(instanceIndex);
-                int bannerRes;
-                switch (selected.getPresetName()) {
-                    case "Build 42.12+":
-                        bannerRes = R.drawable.banner_build42_12;
-                        break;
-                    case "Build 42":
-                        bannerRes = R.drawable.banner_build42;
-                        break;
-                    default:
-                        bannerRes = R.drawable.banner_build41;
-                        break;
-                }
-                binding.installModBannerIv.setImageResource(bannerRes);
-                binding.installModBannerOverlay.setVisibility(View.VISIBLE);
-            }
+                new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(android.widget.AdapterView<?> parent,
+                                               View view, int position, long id) {
+                        int instanceIndex = instances.size() > 1 ? position - 1 : position;
+                        if (instanceIndex < 0 || instanceIndex >= instances.size()) {
+                            binding.installModBannerIv.setImageResource(R.drawable.banner_default);
+                            binding.installModBannerOverlay.setVisibility(View.INVISIBLE);
+                            return;
+                        }
+                        GameInstance selected = instances.get(instanceIndex);
+                        int bannerRes;
+                        switch (selected.getPresetName()) {
+                            case "Build 42.12+":
+                                bannerRes = R.drawable.banner_build42_12;
+                                break;
+                            case "Build 42":
+                                bannerRes = R.drawable.banner_build42;
+                                break;
+                            default:
+                                bannerRes = R.drawable.banner_build41;
+                                break;
+                        }
+                        binding.installModBannerIv.setImageResource(bannerRes);
+                        binding.installModBannerOverlay.setVisibility(View.VISIBLE);
+                    }
 
-            @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                binding.installModBannerIv.setImageResource(R.drawable.banner_default);
-                binding.installModBannerOverlay.setVisibility(View.INVISIBLE);
-            }
-        });
+                    @Override
+                    public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                        binding.installModBannerIv.setImageResource(R.drawable.banner_default);
+                        binding.installModBannerOverlay.setVisibility(View.INVISIBLE);
+                    }
+                });
 
         if (instances.size() == 1) {
             binding.installModInstanceSpinner.setSelection(0);
@@ -227,11 +228,15 @@ public class InstallModFragment extends Fragment {
             Intent installerIntent = new Intent(requireContext(), InstallerService.class);
             installerIntent.putExtra(
                     InstallerService.EXTRA_COMMAND,
-                    InstallerService.Task.INSTALL_MOD_TO_INSTANCE.ordinal()
+                    InstallerService.Task.INSTALL_MOD_SMART.ordinal()
             );
             installerIntent.putExtra(
                     InstallerService.EXTRA_GAME_INSTANCE_NAME,
                     selectedInstance.getName()
+            );
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_BUILD_VERSION,
+                    selectedInstance.getBuildVersion()
             );
             installerIntent.putExtra(
                     InstallerService.EXTRA_MODS_URI,
@@ -259,44 +264,6 @@ public class InstallModFragment extends Fragment {
             }
         });
 
-        // Manual install help button
-        binding.installModManualHelpIb.setOnClickListener(v -> {
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(R.string.install_mod_manual_help_title)
-                    .setMessage(R.string.install_mod_manual_help_message)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-        });
-
-        // Open mods folder button
-        binding.installModOpenFolderBtn.setOnClickListener(v -> {
-            int position = binding.installModInstanceSpinner.getSelectedItemPosition();
-            int instanceIndex = instances.size() > 1 ? position - 1 : position;
-
-            if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                Toast.makeText(requireContext(), getString(R.string.select_instance), Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            GameInstance selected = instances.get(instanceIndex);
-            String modsPath = selected.getHomePath() + "/Zomboid/mods";
-            File modsDir = new File(modsPath);
-            if (!modsDir.exists()) modsDir.mkdirs();
-
-            try {
-                Uri folderUri = DocumentsContract.buildDocumentUri(
-                        C.STORAGE_PROVIDER_AUTHORITY,
-                        modsDir.getAbsolutePath()
-                );
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(folderUri, DocumentsContract.Document.MIME_TYPE_DIR);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(Intent.createChooser(intent, null));
-            } catch (Exception e) {
-                Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     @Override
