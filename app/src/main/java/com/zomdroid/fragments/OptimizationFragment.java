@@ -49,6 +49,7 @@ public class OptimizationFragment extends Fragment {
 
     private final String ZIP_MIME = "application/zip";
     private Uri betterFpsZipUri = null;
+    private Uri etoZipUri = null;
     private List<GameInstance> instances;
 
     private final ServiceConnection installerServiceConnection = new ServiceConnection() {
@@ -95,6 +96,20 @@ public class OptimizationFragment extends Fragment {
                 if (Objects.equals(cr.getType(uri), ZIP_MIME)) {
                     betterFpsZipUri = uri;
                     binding.optimizationBetterfpsPathEt.setText(extractFileName(uri));
+                } else {
+                    Toast.makeText(requireContext(),
+                            getString(R.string.game_instance_unsupported_extension),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+
+    private final ActivityResultLauncher<String> etoLauncher =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+                if (uri == null) return;
+                ContentResolver cr = requireContext().getContentResolver();
+                if (Objects.equals(cr.getType(uri), ZIP_MIME)) {
+                    etoZipUri = uri;
+                    binding.optimizationEtoPathEt.setText(extractFileName(uri));
                 } else {
                     Toast.makeText(requireContext(),
                             getString(R.string.game_instance_unsupported_extension),
@@ -182,6 +197,19 @@ public class OptimizationFragment extends Fragment {
         }
 
         // Browse button
+        // BetterFPS mode spinner — PotatoPC / 1080p / 4K (only meaningful for B41)
+        ArrayAdapter<String> modeAdapter = new ArrayAdapter<>(
+                requireContext(),
+                R.layout.spinner_item,
+                new String[]{
+                        getString(R.string.optimization_betterfps_mode_potato),
+                        getString(R.string.optimization_betterfps_mode_1080p),
+                        getString(R.string.optimization_betterfps_mode_4k)
+                });
+        modeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        binding.optimizationBetterfpsModeSpinner.setAdapter(modeAdapter);
+        binding.optimizationBetterfpsModeSpinner.setSelection(0); // PotatoPC by default
+
         binding.optimizationBetterfpsBrowseIb.setOnClickListener(v ->
                 betterFpsLauncher.launch(ZIP_MIME));
 
@@ -207,12 +235,19 @@ public class OptimizationFragment extends Fragment {
             GameInstance selectedInstance = instances.get(instanceIndex);
 
             Intent installerIntent = new Intent(requireContext(), InstallerService.class);
+            String[] betterfpsModes = {"PotatoPC", "1080p", "4k"};
+            int modePos = binding.optimizationBetterfpsModeSpinner.getSelectedItemPosition();
+            String selectedMode = betterfpsModes[Math.max(0, Math.min(modePos, betterfpsModes.length - 1))];
+
             installerIntent.putExtra(
                     InstallerService.EXTRA_COMMAND,
                     InstallerService.Task.INSTALL_BETTERFPS.ordinal());
             installerIntent.putExtra(
                     InstallerService.EXTRA_GAME_INSTANCE_NAME,
                     selectedInstance.getName());
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_BETTERFPS_MODE,
+                    selectedMode);
             installerIntent.putExtra(
                     InstallerService.EXTRA_ARCHIVE_URI,
                     betterFpsZipUri);
@@ -222,6 +257,99 @@ public class OptimizationFragment extends Fragment {
 
             requireContext().startForegroundService(installerIntent);
             bindInstallerService();
+        });
+
+        // ===== Collapsible sections =====
+        setupCollapsible(
+                binding.optimizationJvm4gbHeader,
+                binding.optimizationJvm4gbContent,
+                binding.optimizationJvm4gbExpandIv);
+        setupCollapsible(
+                binding.optimizationJvm6gbHeader,
+                binding.optimizationJvm6gbContent,
+                binding.optimizationJvm6gbExpandIv);
+        setupCollapsible(
+                binding.optimizationBetterfpsHeader,
+                binding.optimizationBetterfpsContent,
+                binding.optimizationBetterfpsExpandIv);
+        setupCollapsible(
+                binding.optimizationEtoHeader,
+                binding.optimizationEtoContent,
+                binding.optimizationEtoExpandIv);
+
+        // ===== ETO section =====
+        binding.optimizationEtoHelpIb.setOnClickListener(v ->
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.optimization_eto_help_title)
+                        .setMessage(R.string.optimization_eto_help_message)
+                        .setPositiveButton(R.string.dialog_button_ok, null)
+                        .show());
+
+        // ETO spinner — reuse instances already loaded
+        if (instances != null && !instances.isEmpty()) {
+            List<String> etoNames = new ArrayList<>();
+            if (instances.size() > 1) etoNames.add(getString(R.string.select_instance));
+            for (GameInstance gi : instances) etoNames.add(gi.getName());
+            ArrayAdapter<String> etoAdapter = new ArrayAdapter<>(
+                    requireContext(), R.layout.spinner_item, etoNames);
+            etoAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+            binding.optimizationEtoInstanceSpinner.setAdapter(etoAdapter);
+            if (instances.size() == 1) binding.optimizationEtoInstanceSpinner.setSelection(0);
+        }
+
+        binding.optimizationEtoBrowseIb.setOnClickListener(v ->
+                etoLauncher.launch(ZIP_MIME));
+
+        binding.optimizationEtoInstallBtn.setOnClickListener(v -> {
+            if (etoZipUri == null) {
+                Toast.makeText(requireContext(),
+                        R.string.game_instance_no_file_selected,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int position = binding.optimizationEtoInstanceSpinner.getSelectedItemPosition();
+            int instanceIndex = instances.size() > 1 ? position - 1 : position;
+
+            if (instanceIndex < 0 || instanceIndex >= instances.size()) {
+                Toast.makeText(requireContext(),
+                        getString(R.string.select_instance),
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            GameInstance selectedInstance = instances.get(instanceIndex);
+
+            Intent installerIntent = new Intent(requireContext(), InstallerService.class);
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_COMMAND,
+                    InstallerService.Task.INSTALL_ETO.ordinal());
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_GAME_INSTANCE_NAME,
+                    selectedInstance.getName());
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_BUILD_VERSION,
+                    selectedInstance.getBuildVersion());
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_ARCHIVE_URI,
+                    etoZipUri);
+
+            etoZipUri = null;
+            binding.optimizationEtoPathEt.setText(getString(R.string.game_instance_no_file_selected));
+
+            requireContext().startForegroundService(installerIntent);
+            bindInstallerService();
+        });
+    }
+
+    private void setupCollapsible(android.view.View header, android.view.View content,
+                                  android.widget.ImageView expandIcon) {
+        header.setOnClickListener(v -> {
+            boolean expanded = content.getVisibility() == android.view.View.VISIBLE;
+            content.setVisibility(expanded ? android.view.View.GONE : android.view.View.VISIBLE);
+            expandIcon.setImageResource(expanded
+                    ? R.drawable.mt_icon_expand_more
+                    : R.drawable.mt_icon_expand_less);
         });
     }
 

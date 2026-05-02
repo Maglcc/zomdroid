@@ -322,9 +322,9 @@
     <string name="preset_dialog_title_b42">Build 42</string>
     <string name="preset_dialog_title_b4212">Build 42.12+</string>
 
-    <string name="preset_dialog_message_b41">Build 41.78 — the most stable version available today. Runs on most devices with 6GB RAM or more.</string>
-    <string name="preset_dialog_message_b42">Build 42 (versions 42.0–42.11). Requires 6GB+ RAM. Runs mainly on Snapdragon, and also on powerful Dimensity devices (with ANGLE enabled).</string>
-    <string name="preset_dialog_message_b4212">Build 42.12 and above. Requires slightly different settings and at least 8GB RAM. Runs mainly on Snapdragon and newer powerful Dimensity devices (with ANGLE enabled).</string>
+    <string name="preset_dialog_message_b41">Build 41.78 — the most stable version available today. Runs on most devices with 4GB RAM or more.</string>
+    <string name="preset_dialog_message_b42">Build 42 (versions 42.0–42.11). Requires 6GB+ RAM. Runs mainly on Snapdragon, and also on powerful Dimensity devices.</string>
+    <string name="preset_dialog_message_b4212">Build 42.12 and above. Requires slightly different settings and at least 8GB RAM. Runs mainly on Snapdragon and newer powerful Dimensity devices.</string>
 
     <!-- Settings groups -->
     <string name="settings_group_rendering">Rendering</string>
@@ -381,8 +381,8 @@
     <string name="optimization_jvm_hint">Copy a preset and paste it in Settings → JVM arguments. Choose based on your device RAM.</string>
     <string name="optimization_jvm_4gb_label">4 GB RAM</string>
     <string name="optimization_jvm_6gb_label">6 GB RAM</string>
-    <string name="optimization_jvm_balanced_label">Balanced</string>
-    <string name="optimization_jvm_aggressive_label">Aggressive</string>
+    <string name="optimization_jvm_balanced_label">→ Balanced</string>
+    <string name="optimization_jvm_aggressive_label">→ Aggressive</string>
     <string name="optimization_copy">Copy</string>
     <string name="optimization_open_settings">→ Open Settings</string>
     <string name="optimization_group_betterfps">BetterFPS b41</string>
@@ -394,6 +394,11 @@
     <string name="optimization_jvm_copied">Copied to clipboard</string>
     <string name="optimization_betterfps_installed">BetterFPS installed successfully</string>
     <string name="optimization_betterfps_installing">Installing BetterFPS…</string>
+    <string name="optimization_betterfps_mode_label">Mode</string>
+    <string name="optimization_betterfps_mode_potato">PotatoPC (recommended)</string>
+    <string name="optimization_betterfps_mode_1080p">1080p</string>
+    <string name="optimization_betterfps_mode_4k">4K</string>
+    <string name="optimization_betterfps_error_not_found">IsoChunkMap.class not found for mode: %1$s</string>
 
     <!-- ===== Mods fix ===== -->
     <string name="mod_fix_installing">Installing mod with fix…</string>
@@ -406,8 +411,8 @@
     <string name="mod_fix_help_message">Some Build 42 mods use a folder structure that causes a path conflict on Android due to case sensitivity. The game ends up looking for files in a doubled path and cannot find them.\n\nThis fix installs the mod twice — once with the original folder names, and once with all names in lowercase — so the game finds the files regardless of which path it uses.\n\nKnown affected mods:\n• Tsar\'s Common Library — ID: 3402491515\n• [B42] Simple Flashlight on Belt — ID: 3394588830\n\nTo use: download the mod from Steam Workshop, zip the mod folder as-is and load it here.</string>
 
     <!-- CPU/GPU autodetect -->
-    <string name="preset_dialog_gpu_hint_qualcomm">Snapdragon detected. ZINK_ZFA renderer has been set automatically. We recommend selecting a Freedreno/Turnip driver in the app Settings for best results.</string>
-    <string name="preset_dialog_gpu_hint_mediatek">MediaTek detected. ZINK_ZFA renderer has been set, but ZINK support on Mali GPUs varies. If the game doesn\'t start, try to activate ANGLE built-in graphical driver in the Developer options.</string>
+    <string name="preset_dialog_gpu_hint_qualcomm">\u2705 Snapdragon detected. ZINK_ZFA renderer has been set automatically. We recommend selecting a Freedreno/Turnip driver in the app Settings for best results.</string>
+    <string name="preset_dialog_gpu_hint_mediatek">\u2705 MediaTek detected. ZINK_ZFA renderer has been set, but ZINK support on Mali GPUs varies. If the game doesn\'t start, try to activate ANGLE built-in graphical driver in the Developer options.</string>
 
     <!-- Manual mods installation -->
     <string name="install_mod_manual_group">Manual installation</string>
@@ -447,4 +452,13 @@
     <string name="controls_editor_open_group">Editor</string>
     <string name="controls_editor_open_hint">Open the controls editor to drag, resize and configure on-screen buttons.</string>
     <string name="controls_editor_open_btn">Open editor</string>
+
+    <!-- ===== ETO + collapsible strings ===== -->
+    <string name="optimization_group_eto">Every Texture Optimized</string>
+    <string name="optimization_eto_hint">Installs optimized textures for better performance. Select your game instance — the correct texture version (B41 or B42) will be applied automatically.</string>
+    <string name="optimization_eto_help_title">Every Texture Optimized</string>
+    <string name="optimization_eto_help_message">Download the mod ZIP from Steam Workshop or Skymods.\n\nSelect your game instance and the ZIP file, then tap Install. The launcher will automatically pick the correct texture folder for your build version and copy the files into the game\'s media/textures directory, replacing the originals.</string>
+    <string name="optimization_eto_installing">Installing textures…</string>
+    <string name="optimization_eto_installed">Textures installed successfully</string>
+    <string name="optimization_eto_error_no_textures">Could not find a textures folder in this ZIP.</string>
 </resources>

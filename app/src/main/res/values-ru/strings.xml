@@ -321,9 +321,9 @@
     <string name="preset_dialog_title_b42">Билд 42</string>
     <string name="preset_dialog_title_b4212">Билд 42.12+</string>
 
-    <string name="preset_dialog_message_b41">Билд 41.78 — самая стабильная версия на сегодняшний день. Запускается на большинстве смартфонов с 6 ГБ ОЗУ и выше.</string>
-    <string name="preset_dialog_message_b42">Билд 42 (версии 42.0–42.11). Требует 6 ГБ+ ОЗУ. Запускается в основном на Snapdragon, а также на мощных Dimensity (если включить ANGLE).</string>
-    <string name="preset_dialog_message_b4212">Билд 42.12 и выше. Требует немного других настроек и минимум 8 ГБ ОЗУ. Запускается в основном на Snapdragon и новых мощных Dimensity (если включить ANGLE).</string>
+    <string name="preset_dialog_message_b41">Билд 41.78 — самая стабильная версия на сегодняшний день. Запускается на большинстве смартфонов с 4ГБ ОЗУ и выше.</string>
+    <string name="preset_dialog_message_b42">Билд 42 (версии 42.0–42.11). Требует 6ГБ+ ОЗУ. Запускается в основном на Snapdragon, а также на мощных Dimensity.</string>
+    <string name="preset_dialog_message_b4212">Билд 42.12 и выше. Требует немного других настроек и минимум 8ГБ ОЗУ. Запускается в основном на Snapdragon и новых мощных Dimensity.</string>
 
     <!-- Settings groups -->
     <string name="settings_group_rendering">Рендеринг</string>
@@ -380,8 +380,8 @@
     <string name="optimization_jvm_hint">Скопируйте пресет и вставьте в Настройки → Аргументы JVM. Выберите по объёму RAM вашего устройства.</string>
     <string name="optimization_jvm_4gb_label">4 ГБ RAM</string>
     <string name="optimization_jvm_6gb_label">6 ГБ RAM</string>
-    <string name="optimization_jvm_balanced_label">Баланс</string>
-    <string name="optimization_jvm_aggressive_label">Агрессивный</string>
+    <string name="optimization_jvm_balanced_label">→ Баланс</string>
+    <string name="optimization_jvm_aggressive_label">→ Агрессивный</string>
     <string name="optimization_copy">Копировать</string>
     <string name="optimization_open_settings">→ Открыть Настройки</string>
     <string name="optimization_group_betterfps">BetterFPS b41</string>
@@ -393,6 +393,11 @@
     <string name="optimization_jvm_copied">Скопировано в буфер</string>
     <string name="optimization_betterfps_installed">BetterFPS успешно установлен</string>
     <string name="optimization_betterfps_installing">Установка BetterFPS…</string>
+    <string name="optimization_betterfps_mode_label">Режим</string>
+    <string name="optimization_betterfps_mode_potato">PotatoPC (рекомендуется)</string>
+    <string name="optimization_betterfps_mode_1080p">1080p</string>
+    <string name="optimization_betterfps_mode_4k">4K</string>
+    <string name="optimization_betterfps_error_not_found">IsoChunkMap.class не найден для режима: %1$s</string>
 
     <!-- ===== Mods fix ===== -->
     <string name="mod_fix_installing">Установка мода с фиксом…</string>
@@ -405,8 +410,8 @@
     <string name="mod_fix_help_message">Некоторые моды для билда 42 используют структуру папок, которая вызывает конфликт путей на Android из-за чувствительности к регистру. Игра ищет файлы по двойному пути и не может их найти.\n\nФикс устанавливает мод дважды — один раз с оригинальными именами папок, второй раз со всеми именами в нижнем регистре — чтобы игра находила файлы независимо от того, какой путь использует.\n\nИзвестные проблемные моды:\n• Tsar\'s Common Library — ID: 3402491515\n• [B42] Simple Flashlight on Belt — ID: 3394588830\n\nКак использовать: скачайте мод из Steam Workshop, заархивируйте папку мода как есть и загрузите сюда.</string>
 
     <!-- CPU/GPU autodetect -->
-    <string name="preset_dialog_gpu_hint_qualcomm">Обнаружен Snapdragon. Рендерер ZINK_ZFA установлен автоматически. Рекомендуем выбрать драйвер Freedreno/Turnip в настройках приложения для лучшего результата.</string>
-    <string name="preset_dialog_gpu_hint_mediatek">Обнаружен MediaTek. Рендерер ZINK_ZFA установлен, но поддержка ZINK на Mali-видеочипах нестабильна. Если игра не запускается, попробуйте активировать встроенный графический драйвер ANGLE в настройках разработчика.</string>
+    <string name="preset_dialog_gpu_hint_qualcomm">\u2705 Обнаружен Snapdragon. Рендерер ZINK_ZFA установлен автоматически. Рекомендуем выбрать драйвер Freedreno/Turnip в настройках приложения для лучшего результата.</string>
+    <string name="preset_dialog_gpu_hint_mediatek">\u2705 Обнаружен MediaTek. Рендерер ZINK_ZFA установлен, но поддержка ZINK на Mali-видеочипах нестабильна. Если игра не запускается, попробуйте активировать встроенный графический драйвер ANGLE в настройках разработчика.</string>
 
     <!-- Manual mods installation -->
     <string name="install_mod_manual_group">Ручная установка</string>
@@ -446,4 +451,13 @@
     <string name="controls_editor_open_group">Редактор</string>
     <string name="controls_editor_open_hint">Откройте редактор управления, чтобы перемещать, масштабировать и настраивать экранные кнопки.</string>
     <string name="controls_editor_open_btn">Открыть редактор</string>
+
+    <!-- ===== ETO + collapsible strings ===== -->
+    <string name="optimization_group_eto">Every Texture Optimized</string>
+    <string name="optimization_eto_hint">Устанавливает оптимизированные текстуры для повышения производительности. Выберите инстанс — нужная версия текстур (B41 или B42) будет применена автоматически.</string>
+    <string name="optimization_eto_help_title">Every Texture Optimized</string>
+    <string name="optimization_eto_help_message">Скачайте ZIP мода из Steam Workshop или Skymods.\n\nВыберите инстанс и ZIP файл, затем нажмите Установить. Лаунчер автоматически выберет правильную папку с текстурами для вашей версии билда и скопирует файлы в папку media/textures игры, заменив оригиналы.</string>
+    <string name="optimization_eto_installing">Установка текстур…</string>
+    <string name="optimization_eto_installed">Текстуры успешно установлены</string>
+    <string name="optimization_eto_error_no_textures">Не удалось найти папку с текстурами в этом ZIP.</string>
 </resources>

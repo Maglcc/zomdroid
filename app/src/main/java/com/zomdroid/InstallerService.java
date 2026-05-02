@@ -65,6 +65,7 @@ public class InstallerService extends Service implements TaskProgressListener {
     public static final String EXTRA_DRIVER_URI = "com.zomdroid.InstallerService.EXTRA_DRIVER_URI";
     // Build version of the target instance ("41" or "42"), used by mod fix to choose install strategy
     public static final String EXTRA_BUILD_VERSION = "com.zomdroid.InstallerService.EXTRA_BUILD_VERSION";
+    public static final String EXTRA_BETTERFPS_MODE = "com.zomdroid.InstallerService.EXTRA_BETTERFPS_MODE";
 
     private final IBinder binder = new LocalBinder();
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -128,6 +129,9 @@ public class InstallerService extends Service implements TaskProgressListener {
                 break;
             case INSTALL_MOD_SMART:
                 doInstallModSmart(intent);
+                break;
+            case INSTALL_ETO:
+                doInstallEto(intent);
                 break;
         }
 
@@ -782,94 +786,112 @@ public class InstallerService extends Service implements TaskProgressListener {
 
     private void doInstallBetterFps(Intent intent) {
         String taskTitle = getString(R.string.optimization_betterfps_installing);
-
         startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
         this.taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
 
         String gameInstanceName = intent.getStringExtra(EXTRA_GAME_INSTANCE_NAME);
-        if (gameInstanceName == null) {
-            finishWithError(taskTitle, "Game instance name is missing");
-            return;
-        }
+        if (gameInstanceName == null) { finishWithError(taskTitle, "Game instance name is missing"); return; }
+
         GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(gameInstanceName);
-        if (gameInstance == null) {
-            finishWithError(taskTitle, "Game instance not found: " + gameInstanceName);
-            return;
-        }
+        if (gameInstance == null) { finishWithError(taskTitle, "Game instance not found: " + gameInstanceName); return; }
 
         Uri archiveUri = intent.getParcelableExtra(EXTRA_ARCHIVE_URI);
-        if (archiveUri == null) {
-            finishWithError(taskTitle, "Archive URI is missing");
-            return;
-        }
+        if (archiveUri == null) { finishWithError(taskTitle, "Archive URI is missing"); return; }
+
+        // Mode is one of: "PotatoPC", "1080p", "4k" — maps to subfolder inside media/
+        String mode = intent.getStringExtra(EXTRA_BETTERFPS_MODE);
+        if (mode == null) mode = "PotatoPC";
+        final String selectedMode = mode;
 
         executorService.submit(() -> {
+            File tmpDir = new File(getCacheDir(), "betterfps_tmp_" + System.currentTimeMillis());
             try {
-                String targetDir = gameInstance.getGamePath() + "/zombie/iso";
-                String targetFile = targetDir + "/IsoChunkMap.class";
-                String backupFile = targetFile + ".original";
+                tmpDir.mkdirs();
 
-                // Find IsoChunkMap.class inside ZIP
-                byte[] classBytes = null;
+                // Step 1: Extract ZIP to temp (smart — handles double-wrapped archives)
                 try (InputStream is = getContentResolver().openInputStream(archiveUri);
                      ZipInputStream zis = new ZipInputStream(is)) {
                     ZipEntry entry;
                     while ((entry = zis.getNextEntry()) != null) {
-                        String name = entry.getName();
-                        if (name.endsWith("IsoChunkMap.class")) {
-                            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-                            byte[] buf = new byte[64 * 1024];
-                            int r;
-                            while ((r = zis.read(buf)) != -1) baos.write(buf, 0, r);
-                            classBytes = baos.toByteArray();
-                            break;
+                        File outFile = new File(tmpDir, entry.getName());
+                        if (entry.isDirectory()) {
+                            outFile.mkdirs();
+                        } else {
+                            outFile.getParentFile().mkdirs();
+                            try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                                byte[] buf = new byte[8192];
+                                int len;
+                                while ((len = zis.read(buf)) > 0) fos.write(buf, 0, len);
+                            }
                         }
                         zis.closeEntry();
                     }
                 }
 
-                if (classBytes == null) {
-                    finishWithError(taskTitle, "IsoChunkMap.class not found in archive");
+                // Step 2: Find IsoChunkMap.class for the selected mode.
+                // Expected path inside mod: media/<mode>/zombie/iso/IsoChunkMap.class
+                // We search recursively so double-wrapped ZIPs are handled automatically.
+                File classFile = findBetterFpsClass(tmpDir, selectedMode);
+                if (classFile == null) {
+                    finishWithError(taskTitle,
+                            getString(R.string.optimization_betterfps_error_not_found, selectedMode));
                     return;
                 }
+                Log.d("BetterFPS", "Found class for mode=" + selectedMode + ": " + classFile.getAbsolutePath());
 
-                // Backup original if not already backed up
-                File original = new File(targetFile);
-                File backup = new File(backupFile);
-                if (original.exists() && !backup.exists()) {
-                    original.renameTo(backup);
-                }
-
-                // Write patched file
+                // Step 3: Backup original IsoChunkMap.class if not already backed up
+                String targetDir = gameInstance.getGamePath() + "/zombie/iso";
+                File targetFile = new File(targetDir, "IsoChunkMap.class");
+                File backupFile = new File(targetDir, "IsoChunkMap.class.original");
                 new File(targetDir).mkdirs();
-                try (FileOutputStream fos = new FileOutputStream(targetFile)) {
-                    fos.write(classBytes);
+
+                if (targetFile.exists() && !backupFile.exists()) {
+                    copyFile(targetFile, backupFile);
+                    Log.d("BetterFPS", "Backup created: " + backupFile.getAbsolutePath());
                 }
+
+                // Step 4: Copy selected IsoChunkMap.class into game
+                copyFile(classFile, targetFile);
+                Log.d("BetterFPS", "Installed: " + targetFile.getAbsolutePath());
 
                 finish(getString(R.string.optimization_betterfps_installed), null);
+
             } catch (Exception e) {
                 finishWithError(taskTitle, e.toString());
+            } finally {
+                try { FileUtils.deleteDirectory(tmpDir); } catch (Exception ignored) {}
             }
         });
+    }
+
+    // Find IsoChunkMap.class for the given mode inside the extracted BetterFPS mod.
+    // Looks for a path ending with: media/<mode>/zombie/iso/IsoChunkMap.class
+    // Case-insensitive mode matching to handle any capitalisation differences.
+    private File findBetterFpsClass(File dir, String mode) {
+        File[] files = dir.listFiles();
+        if (files == null) return null;
+        for (File f : files) {
+            if (f.isDirectory()) {
+                // Check if this is the mode folder we want
+                if (f.getName().equalsIgnoreCase(mode)) {
+                    // Look for zombie/iso/IsoChunkMap.class inside
+                    File candidate = new File(f, "zombie/iso/IsoChunkMap.class");
+                    if (candidate.isFile()) return candidate;
+                }
+                // Recurse
+                File found = findBetterFpsClass(f, mode);
+                if (found != null) return found;
+            }
+        }
+        return null;
     }
 
     // ================================================
     // INSTALL_MOD_WITH_FIX
     //
-    // Fixes mods that use B42 version folder structure (42/, 42.x/)
-    // and/or contain scripts/ folder causing double-path issues on Android.
-    //
-    // Build 42 strategy:
-    //   - Merge all 42.x version folders into latest
-    //   - Remove root mod.info, logo.png, poster.png (42/mod.info is authoritative)
-    //   - If scripts/ folder present, also create inception (lowercase) copy
-    //     at mods/data/user/0/.../zomboid/mods/<modname_lower>/
-    //
-    // Build 41 strategy:
-    //   - Do NOT merge version folders (42.x content is irrelevant for B41)
-    //   - Do NOT remove root mod.info (it's needed for B41 to load the mod)
-    //   - If scripts/ folder present, also create inception copy (same path structure)
-    //   - Root files (media/, scripts/, mod.info) are preserved for B41 compatibility
+    // Smart mod root detection (same as INSTALL_MOD_SMART) + forced inception copy for scripts/.
+    // For Build 42: also merges 42.x version folders.
+    // For Build 41: no merging, root files preserved.
     // ================================================
 
     private void doInstallModWithFix(Intent intent) {
@@ -937,108 +959,54 @@ public class InstallerService extends Service implements TaskProgressListener {
                     }
                 }
 
-                // Step 2: Find mod roots
-                // For Build 42: a mod root is a directory containing 42/ or 42.x/ folders
-                // For Build 41: a mod root is a directory containing mod.info (or any directory)
-                List<File> modRoots = new ArrayList<>();
+                // Step 2: Find mod root using smart detection
+                // Same logic as INSTALL_MOD_SMART: looks for mod.info, media/ or common/
+                File modRoot = findModRoot(tmpDir);
+                if (modRoot == null) {
+                    finishWithError(taskTitle, getString(R.string.install_mod_smart_no_root));
+                    return;
+                }
+                Log.d("ModFix", "Found mod root: " + modRoot.getAbsolutePath());
 
+                // Step 3: Determine mod name
+                String modName = modRoot.getName();
+                if (modName.equals(tmpDir.getName())) {
+                    modName = extractZipName(archiveUri);
+                    if (modName != null && modName.endsWith(".zip"))
+                        modName = modName.substring(0, modName.length() - 4);
+                }
+                Log.d("ModFix", "Processing mod: " + modName + " (isBuild42=" + isBuild42 + ")");
+
+                // Step 4: Check if inception copy needed (scripts/ folder)
+                boolean needsInception = needsLowercaseFix(modRoot);
+                Log.d("ModFix", "  needsInception: " + needsInception);
+
+                // Step 5: Merge 42.x version folders if B42
                 if (isBuild42) {
-                    // B42: look for dirs with 42* version folders
-                    if (hasB42Folders(tmpDir)) {
-                        // Flat ZIP: content directly at root
-                        modRoots.add(tmpDir);
-                    } else {
-                        File[] topLevel = tmpDir.listFiles(File::isDirectory);
-                        if (topLevel != null) {
-                            for (File f : topLevel) {
-                                if (hasB42Folders(f)) modRoots.add(f);
-                            }
-                        }
-                    }
-
-                    if (modRoots.isEmpty()) {
-                        finishWithError(taskTitle,
-                                getString(R.string.mod_fix_error_not_b42, "unknown"));
-                        return;
-                    }
-                } else {
-                    // B41: find mod root by mod.info presence, or fall back to top-level dirs
-                    if (hasModInfo(tmpDir)) {
-                        // Flat ZIP: mod.info at root level
-                        modRoots.add(tmpDir);
-                    } else {
-                        File[] topLevel = tmpDir.listFiles(File::isDirectory);
-                        if (topLevel != null) {
-                            for (File f : topLevel) {
-                                // Accept dirs with mod.info, or if nothing found accept all dirs
-                                if (hasModInfo(f)) modRoots.add(f);
-                            }
-                            // If no mod.info found anywhere, treat all top-level dirs as mods
-                            if (modRoots.isEmpty()) {
-                                for (File f : topLevel) modRoots.add(f);
-                            }
-                        }
-                    }
-
-                    if (modRoots.isEmpty()) {
-                        finishWithError(taskTitle, "No mod folders found in ZIP");
-                        return;
-                    }
+                    mergeVersionsForB42(modRoot);
                 }
 
                 String modsPath = gameInstance.getHomePath() + "/Zomboid/mods";
                 new File(modsPath).mkdirs();
 
-                // Inception path is same for both build versions
-                String instanceNameLower = gameInstance.getName().toLowerCase();
-                String inceptionRelPath = "data/user/0/com.zomdroid/files/instances/"
-                        + instanceNameLower + "/zomboid/mods";
-                File inceptionDir = new File(modsPath, inceptionRelPath);
+                // Step 6: Install normal-case copy
+                File normalDest = new File(modsPath, modName);
+                if (normalDest.exists()) FileUtils.deleteDirectory(normalDest);
+                copyDirectory(modRoot, normalDest);
+                Log.d("ModFix", "  Installed normal: " + normalDest.getAbsolutePath());
 
-                for (File modRoot : modRoots) {
-                    // Step 3: Determine mod name
-                    // If modRoot == tmpDir (flat ZIP), use ZIP filename; otherwise use directory name
-                    String modName;
-                    if (modRoot.equals(tmpDir)) {
-                        modName = extractZipName(archiveUri);
-                    } else {
-                        modName = modRoot.getName();
-                    }
-                    Log.d("ModFix", "Processing mod: " + modName + " (isBuild42=" + isBuild42 + ")");
-
-                    // Step 4: Check if inception copy is needed BEFORE any modifications
-                    // (scripts/ folder or models_X folder causes path issues on Android)
-                    boolean needsInception = needsLowercaseFix(modRoot);
-                    Log.d("ModFix", "  needsInception: " + needsInception);
-
-                    if (isBuild42) {
-                        // Step 5a (B42): Merge 42.x version folders and clean up root files
-                        mergeVersionsForB42(modRoot);
-                    }
-                    // Step 5b (B41): No merging needed — root files stay as-is for B41 compatibility
-
-                    Log.d("ModFix", "  After processing:");
-                    if (modRoot.listFiles() != null) {
-                        for (File f : modRoot.listFiles()) {
-                            Log.d("ModFix", "    " + f.getName() + (f.isDirectory() ? "/" : ""));
-                        }
-                    }
-
-                    // Step 6: Install normal-case copy
-                    File normalDest = new File(modsPath, modName);
-                    if (normalDest.exists()) FileUtils.deleteDirectory(normalDest);
-                    copyDirectory(modRoot, normalDest);
-                    Log.d("ModFix", "  Installed normal: " + normalDest.getAbsolutePath());
-
-                    // Step 7: If scripts/ present, also install lowercase inception copy
-                    if (needsInception) {
-                        inceptionDir.mkdirs();
-                        String lowerName = modName.toLowerCase();
-                        File lowerDest = new File(inceptionDir, lowerName);
-                        if (lowerDest.exists()) FileUtils.deleteDirectory(lowerDest);
-                        copyDirectoryLowercase(modRoot, lowerDest);
-                        Log.d("ModFix", "  Installed lowercase: " + lowerDest.getAbsolutePath());
-                    }
+                // Step 7: If scripts/ present, also install lowercase inception copy
+                if (needsInception) {
+                    String instanceNameLower = gameInstance.getName().toLowerCase();
+                    String inceptionRelPath = "data/user/0/com.zomdroid/files/instances/"
+                            + instanceNameLower + "/zomboid/mods";
+                    File inceptionDir = new File(modsPath, inceptionRelPath);
+                    inceptionDir.mkdirs();
+                    String lowerName = modName.toLowerCase();
+                    File lowerDest = new File(inceptionDir, lowerName);
+                    if (lowerDest.exists()) FileUtils.deleteDirectory(lowerDest);
+                    copyDirectoryLowercase(modRoot, lowerDest);
+                    Log.d("ModFix", "  Installed lowercase: " + lowerDest.getAbsolutePath());
                 }
 
                 finish(getString(R.string.mod_fix_installed), null);
@@ -1063,7 +1031,7 @@ public class InstallerService extends Service implements TaskProgressListener {
         // Scan for version folders matching 42 or 42.x
         List<String> versions = new ArrayList<>();
         for (File f : entries) {
-            if (f.getName().matches("^42(\\.\\d+)?$")) {
+            if (f.getName().equals("42") || (f.getName().startsWith("42.") && f.getName().length() > 3)) {
                 versions.add(f.getName());
             }
         }
@@ -1122,28 +1090,12 @@ public class InstallerService extends Service implements TaskProgressListener {
         }
     }
 
-    // Returns true if directory contains any folder matching 42 or 42.x
-    private boolean hasB42Folders(File modDir) {
-        File[] children = modDir.listFiles(File::isDirectory);
-        if (children == null) return false;
-        for (File f : children) {
-            if (f.getName().matches("^42(\\.\\d+)?$")) return true;
-        }
-        return false;
-    }
-
-    // Returns true if directory contains a mod.info file directly
-    private static boolean hasModInfo(File dir) {
-        return dir != null && new File(dir, "mod.info").isFile();
-    }
 
     // Returns true if mod needs a lowercase inception copy:
-    // - has a scripts/ folder (causes double-path issues on Android), OR
-    // - has a models_X folder (uppercase X causes case-sensitive path mismatch on Android)
+    // - has a scripts/ folder (causes double-path issues on Android)
     private boolean needsLowercaseFix(File dir) {
         String name = dir.getName();
         if (name.equals("scripts") && dir.isDirectory()) return true;
-        if (name.equals("models_X") && dir.isDirectory()) return true;
         File[] children = dir.listFiles();
         if (children == null) return false;
         for (File f : children) {
@@ -1510,6 +1462,239 @@ public class InstallerService extends Service implements TaskProgressListener {
         return false;
     }
 
+    // INSTALL_ETO
+    // Installs Every Texture Optimized mod.
+    // Finds media/textures inside the ZIP using smart detection + build version:
+    //   B42: looks inside the latest 42.x subfolder → media/textures
+    //   B41: looks at root → media/textures
+    // Copies (overwrites) textures into the game's media/textures folder.
+    private void doInstallEto(Intent intent) {
+        String taskTitle = getString(R.string.optimization_eto_installing);
+        startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
+        taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
+
+        executorService.submit(() -> {
+            Uri archiveUri = intent.getParcelableExtra(EXTRA_ARCHIVE_URI);
+            String gameInstanceName = intent.getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+            String buildVersion = intent.getStringExtra(EXTRA_BUILD_VERSION);
+            boolean isBuild42 = "42".equals(buildVersion);
+
+            GameInstance gameInstance = GameInstanceManager.requireSingleton()
+                    .getInstanceByName(gameInstanceName);
+            if (gameInstance == null) {
+                finishWithError(taskTitle, "Game instance not found: " + gameInstanceName);
+                return;
+            }
+
+            File tmpDir = new File(getCacheDir(), "eto_tmp_" + System.currentTimeMillis());
+            try {
+                tmpDir.mkdirs();
+
+                // Step 1: Extract ZIP to temp
+                try (InputStream is = getContentResolver().openInputStream(archiveUri);
+                     ZipInputStream zis = new ZipInputStream(is)) {
+                    ZipEntry entry;
+                    while ((entry = zis.getNextEntry()) != null) {
+                        File outFile = new File(tmpDir, entry.getName());
+                        if (entry.isDirectory()) {
+                            outFile.mkdirs();
+                        } else {
+                            outFile.getParentFile().mkdirs();
+                            try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                                byte[] buf = new byte[8192];
+                                int len;
+                                while ((len = zis.read(buf)) > 0) fos.write(buf, 0, len);
+                            }
+                        }
+                        zis.closeEntry();
+                    }
+                }
+
+                // Step 2: Find the right mod root.
+                // If ZIP contains multiple mods, prefer the one with "performance" in the name.
+                // Otherwise take the single mod found.
+                File modRoot = findEtoModRoot(tmpDir);
+                if (modRoot == null) {
+                    finishWithError(taskTitle, getString(R.string.install_mod_smart_no_root));
+                    return;
+                }
+                Log.d("ETO", "Using mod root: " + modRoot.getAbsolutePath());
+
+                // Step 3: Find media/textures inside the chosen mod root.
+                // For B42: look inside the latest 42.x subfolder first.
+                // For B41: look directly at mod root.
+                File texturesSource = findEtoTexturesFolder(modRoot, isBuild42);
+
+                // Step 4: Validate BEFORE touching game files — fail fast if wrong mod/build.
+                if (texturesSource == null || !texturesSource.isDirectory()) {
+                    finishWithError(taskTitle, getString(R.string.optimization_eto_error_no_textures));
+                    return;
+                }
+                Log.d("ETO", "Textures source: " + texturesSource.getAbsolutePath());
+
+                // Step 5: Backup original textures folder if not already backed up.
+                // We copy (not rename) so the original textures remain intact.
+                // Backup happens only AFTER we confirmed textures source is valid.
+                File gameTextures = new File(gameInstance.getGamePath(), "media/textures");
+                File gameTexturesBak = new File(gameInstance.getGamePath(), "media/textures.bak");
+                if (gameTextures.isDirectory() && !gameTexturesBak.exists()) {
+                    Log.d("ETO", "Backing up original textures...");
+                    copyDirectory(gameTextures, gameTexturesBak);
+                    Log.d("ETO", "Backup done: " + gameTexturesBak.getAbsolutePath());
+                }
+
+                // Step 6: Copy ETO textures on top of existing textures folder.
+                // Original files not present in ETO remain untouched.
+                gameTextures.mkdirs();
+                copyDirectory(texturesSource, gameTextures);
+                Log.d("ETO", "Installed to: " + gameTextures.getAbsolutePath());
+
+                finish(getString(R.string.optimization_eto_installed), null);
+
+            } catch (Exception e) {
+                finishWithError(taskTitle, e.toString());
+            } finally {
+                try { FileUtils.deleteDirectory(tmpDir); } catch (Exception ignored) {}
+            }
+        });
+    }
+
+    // Find the best ETO mod root inside the extracted ZIP.
+    // Reads mod.info to get the mod id and selects by priority:
+    //
+    // B42 priority: Performance > Optimal > anything else (skip Hotfix)
+    // B41 priority: ETO_Performance_mode > ETO_Balanced_mode > ETO_Quality_mode
+    //               > ETO_FPS > anything else (skip ETO_Hotfix)
+    //
+    // If only one non-hotfix mod found — use it regardless of id.
+    private File findEtoModRoot(File tmpDir) {
+        List<File> roots = new ArrayList<>();
+        collectModRoots(tmpDir, roots);
+
+        if (roots.isEmpty()) return null;
+
+        // Filter out hotfix mods
+        List<File> candidates = new ArrayList<>();
+        for (File root : roots) {
+            String id = readModId(root);
+            if (id != null && id.toLowerCase().contains("hotfix")) {
+                Log.d("ETO", "Skipping hotfix mod: " + id);
+                continue;
+            }
+            candidates.add(root);
+        }
+
+        if (candidates.isEmpty()) return null;
+        if (candidates.size() == 1) return candidates.get(0);
+
+        // Multiple candidates — select by priority
+        String[] priority = {
+                "ETO_Performance_mode", "Performance",
+                "ETO_Balanced_mode",
+                "ETO_Quality_mode",
+                "Optimal",
+                "ETO_FPS"
+        };
+
+        for (String preferred : priority) {
+            for (File root : candidates) {
+                String id = readModId(root);
+                if (preferred.equalsIgnoreCase(id)) {
+                    Log.d("ETO", "Selected by priority id=" + id + ": " + root.getName());
+                    return root;
+                }
+            }
+        }
+
+        // No priority match — return first candidate
+        Log.d("ETO", "No priority match, using first: " + candidates.get(0).getName());
+        return candidates.get(0);
+    }
+
+    // Read the "id" field from mod.info inside a mod root folder.
+    // Returns null if mod.info not found or id field missing.
+    private String readModId(File modRoot) {
+        File modInfo = new File(modRoot, "mod.info");
+        if (!modInfo.isFile()) return null;
+        try (java.io.BufferedReader br = new java.io.BufferedReader(
+                new java.io.FileReader(modInfo))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("id=")) {
+                    return line.substring(3).trim();
+                }
+            }
+        } catch (IOException ignored) {}
+        return null;
+    }
+
+    // Collect all mod roots (containing mod.info, media/ or common/) into the list.
+    private void collectModRoots(File dir, List<File> result) {
+        if (isModRoot(dir)) {
+            result.add(dir);
+            return; // don't recurse into a mod root
+        }
+        File[] children = dir.listFiles();
+        if (children == null) return;
+        for (File child : children) {
+            if (child.isDirectory()) collectModRoots(child, result);
+        }
+    }
+
+    // Find the media/textures folder inside the chosen ETO mod root.
+    // For B42: navigate into the latest 42.x subfolder first.
+    // For B41: look directly at mod root level.
+    private File findEtoTexturesFolder(File modRoot, boolean isBuild42) {
+        if (isBuild42) {
+            File latestVersionFolder = findLatestB42FolderIn(modRoot);
+            if (latestVersionFolder != null) {
+                File textures = new File(latestVersionFolder, "media/textures");
+                if (textures.isDirectory()) return textures;
+            }
+        }
+        // B41 or fallback: media/textures directly at mod root
+        File textures = new File(modRoot, "media/textures");
+        if (textures.isDirectory()) return textures;
+        // Last resort: search anywhere under mod root
+        return findTexturesFolderRecursive(modRoot);
+    }
+
+    // Find the subfolder with the highest 42.x version number directly under dir.
+    private File findLatestB42FolderIn(File dir) {
+        File best = null;
+        double bestVersion = -1;
+        File[] files = dir.listFiles();
+        if (files == null) return null;
+        for (File f : files) {
+            if (!f.isDirectory()) continue;
+            String name = f.getName();
+            if (name.equals("42") || (name.startsWith("42.") && name.length() > 3)) {
+                try {
+                    double v = Double.parseDouble(name);
+                    if (v > bestVersion) {
+                        bestVersion = v;
+                        best = f;
+                    }
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+        return best;
+    }
+
+    private File findTexturesFolderRecursive(File dir) {
+        File[] files = dir.listFiles();
+        if (files == null) return null;
+        for (File f : files) {
+            if (f.isDirectory()) {
+                if (f.getName().equals("textures")) return f;
+                File found = findTexturesFolderRecursive(f);
+                if (found != null) return found;
+            }
+        }
+        return null;
+    }
+
     private Notification buildNotification(String title) {
         Intent notificationIntent = new Intent(this, LauncherActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -1582,7 +1767,8 @@ public class InstallerService extends Service implements TaskProgressListener {
         EXPORT_LOG,
         INSTALL_BETTERFPS,
         INSTALL_MOD_WITH_FIX,
-        INSTALL_MOD_SMART
+        INSTALL_MOD_SMART,
+        INSTALL_ETO
     }
 
     public static class TaskState {
