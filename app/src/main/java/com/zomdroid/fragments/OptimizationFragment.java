@@ -197,7 +197,7 @@ public class OptimizationFragment extends Fragment {
         }
 
         // Browse button
-        // BetterFPS mode spinner — PotatoPC / 1080p / 4K (only meaningful for B41)
+        // BetterFPS mode spinner — PotatoePC / 1080p / 4K (only meaningful for B41)
         ArrayAdapter<String> modeAdapter = new ArrayAdapter<>(
                 requireContext(),
                 R.layout.spinner_item,
@@ -208,7 +208,7 @@ public class OptimizationFragment extends Fragment {
                 });
         modeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         binding.optimizationBetterfpsModeSpinner.setAdapter(modeAdapter);
-        binding.optimizationBetterfpsModeSpinner.setSelection(0); // PotatoPC by default
+        binding.optimizationBetterfpsModeSpinner.setSelection(0); // PotatoePC by default
 
         binding.optimizationBetterfpsBrowseIb.setOnClickListener(v ->
                 betterFpsLauncher.launch(ZIP_MIME));
@@ -235,7 +235,7 @@ public class OptimizationFragment extends Fragment {
             GameInstance selectedInstance = instances.get(instanceIndex);
 
             Intent installerIntent = new Intent(requireContext(), InstallerService.class);
-            String[] betterfpsModes = {"PotatoPC", "1080p", "4k"};
+            String[] betterfpsModes = {"PotatoePC", "1080p", "4k"};
             int modePos = binding.optimizationBetterfpsModeSpinner.getSelectedItemPosition();
             String selectedMode = betterfpsModes[Math.max(0, Math.min(modePos, betterfpsModes.length - 1))];
 
