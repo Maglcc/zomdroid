@@ -399,9 +399,9 @@
     <string name="mod_fix_error_no_mod_folder">压缩包中未找到模组文件夹</string>
     <string name="mod_fix_error_not_b42">此模组似乎不是 Build 42 模组：%1$s</string>
     <string name="mod_fix_group_double_path">双路径修复</string>
-    <string name="mod_fix_double_path_hint">修复 Build 42 模组在 Android 上的路径错误。已知问题模组：Tsar\'s Common Library（ID：3402491515）、Simple Flashlight on Belt（ID：3394588830）。</string>
+    <string name="mod_fix_double_path_hint">修复 Build 41/42 模组在 Android 上的路径错误。已知问题模组：Tsar\'s Common Library（ID：3402491515）、Simple Flashlight on Belt（ID：3394588830）。</string>
     <string name="mod_fix_help_title">这是什么修复？</string>
-    <string name="mod_fix_help_message">某些 Build 42 模组的文件夹结构在 Android 上因大小写敏感而导致路径冲突。游戏会在双重路径中查找文件但无法找到。\n\n此修复会将模组安装两次——一次使用原始文件夹名称，一次使用全小写名称——以确保游戏无论使用哪条路径都能找到文件。\n\n已知受影响的模组：\n• Tsar\'s Common Library — ID：3402491515\n• [B42] Simple Flashlight on Belt — ID：3394588830\n\n使用方法：从 Steam 创意工坊下载模组，将模组文件夹原样压缩后在此加载。</string>
+    <string name="mod_fix_help_message">部分 mod 使用的文件夹结构会在 Android 上引发路径冲突。游戏会在重复路径中查找文件，从而导致找不到。\n\n此修复会将 mod 安装两次——一次使用原始文件夹名称，一次使用全小写名称——使游戏无论使用哪个路径都能找到文件。\n\n已知受影响的 mod：\n• Tsar\'s Common Library — ID: 3402491515\n• [B42] Simple Flashlight on Belt — ID: 3394588830\n\n使用方法：下载 mod，在此处加载。</string>
 
     <!-- CPU/GPU autodetect -->
     <string name="preset_dialog_gpu_hint_qualcomm">\u2705 检测到骁龙处理器。ZINK_ZFA 渲染器已自动设置。建议在应用设置中选择 Freedreno/Turnip 驱动以获得最佳效果。</string>

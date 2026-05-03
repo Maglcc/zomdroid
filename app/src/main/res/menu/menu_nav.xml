@@ -11,7 +11,7 @@
         <item
             android:id="@+id/action_open_controls_editor"
             android:title="@string/nav_menu_controls_editor"
-            android:icon="@drawable/mt_icon_controller"
+            android:icon="@drawable/mt_icons_controls"
             app:showAsAction="never"/>
         <item
             android:id="@+id/action_open_gamepad_mapper"
@@ -29,22 +29,22 @@
         <item
             android:id="@+id/action_install_controls"
             android:title="@string/menu_install_controls"
-            android:icon="@drawable/mt_icon_folder"
+            android:icon="@drawable/mt_icons_controls"
             app:showAsAction="never"/>
         <item
             android:id="@+id/action_install_saves"
             android:title="@string/install_saves_menu"
-            android:icon="@drawable/mt_icon_folder"
+            android:icon="@drawable/mt_icon_save"
             app:showAsAction="never"/>
         <item
             android:id="@+id/action_install_driver"
             android:title="@string/install_driver_menu"
-            android:icon="@drawable/mt_icon_folder"
+            android:icon="@drawable/mt_icon_driver"
             app:showAsAction="never"/>
         <item
             android:id="@+id/action_export_log"
             android:title="@string/export_log_menu"
-            android:icon="@drawable/mt_icon_folder"
+            android:icon="@drawable/mt_icon_logfile"
             app:showAsAction="never"/>
     </group>
 
@@ -52,12 +52,12 @@
         <item
             android:id="@+id/action_open_install_mod"
             android:title="@string/nav_menu_install_mod"
-            android:icon="@drawable/mt_icon_folder"
+            android:icon="@drawable/mt_icon_mods"
             app:showAsAction="never"/>
         <item
             android:id="@+id/action_open_mod_fixes"
             android:title="@string/nav_menu_mod_fixes"
-            android:icon="@drawable/mt_icon_folder"
+            android:icon="@drawable/mt_icon_mods"
             app:showAsAction="never"/>
     </group>
 
@@ -65,7 +65,7 @@
         <item
             android:id="@+id/action_open_optimization"
             android:title="@string/nav_menu_optimization"
-            android:icon="@drawable/mt_icon_folder"
+            android:icon="@drawable/mt_icon_optimization"
             app:showAsAction="never"/>
     </group>
 

@@ -132,62 +132,61 @@ public class ModFixesFragment extends Fragment {
         // Instance spinner
         instances = GameInstanceManager.requireSingleton().getInstances();
 
+        List<String> names = new ArrayList<>();
         if (instances == null || instances.isEmpty()) {
-            binding.modFixesInstanceSpinner.setEnabled(false);
+            instances = new ArrayList<>();
+            names.add(getString(R.string.select_instance));
             binding.modFixesInstallBtn.setEnabled(false);
         } else {
-            List<String> names = new ArrayList<>();
             if (instances.size() > 1) {
                 names.add(getString(R.string.select_instance));
             }
             for (GameInstance gi : instances) {
                 names.add(gi.getName());
             }
+        }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                    requireContext(),
-                    R.layout.spinner_item,
-                    names);
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-            binding.modFixesInstanceSpinner.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                R.layout.spinner_item,
+                names);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        binding.modFixesInstanceSpinner.setAdapter(adapter);
 
-            binding.modFixesInstanceSpinner.setOnItemSelectedListener(
-                    new android.widget.AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(android.widget.AdapterView<?> parent,
-                                                   View view, int position, long id) {
-                            int instanceIndex = instances.size() > 1 ? position - 1 : position;
-                            if (instanceIndex < 0 || instanceIndex >= instances.size()) {
-                                // No instance selected — show default banner
-                                binding.modFixesBannerIv.setImageResource(R.drawable.banner_default);
-                                return;
-                            }
-                            // Update banner to match selected instance's build
-                            GameInstance selected = instances.get(instanceIndex);
-                            int bannerRes;
-                            switch (selected.getPresetName()) {
-                                case "Build 42.12+":
-                                    bannerRes = R.drawable.banner_build42_12;
-                                    break;
-                                case "Build 42":
-                                    bannerRes = R.drawable.banner_build42;
-                                    break;
-                                default:
-                                    bannerRes = R.drawable.banner_build41;
-                                    break;
-                            }
-                            binding.modFixesBannerIv.setImageResource(bannerRes);
-                        }
-
-                        @Override
-                        public void onNothingSelected(android.widget.AdapterView<?> parent) {
+        binding.modFixesInstanceSpinner.setOnItemSelectedListener(
+                new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(android.widget.AdapterView<?> parent,
+                                               View view, int position, long id) {
+                        int instanceIndex = instances.size() > 1 ? position - 1 : position;
+                        if (instanceIndex < 0 || instanceIndex >= instances.size()) {
                             binding.modFixesBannerIv.setImageResource(R.drawable.banner_default);
+                            return;
                         }
-                    });
+                        GameInstance selected = instances.get(instanceIndex);
+                        int bannerRes;
+                        switch (selected.getPresetName()) {
+                            case "Build 42.12+":
+                                bannerRes = R.drawable.banner_build42_12;
+                                break;
+                            case "Build 42":
+                                bannerRes = R.drawable.banner_build42;
+                                break;
+                            default:
+                                bannerRes = R.drawable.banner_build41;
+                                break;
+                        }
+                        binding.modFixesBannerIv.setImageResource(bannerRes);
+                    }
 
-            if (instances.size() == 1) {
-                binding.modFixesInstanceSpinner.setSelection(0);
-            }
+                    @Override
+                    public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                        binding.modFixesBannerIv.setImageResource(R.drawable.banner_default);
+                    }
+                });
+
+        if (instances.size() == 1) {
+            binding.modFixesInstanceSpinner.setSelection(0);
         }
 
         // Browse button

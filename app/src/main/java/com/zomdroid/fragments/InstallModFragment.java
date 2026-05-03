@@ -137,20 +137,19 @@ public class InstallModFragment extends Fragment {
 
         instances = GameInstanceManager.requireSingleton().getInstances();
 
-        if (instances == null || instances.isEmpty()) {
-            Toast.makeText(requireContext(),
-                    "No game instances found",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         // Spinner population
         List<String> names = new ArrayList<>();
-        if (instances.size() > 1) {
+        if (instances == null || instances.isEmpty()) {
+            instances = new ArrayList<>();
             names.add(getString(R.string.select_instance));
-        }
-        for (GameInstance gi : instances) {
-            names.add(gi.getName());
+            binding.installModInstallBtn.setEnabled(false);
+        } else {
+            if (instances.size() > 1) {
+                names.add(getString(R.string.select_instance));
+            }
+            for (GameInstance gi : instances) {
+                names.add(gi.getName());
+            }
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -247,21 +246,6 @@ public class InstallModFragment extends Fragment {
 
             requireContext().startForegroundService(installerIntent);
             bindInstallerService();
-        });
-
-        // ZIP help button
-        binding.installModZipHelpIb.setOnClickListener(v -> {
-            MaterialAlertDialogBuilder builder =
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle(R.string.install_mod_zip_help_title)
-                            .setMessage(getString(R.string.install_mod_zip_help_message))
-                            .setPositiveButton(android.R.string.ok, null);
-
-            AlertDialog dialog = builder.show();
-            TextView messageView = dialog.findViewById(android.R.id.message);
-            if (messageView != null) {
-                messageView.setTypeface(Typeface.MONOSPACE);
-            }
         });
 
     }

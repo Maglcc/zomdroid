@@ -406,9 +406,9 @@
     <string name="mod_fix_error_no_mod_folder">No mod folder found in archive</string>
     <string name="mod_fix_error_not_b42">This mod does not appear to be a Build 42 mod: %1$s</string>
     <string name="mod_fix_group_double_path">Double path fix</string>
-    <string name="mod_fix_double_path_hint">Fix for Build 42 mods with path errors on Android. Known mods: Tsar\'s Common Library (ID: 3402491515), Simple Flashlight on Belt (ID: 3394588830).</string>
+    <string name="mod_fix_double_path_hint">Fix for Build 41/42 mods with path errors on Android. Known mods: Tsar\'s Common Library (ID: 3402491515), Simple Flashlight on Belt (ID: 3394588830).</string>
     <string name="mod_fix_help_title">What is this fix?</string>
-    <string name="mod_fix_help_message">Some Build 42 mods use a folder structure that causes a path conflict on Android due to case sensitivity. The game ends up looking for files in a doubled path and cannot find them.\n\nThis fix installs the mod twice — once with the original folder names, and once with all names in lowercase — so the game finds the files regardless of which path it uses.\n\nKnown affected mods:\n• Tsar\'s Common Library — ID: 3402491515\n• [B42] Simple Flashlight on Belt — ID: 3394588830\n\nTo use: download the mod from Steam Workshop, zip the mod folder as-is and load it here.</string>
+    <string name="mod_fix_help_message">Some mods use a folder structure that causes a path conflict on Android. The game ends up looking for files in a doubled path and cannot find them.\n\nThis fix installs the mod twice — once with the original folder names, and once with all names in lowercase — so the game finds the files regardless of which path it uses.\n\nKnown affected mods:\n• Tsar\'s Common Library — ID: 3402491515\n• [B42] Simple Flashlight on Belt — ID: 3394588830\n\nTo use: download the mod and load it here.</string>
 
     <!-- CPU/GPU autodetect -->
     <string name="preset_dialog_gpu_hint_qualcomm">\u2705 Snapdragon detected. ZINK_ZFA renderer has been set automatically. We recommend selecting a Freedreno/Turnip driver in the app Settings for best results.</string>

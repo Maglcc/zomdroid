@@ -163,39 +163,37 @@ public class OptimizationFragment extends Fragment {
         // Instance spinner
         instances = GameInstanceManager.requireSingleton().getInstances();
 
+        List<String> names = new ArrayList<>();
         if (instances == null || instances.isEmpty()) {
-            binding.optimizationBetterfpsInstanceSpinner.setEnabled(false);
+            instances = new ArrayList<>();
+            names.add(getString(R.string.select_instance));
             binding.optimizationBetterfpsInstallBtn.setEnabled(false);
         } else {
-            List<String> names = new ArrayList<>();
             if (instances.size() > 1) {
                 names.add(getString(R.string.select_instance));
             }
             for (GameInstance gi : instances) {
                 names.add(gi.getName());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                    requireContext(),
-                    R.layout.spinner_item,
-                    names);
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-            binding.optimizationBetterfpsInstanceSpinner.setAdapter(adapter);
-
-            binding.optimizationBetterfpsInstanceSpinner.setOnItemSelectedListener(
-                    new android.widget.AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(android.widget.AdapterView<?> parent,
-                                                   View view, int position, long id) {
-                        }
-
-                        @Override
-                        public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                        }
-                    });
-
-            if (instances.size() == 1) {
-                binding.optimizationBetterfpsInstanceSpinner.setSelection(0);
-            }
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                R.layout.spinner_item,
+                names);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        binding.optimizationBetterfpsInstanceSpinner.setAdapter(adapter);
+        binding.optimizationBetterfpsInstanceSpinner.setOnItemSelectedListener(
+                new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(android.widget.AdapterView<?> parent,
+                                               View view, int position, long id) {
+                    }
+                    @Override
+                    public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                    }
+                });
+        if (instances.size() == 1) {
+            binding.optimizationBetterfpsInstanceSpinner.setSelection(0);
         }
 
         // Browse button
@@ -288,16 +286,19 @@ public class OptimizationFragment extends Fragment {
                         .show());
 
         // ETO spinner — reuse instances already loaded
-        if (instances != null && !instances.isEmpty()) {
-            List<String> etoNames = new ArrayList<>();
+        List<String> etoNames = new ArrayList<>();
+        if (instances == null || instances.isEmpty()) {
+            etoNames.add(getString(R.string.select_instance));
+            binding.optimizationEtoInstallBtn.setEnabled(false);
+        } else {
             if (instances.size() > 1) etoNames.add(getString(R.string.select_instance));
             for (GameInstance gi : instances) etoNames.add(gi.getName());
-            ArrayAdapter<String> etoAdapter = new ArrayAdapter<>(
-                    requireContext(), R.layout.spinner_item, etoNames);
-            etoAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-            binding.optimizationEtoInstanceSpinner.setAdapter(etoAdapter);
-            if (instances.size() == 1) binding.optimizationEtoInstanceSpinner.setSelection(0);
         }
+        ArrayAdapter<String> etoAdapter = new ArrayAdapter<>(
+                requireContext(), R.layout.spinner_item, etoNames);
+        etoAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        binding.optimizationEtoInstanceSpinner.setAdapter(etoAdapter);
+        if (instances != null && instances.size() == 1) binding.optimizationEtoInstanceSpinner.setSelection(0);
 
         binding.optimizationEtoBrowseIb.setOnClickListener(v ->
                 etoLauncher.launch(ZIP_MIME));
