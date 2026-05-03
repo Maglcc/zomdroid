@@ -457,7 +457,7 @@
     <string name="optimization_group_eto">Every Texture Optimized</string>
     <string name="optimization_eto_hint">Installs optimized textures for better performance. Select your game instance — the correct texture version (B41 or B42) will be applied automatically.</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
-    <string name="optimization_eto_help_message">Download the mod ZIP from Steam Workshop or Skymods.\n\nSelect your game instance and the ZIP file, then tap Install. The launcher will automatically pick the correct texture folder for your build version and copy the files into the game\'s media/textures directory, replacing the originals.</string>
+    <string name="optimization_eto_help_message">Steam Workshop ID: 3119788162 [B42] and ID: 2812026801 [B41]\n\nDownload the mod ZIP from Steam Workshop or Skymods.\n\nSelect your game instance and the ZIP file, then tap Install. The launcher will automatically choose the correct texture folder for your build version and copy the files into the game's media/textures directory, replacing the original ones.\n\nThe original textures folder will be renamed to textures.bak. To roll back the mod, delete the new textures folder and rename textures.bak back to textures.</string>
     <string name="optimization_eto_installing">Installing textures…</string>
     <string name="optimization_eto_installed">Textures installed successfully</string>
     <string name="optimization_eto_error_no_textures">Could not find a textures folder in this ZIP.</string>
