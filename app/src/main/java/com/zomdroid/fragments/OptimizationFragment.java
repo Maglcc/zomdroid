@@ -78,7 +78,7 @@ public class OptimizationFragment extends Fragment {
             unbindInstallerService();
             requireContext().stopService(new Intent(requireContext(), InstallerService.class));
             Toast.makeText(requireContext(),
-                    getString(R.string.optimization_betterfps_installed),
+                    getString(R.string.mod_fix_installed),
                     Toast.LENGTH_SHORT).show();
         } else if (state.isFinishedWithError) {
             showTaskFinishedWithErrorDialog(state.title, state.message);
