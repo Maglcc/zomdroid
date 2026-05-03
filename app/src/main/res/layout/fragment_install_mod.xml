@@ -126,16 +126,6 @@
                         android:textAppearance="?attr/textAppearanceBodySmall"
                         android:text="@string/install_mod_zip_label"/>
 
-                    <ImageButton
-                        style="@style/AppTheme.ImageButton"
-                        android:id="@+id/install_mod_zip_help_ib"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="4dp"
-                        android:scaleType="fitCenter"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/mt_icon_help"/>
-
                 </LinearLayout>
 
                 <TextView
