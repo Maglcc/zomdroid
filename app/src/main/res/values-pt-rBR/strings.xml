@@ -456,7 +456,7 @@
     <string name="optimization_group_eto">Every Texture Optimized</string>
     <string name="optimization_eto_hint">Instala texturas otimizadas para melhor desempenho. Selecione a instância do jogo — a versão correta das texturas (B41 ou B42) será aplicada automaticamente.</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
-    <string name="optimization_eto_help_message">Baixe o ZIP do mod no Steam Workshop ou Skymods.\n\nSelecione a instância e o arquivo ZIP, depois toque em Instalar. O launcher escolherá automaticamente a pasta de texturas correta para a sua versão do build e copiará os arquivos para a pasta media/textures do jogo, substituindo os originais.</string>
+    <string name="optimization_eto_help_message">Steam Workshop ID: 3119788162 [B42] e ID: 2812026801 [B41]\n\nBaixe o arquivo ZIP do mod pelo Steam Workshop ou Skymods.\n\nSelecione a instância do jogo e o arquivo ZIP, depois toque em Install. O launcher escolherá automaticamente a pasta de texturas correta para a sua versão e copiará os arquivos para o diretório media/textures do jogo, substituindo os originais.\n\nA pasta original textures será renomeada para textures.bak. Para reverter o mod, exclua a nova pasta textures e renomeie textures.bak de volta para textures.</string>
     <string name="optimization_eto_installing">Instalando texturas…</string>
     <string name="optimization_eto_installed">Texturas instaladas com sucesso</string>
     <string name="optimization_eto_error_no_textures">Não foi possível encontrar uma pasta de texturas neste ZIP.</string>
