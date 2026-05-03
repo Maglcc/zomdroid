@@ -353,7 +353,7 @@
     <string name="new_game_instance_group_preset">Predefinição</string>
     <string name="new_game_instance_group_files">Arquivos</string>
 
-    <string name="install_mod_group_instance">Instância</string>
+    <string name="install_mod_group_instance">→ Instância</string>
     <string name="install_mod_group_file">Arquivo do mod</string>
     <string name="install_controls_group_file">Arquivo de layout</string>
     <string name="install_saves_group_import">Importar saves</string>
@@ -385,11 +385,11 @@
     <string name="optimization_copy">Copiar</string>
     <string name="optimization_open_settings">→ Abrir Configurações</string>
     <string name="optimization_group_betterfps">BetterFPS b41</string>
-    <string name="optimization_betterfps_hint">Reduz a zona de renderização ao redor do jogador. Steam Workshop ID: 3022543997. Baixe o mod, escolha uma variante (comece com 90×90), compacte o arquivo IsoChunkMap.class e instale abaixo.</string>
-    <string name="optimization_betterfps_file_label">IsoChunkMap.class (compactado)</string>
+    <string name="optimization_betterfps_hint">Reduz a área de renderização ao redor do jogador. Steam Workshop ID: 3022543997. Baixe o mod, envie o arquivo zip e selecione um dos três modos mais populares.</string>
+    <string name="optimization_betterfps_file_label">Mod BetterFPS (arquivo zip)</string>
     <string name="optimization_install">Instalar</string>
     <string name="optimization_betterfps_help_title">Como o BetterFPS funciona</string>
-    <string name="optimization_betterfps_help_message">Steam Workshop ID: 3022543997\n\n\"Project Zomboid renderiza uma zona de 190×190 tiles ao redor do jogador. Este mod reduz o tamanho dessa zona e evita carregar chunks desnecessários.\"\n— descrição do mod\n\nVariantes:\n• PotatoePC — máximo desempenho\n• 1080 — balanceado\n• 4k — melhor qualidade\n• All_Settings — tamanhos personalizados de 30×30 a 190×190\n\nRecomendamos começar com 90×90 — visivelmente menor que o padrão 190×190, mas sem exagerar. Se estiver bom, pode tentar ainda menor.\n\nApós baixar, abra a pasta do mod, escolha a variante, compacte apenas o arquivo IsoChunkMap.class e carregue aqui.</string>
+    <string name="optimization_betterfps_help_message">Steam Workshop ID: 3022543997\n\n"O Project Zomboid renderiza uma área de 190×190 tiles ao redor do jogador. Este mod reduz o tamanho dessa área e evita carregar chunks desnecessários."\n— descrição do mod\n\nVariantes:\n• PotatoePC — desempenho máximo\n• 1080 — equilibrado\n• 4k — melhor qualidade (ainda menor que o original)\n• All_Settings — tamanhos personalizados de área de 30×30 a 190×190; deve ser instalado manualmente\n\nRecomendamos começar com PotatoePC. Se necessário, você pode escolher manualmente uma opção ainda menor.</string>
     <string name="optimization_jvm_copied">Copiado para a área de transferência</string>
     <string name="optimization_betterfps_installed">BetterFPS instalado com sucesso</string>
     <string name="optimization_betterfps_installing">Instalando BetterFPS…</string>
