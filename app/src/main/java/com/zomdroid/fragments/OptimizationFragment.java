@@ -149,6 +149,8 @@ public class OptimizationFragment extends Fragment {
         // Open Settings link
         binding.optimizationOpenSettingsTv.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.settings_fragment));
+        binding.optimizationOpenSettingsTv2.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.settings_fragment));
 
         // BetterFPS help
         binding.optimizationBetterfpsHelpIb.setOnClickListener(v ->
