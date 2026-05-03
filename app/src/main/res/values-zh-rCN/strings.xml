@@ -450,7 +450,7 @@
     <string name="optimization_group_eto">Every Texture Optimized</string>
     <string name="optimization_eto_hint">安装优化纹理以提升性能。选择游戏实例，系统将自动应用正确的纹理版本（B41 或 B42）。</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
-    <string name="optimization_eto_help_message">从 Steam Workshop 或 Skymods 下载 mod 的 ZIP 文件。\n\n选择游戏实例和 ZIP 文件，然后点击安装。启动器将自动选择适合您版本的纹理文件夹，并将文件复制到游戏的 media/textures 目录，替换原始文件。</string>
+    <string name="optimization_eto_help_message">Steam Workshop ID：3119788162 [B42] 和 ID：2812026801 [B41]\n\n从 Steam Workshop 或 Skymods 下载该模组的 ZIP 文件。\n\n选择游戏实例和 ZIP 文件，然后点击 Install。启动器会自动选择适用于你版本的纹理文件夹，并将文件复制到游戏的 media/textures 目录中，替换原始文件。\n\n原始的 textures 文件夹将被重命名为 textures.bak。若需回滚模组，请删除新的 textures 文件夹，并将 textures.bak 重命名回 textures。</string>
     <string name="optimization_eto_installing">正在安装纹理…</string>
     <string name="optimization_eto_installed">纹理安装成功</string>
     <string name="optimization_eto_error_no_textures">在此 ZIP 中找不到纹理文件夹。</string>
