@@ -62,15 +62,6 @@
                             android:textAppearance="?attr/textAppearanceBodySmall"
                             android:textStyle="bold"/>
 
-                        <!-- 4 GB Balanced -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/optimization_jvm_balanced_label"
-                            android:textSize="11sp"
-                            android:textColor="?android:attr/textColorSecondary"
-                            android:layout_marginBottom="4dp"/>
-
                         <!-- 4 GB collapsible -->
                         <LinearLayout
                             android:id="@+id/optimization_jvm_4gb_header"
@@ -108,6 +99,16 @@
                             android:orientation="vertical"
                             android:visibility="gone">
 
+                             <!-- 4 GB Balanced -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/optimization_jvm_balanced_label"
+                                android:textSize="11sp"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textStyle="bold"
+                                android:layout_marginBottom="4dp"/>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -143,6 +144,7 @@
                                 android:text="@string/optimization_jvm_aggressive_label"
                                 android:textSize="11sp"
                                 android:textColor="?android:attr/textColorSecondary"
+                                android:textStyle="bold"
                                 android:layout_marginBottom="4dp"/>
 
                             <LinearLayout
@@ -187,6 +189,8 @@
                         android:gravity="center_vertical"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true">
@@ -228,6 +232,7 @@
                             android:text="@string/optimization_jvm_balanced_label"
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary"
+                            android:textStyle="bold"
                             android:layout_marginBottom="4dp"/>
 
                         <LinearLayout
@@ -265,6 +270,7 @@
                             android:text="@string/optimization_jvm_aggressive_label"
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary"
+                            android:textStyle="bold"
                             android:layout_marginBottom="4dp"/>
 
                         <LinearLayout
@@ -376,8 +382,6 @@
                         android:paddingEnd="16dp"
                         android:paddingBottom="16dp"
                         android:visibility="gone">
-
-
 
                         <TextView
                             android:layout_width="match_parent"
@@ -535,6 +539,12 @@
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary"/>
 
+                        <Spinner
+                            android:id="@+id/optimization_eto_instance_spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"/>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -563,12 +573,6 @@
                                 android:src="@drawable/mt_icon_folder_open"/>
 
                         </LinearLayout>
-
-                        <Spinner
-                            android:id="@+id/optimization_eto_instance_spinner"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="12dp"/>
 
                         <Button
                             android:id="@+id/optimization_eto_install_btn"
