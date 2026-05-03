@@ -361,7 +361,7 @@
     <string name="export_log_group_export">导出日志</string>
     <string name="export_log_hint">从所选实例导出console.txt日志文件。</string>
 
-    <string name="new_game_instance_create">创建</string>
+    <string name="new_game_instance_create">→ 创建</string>
     <string name="new_game_instance_select_preset">选择预设…</string>
     <string name="new_game_instance_no_preset_selected">请选择预设。它必须与您的游戏版本匹配：Build 41 有一个预设，Build 42 分为两个——请仔细选择。</string>
     <string name="new_game_instance_no_preset_title">选择预设</string>
@@ -379,11 +379,11 @@
     <string name="optimization_copy">复制</string>
     <string name="optimization_open_settings">→ 打开设置</string>
     <string name="optimization_group_betterfps">BetterFPS b41</string>
-    <string name="optimization_betterfps_hint">减少玩家周围的渲染区域。Steam 创意工坊 ID：3022543997。下载模组，选择变体（从 90×90 开始），压缩 IsoChunkMap.class 文件后安装。</string>
-    <string name="optimization_betterfps_file_label">IsoChunkMap.class（压缩包）</string>
+    <string name="optimization_betterfps_hint">减少玩家周围的渲染区域。Steam Workshop ID：3022543997。下载该模组，上传 zip 文件，然后选择三个最常用模式之一。</string>
+    <string name="optimization_betterfps_file_label">BetterFPS 模组（zip 压缩包）</string>
     <string name="optimization_install">安装</string>
     <string name="optimization_betterfps_help_title">BetterFPS 原理</string>
-    <string name="optimization_betterfps_help_message">Steam 创意工坊 ID：3022543997\n\n\"Project Zomboid 在玩家周围渲染 190×190 格的区域。此模组缩小该区域，避免加载不必要的区块。\"\n— 模组描述\n\n变体：\n• PotatoePC — 最高性能\n• 1080 — 平衡\n• 4k — 最佳画质\n• All_Settings — 自定义区域大小（30×30 至 190×190）\n\n建议从 90×90 开始——明显小于默认的 190×190，但不过于激进。如果效果好可以继续降低。\n\n下载后打开模组文件夹，选择变体，仅压缩 IsoChunkMap.class 文件后在此加载。</string>
+    <string name="optimization_betterfps_help_message">Steam Workshop ID：3022543997\n\n“Project Zomboid 会渲染玩家周围 190×190 格的区域。这个模组会缩小该区域的大小，并避免加载不必要的区块。”\n— 模组说明\n\n选项：\n• PotatoePC — 最高性能\n• 1080 — 平衡模式\n• 4k — 最佳画质（仍然低于原版）\n• All_Settings — 可自定义区域大小，从 30×30 到 190×190；必须手动安装\n\n建议从 PotatoePC 开始。如有需要，可以手动选择更低的设置。</string>
     <string name="optimization_jvm_copied">已复制到剪贴板</string>
     <string name="optimization_betterfps_installed">BetterFPS 安装成功</string>
     <string name="optimization_betterfps_installing">正在安装 BetterFPS…</string>
