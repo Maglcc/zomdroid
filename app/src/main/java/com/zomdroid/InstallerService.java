@@ -798,9 +798,9 @@ public class InstallerService extends Service implements TaskProgressListener {
         Uri archiveUri = intent.getParcelableExtra(EXTRA_ARCHIVE_URI);
         if (archiveUri == null) { finishWithError(taskTitle, "Archive URI is missing"); return; }
 
-        // Mode is one of: "PotatoPC", "1080p", "4k" — maps to subfolder inside media/
+        // Mode is one of: "PotatoePC", "1080p", "4k" — maps to subfolder inside media/
         String mode = intent.getStringExtra(EXTRA_BETTERFPS_MODE);
-        if (mode == null) mode = "PotatoPC";
+        if (mode == null) mode = "PotatoePC";
         final String selectedMode = mode;
 
         executorService.submit(() -> {
