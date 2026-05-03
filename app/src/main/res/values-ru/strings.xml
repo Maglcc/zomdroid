@@ -456,7 +456,7 @@
     <string name="optimization_group_eto">Every Texture Optimized</string>
     <string name="optimization_eto_hint">Устанавливает оптимизированные текстуры для повышения производительности. Выберите инстанс — нужная версия текстур (B41 или B42) будет применена автоматически.</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
-    <string name="optimization_eto_help_message">Скачайте ZIP мода из Steam Workshop или Skymods.\n\nВыберите инстанс и ZIP файл, затем нажмите Установить. Лаунчер автоматически выберет правильную папку с текстурами для вашей версии билда и скопирует файлы в папку media/textures игры, заменив оригиналы.</string>
+    <string name="optimization_eto_help_message">Steam Workshop ID: 3119788162 [B42] и ID: 2812026801 [B41]\n\nСкачайте ZIP-файл мода из Steam Workshop или Skymods.\n\nВыберите игровой инстанс и ZIP-файл, затем нажмите Install. Лаунчер автоматически выберет правильную папку текстур для вашей версии билда и скопирует файлы в каталог media/textures игры, заменив оригинальные.\n\nОригинальная папка textures будет переименована в textures.bak. Чтобы откатить мод, удалите новую папку textures и переименуйте textures.bak обратно в textures.</string>
     <string name="optimization_eto_installing">Установка текстур…</string>
     <string name="optimization_eto_installed">Текстуры успешно установлены</string>
     <string name="optimization_eto_error_no_textures">Не удалось найти папку с текстурами в этом ZIP.</string>
