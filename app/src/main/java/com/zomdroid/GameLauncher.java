@@ -138,9 +138,10 @@ public class GameLauncher {
         if (BuildConfig.DEBUG) {
             //args.add("-debug");
             //args.add("-debuglog=Shader");
-            Log.i("Zomdroid", "JVM ARGS: " + jvmArgs);
-            Log.i("Zomdroid", "GAME ARGS: " + args);
         }
+        Log.i("Zomdroid", "JVM ARGS: " + jvmArgs);
+        Log.i("Zomdroid", "GAME ARGS: " + args);
+        
         if (BuildConfig.DEBUG || LauncherPreferences.requireSingleton().isDebug()) {
             args.add("-debug");
         }
@@ -161,6 +162,13 @@ public class GameLauncher {
             if (!preferJre21ForRenderer) {
                 jvmArgs.add("-Dnet.bytebuddy.classfile.version=65");
                 jvmArgs.add("-Dnet.bytebuddy.unsupported.classfile.version=69");
+            }
+
+            // Add ZBBetterFPS to classpath if present
+            String zbBetterFpsPath = home + "/" + C.deps.JARS_ZB_BETTER_FPS;
+            if (new File(zbBetterFpsPath).exists()) {
+                // append to existing class path
+                jvmArgs.add("-Djava.class.path=" + zbBetterFpsPath);
             }
         }
 
