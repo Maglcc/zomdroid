@@ -1709,6 +1709,11 @@ public class InstallerService extends Service implements TaskProgressListener {
         startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
         taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
 
+        String gameInstanceName = intent.getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+        if (gameInstanceName == null) { finishWithError(taskTitle, "Game instance name is missing"); return; }
+        GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(gameInstanceName);
+        if (gameInstance == null) { finishWithError(taskTitle, "Game instance not found: " + gameInstanceName); return; }
+
         executorService.submit(() -> {
             Uri archiveUri = intent.getParcelableExtra(EXTRA_ARCHIVE_URI);
             if (archiveUri == null) { finishWithError(taskTitle, "Archive URI is missing"); return; }
@@ -1742,12 +1747,25 @@ public class InstallerService extends Service implements TaskProgressListener {
                     return;
                 }
 
-                // Copy to JARS folder
+                // Copy jar to JARS folder (global, for all instances)
                 File destDir = new File(AppStorage.requireSingleton().getHomePath() + "/" + C.deps.JARS);
                 destDir.mkdirs();
                 File destFile = new File(destDir, "ZombieBuddy.jar");
                 copyFile(jarFile, destFile);
-                Log.d("ZombieBuddy", "Installed to: " + destFile.getAbsolutePath());
+                Log.d("ZombieBuddy", "Jar installed to: " + destFile.getAbsolutePath());
+
+                // Install mod folder to instance mods folder
+                File modRoot = findModRoot(tmpDir);
+                if (modRoot != null) {
+                    String modName = modRoot.getName();
+                    if (modName.equals(tmpDir.getName())) modName = "ZombieBuddy";
+                    String modsPath = gameInstance.getHomePath() + "/Zomboid/mods";
+                    new File(modsPath).mkdirs();
+                    File modDest = new File(modsPath, modName);
+                    if (modDest.exists()) FileUtils.deleteDirectory(modDest);
+                    copyDirectory(modRoot, modDest);
+                    Log.d("ZombieBuddy", "Mod installed to: " + modDest.getAbsolutePath());
+                }
 
                 // Enable flag
                 getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
