@@ -152,9 +152,13 @@ public class GameLauncher {
         // Prefer JRE21 when using GL4ES-style renderers (Build 41 tends to rely on that path).
         // This isolates "old GL4ES pipeline" from "new Java 25 runtime" regressions.
         boolean preferJre21ForRenderer = isLegacyRendererNeedingJre21(LauncherPreferences.requireSingleton().getRenderer()); 
-        // ZombieBuddy agent — loaded automatically if jar is present in dependencies folder
+        // ZombieBuddy agent — loaded if jar present AND enabled in Optimization settings
+        android.content.SharedPreferences zbPrefs =
+                LauncherPreferences.requireSingleton().getSharedPreferences();
+
         String zombieBuddyPath = home + "/" + C.deps.JARS_ZOMBIE_BUDDY;
-        if (new File(zombieBuddyPath).exists()) {
+        boolean zombieBuddyEnabled = zbPrefs.getBoolean("zombiebuddy_enabled", false);
+        if (new File(zombieBuddyPath).exists() && zombieBuddyEnabled) {
             jvmArgs.add("-javaagent:" + zombieBuddyPath + "=policy=allow-all");
             jvmArgs.add("-Dnet.bytebuddy.processor=ASM_ONLY");
             jvmArgs.add("-Dnet.bytebuddy.experimental=true");
@@ -164,9 +168,10 @@ public class GameLauncher {
                 jvmArgs.add("-Dnet.bytebuddy.unsupported.classfile.version=69");
             }
 
-            // Add ZBBetterFPS to classpath if present
+            // Add ZBBetterFPS to classpath if present AND enabled
             String zbBetterFpsPath = home + "/" + C.deps.JARS_ZB_BETTER_FPS;
-            if (new File(zbBetterFpsPath).exists()) {
+            boolean zbBetterFpsEnabled = zbPrefs.getBoolean("zbbetterfps_enabled", false);
+            if (new File(zbBetterFpsPath).exists() && zbBetterFpsEnabled) {
                 jvmArgs.add("-Xbootclasspath/a:" + zbBetterFpsPath);
             }
         }
