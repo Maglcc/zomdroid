@@ -29,6 +29,7 @@ import androidx.navigation.Navigation;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.SharedPreferences;
 import com.zomdroid.InstallerService;
+import com.zomdroid.LauncherPreferences;
 import com.zomdroid.R;
 import com.zomdroid.databinding.FragmentOptimizationBinding;
 import com.zomdroid.databinding.TaskProgressDialogBinding;
@@ -355,7 +356,7 @@ public class OptimizationFragment extends Fragment {
         if (instances != null && instances.size() == 1)
             binding.optimizationZbbetterfpsInstanceSpinner.setSelection(0);
 
-        binding.optimizationZbbetterFpsBrowseIb.setOnClickListener(v ->
+        binding.optimizationZbbetterfpsBrowseIb.setOnClickListener(v ->
                 zbbetterfpsLauncher.launch(ZIP_MIME));
 
         binding.optimizationZbbetterfpsInstallBtn.setOnClickListener(v -> {
