@@ -133,6 +133,12 @@ public class InstallerService extends Service implements TaskProgressListener {
             case INSTALL_ETO:
                 doInstallEto(intent);
                 break;
+            case INSTALL_ZOMBIEBUDDY:
+                doInstallZombieBuddy(intent);
+                break;
+            case INSTALL_ZBBETTERFPS:
+                doInstallZbBetterFps(intent);
+                break;
         }
 
         return START_NOT_STICKY;
@@ -1695,6 +1701,198 @@ public class InstallerService extends Service implements TaskProgressListener {
         return null;
     }
 
+    // -------------------- INSTALL ZOMBIEBUDDY --------------------
+    // Extracts ZombieBuddy.jar from ZIP and copies it to the JARS dependencies folder.
+    // Enables the zombiebuddy_enabled flag in SharedPreferences automatically.
+    private void doInstallZombieBuddy(Intent intent) {
+        String taskTitle = getString(R.string.optimization_zombiebuddy_installing);
+        startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
+        taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
+
+        executorService.submit(() -> {
+            Uri archiveUri = intent.getParcelableExtra(EXTRA_ARCHIVE_URI);
+            if (archiveUri == null) { finishWithError(taskTitle, "Archive URI is missing"); return; }
+
+            File tmpDir = new File(getCacheDir(), "zb_tmp_" + System.currentTimeMillis());
+            try {
+                tmpDir.mkdirs();
+
+                // Extract ZIP
+                try (InputStream is = getContentResolver().openInputStream(archiveUri);
+                     ZipInputStream zis = new ZipInputStream(is)) {
+                    ZipEntry entry;
+                    while ((entry = zis.getNextEntry()) != null) {
+                        File outFile = new File(tmpDir, entry.getName());
+                        if (entry.isDirectory()) { outFile.mkdirs(); }
+                        else {
+                            outFile.getParentFile().mkdirs();
+                            try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                                byte[] buf = new byte[8192]; int len;
+                                while ((len = zis.read(buf)) > 0) fos.write(buf, 0, len);
+                            }
+                        }
+                        zis.closeEntry();
+                    }
+                }
+
+                // Find ZombieBuddy.jar recursively
+                File jarFile = findFileRecursive(tmpDir, "ZombieBuddy.jar");
+                if (jarFile == null) {
+                    finishWithError(taskTitle, "ZombieBuddy.jar not found in archive");
+                    return;
+                }
+
+                // Copy to JARS folder
+                File destDir = new File(AppStorage.requireSingleton().getHomePath() + "/" + C.deps.JARS);
+                destDir.mkdirs();
+                File destFile = new File(destDir, "ZombieBuddy.jar");
+                copyFile(jarFile, destFile);
+                Log.d("ZombieBuddy", "Installed to: " + destFile.getAbsolutePath());
+
+                // Enable flag
+                getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
+                        .edit().putBoolean("zombiebuddy_enabled", true).apply();
+
+                finish(getString(R.string.optimization_zombiebuddy_installed), null);
+
+            } catch (Exception e) {
+                finishWithError(taskTitle, e.toString());
+            } finally {
+                try { FileUtils.deleteDirectory(tmpDir); } catch (Exception ignored) {}
+            }
+        });
+    }
+
+    // -------------------- INSTALL ZBBETTERFPS --------------------
+    // Extracts ZBBetterFPS.jar, copies to JARS folder, comments out javaJarFile in mod.info,
+    // and installs the mod to the game instance mods folder.
+    // Enables the zbbetterfps_enabled flag in SharedPreferences automatically.
+    private void doInstallZbBetterFps(Intent intent) {
+        String taskTitle = getString(R.string.optimization_zbbetterfps_installing);
+        startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
+        taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
+
+        String gameInstanceName = intent.getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+        if (gameInstanceName == null) { finishWithError(taskTitle, "Game instance name is missing"); return; }
+        GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(gameInstanceName);
+        if (gameInstance == null) { finishWithError(taskTitle, "Game instance not found: " + gameInstanceName); return; }
+
+        executorService.submit(() -> {
+            Uri archiveUri = intent.getParcelableExtra(EXTRA_ARCHIVE_URI);
+            if (archiveUri == null) { finishWithError(taskTitle, "Archive URI is missing"); return; }
+
+            File tmpDir = new File(getCacheDir(), "zbbfps_tmp_" + System.currentTimeMillis());
+            try {
+                tmpDir.mkdirs();
+
+                // Extract ZIP
+                try (InputStream is = getContentResolver().openInputStream(archiveUri);
+                     ZipInputStream zis = new ZipInputStream(is)) {
+                    ZipEntry entry;
+                    while ((entry = zis.getNextEntry()) != null) {
+                        File outFile = new File(tmpDir, entry.getName());
+                        if (entry.isDirectory()) { outFile.mkdirs(); }
+                        else {
+                            outFile.getParentFile().mkdirs();
+                            try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                                byte[] buf = new byte[8192]; int len;
+                                while ((len = zis.read(buf)) > 0) fos.write(buf, 0, len);
+                            }
+                        }
+                        zis.closeEntry();
+                    }
+                }
+
+                // Find ZBBetterFPS.jar recursively
+                File jarFile = findFileRecursive(tmpDir, "ZBBetterFPS.jar");
+                if (jarFile == null) {
+                    finishWithError(taskTitle, "ZBBetterFPS.jar not found in archive");
+                    return;
+                }
+
+                // Copy jar to JARS folder
+                File destDir = new File(AppStorage.requireSingleton().getHomePath() + "/" + C.deps.JARS);
+                destDir.mkdirs();
+                File destJar = new File(destDir, "ZBBetterFPS.jar");
+                copyFile(jarFile, destJar);
+                Log.d("ZBBetterFPS", "Jar installed to: " + destJar.getAbsolutePath());
+
+                // Find mod root
+                File modRoot = findModRoot(tmpDir);
+                if (modRoot == null) {
+                    finishWithError(taskTitle, getString(R.string.install_mod_smart_no_root));
+                    return;
+                }
+
+                // Comment out javaJarFile= line in mod.info
+                File modInfo = new File(modRoot, "mod.info");
+                if (modInfo.exists()) {
+                    commentOutJavaJarFile(modInfo);
+                }
+
+                // Install mod to instance mods folder
+                String modName = modRoot.getName();
+                if (modName.equals(tmpDir.getName())) {
+                    modName = extractZipName(archiveUri);
+                    if (modName != null && modName.endsWith(".zip"))
+                        modName = modName.substring(0, modName.length() - 4);
+                }
+                String modsPath = gameInstance.getHomePath() + "/Zomboid/mods";
+                new File(modsPath).mkdirs();
+                File modDest = new File(modsPath, modName);
+                if (modDest.exists()) FileUtils.deleteDirectory(modDest);
+                copyDirectory(modRoot, modDest);
+                Log.d("ZBBetterFPS", "Mod installed to: " + modDest.getAbsolutePath());
+
+                // Enable flag
+                getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
+                        .edit().putBoolean("zbbetterfps_enabled", true).apply();
+
+                finish(getString(R.string.optimization_zbbetterfps_installed), null);
+
+            } catch (Exception e) {
+                finishWithError(taskTitle, e.toString());
+            } finally {
+                try { FileUtils.deleteDirectory(tmpDir); } catch (Exception ignored) {}
+            }
+        });
+    }
+
+    // Find a file by name recursively inside a directory
+    private File findFileRecursive(File dir, String fileName) {
+        File[] files = dir.listFiles();
+        if (files == null) return null;
+        for (File f : files) {
+            if (f.isFile() && f.getName().equals(fileName)) return f;
+            if (f.isDirectory()) {
+                File found = findFileRecursive(f, fileName);
+                if (found != null) return found;
+            }
+        }
+        return null;
+    }
+
+    // Comment out javaJarFile= line in mod.info so ZombieBuddy skips addURL
+    private void commentOutJavaJarFile(File modInfo) throws IOException {
+        java.util.List<String> lines = new java.util.ArrayList<>();
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(modInfo))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().startsWith("javaJarFile=")) {
+                    lines.add("// " + line);
+                } else {
+                    lines.add(line);
+                }
+            }
+        }
+        try (java.io.BufferedWriter bw = new java.io.BufferedWriter(new java.io.FileWriter(modInfo, false))) {
+            for (String line : lines) {
+                bw.write(line);
+                bw.newLine();
+            }
+        }
+    }
+
     private Notification buildNotification(String title) {
         Intent notificationIntent = new Intent(this, LauncherActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -1768,7 +1966,9 @@ public class InstallerService extends Service implements TaskProgressListener {
         INSTALL_BETTERFPS,
         INSTALL_MOD_WITH_FIX,
         INSTALL_MOD_SMART,
-        INSTALL_ETO
+        INSTALL_ETO,
+        INSTALL_ZOMBIEBUDDY,
+        INSTALL_ZBBETTERFPS
     }
 
     public static class TaskState {
