@@ -291,7 +291,7 @@ public class OptimizationFragment extends Fragment {
         });
 
         // ===== ZombieBuddy section =====
-        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
+        SharedPreferences prefs = LauncherPreferences.requireSingleton().getSharedPrefs();
 
         binding.optimizationZombiebuddyHelpIb.setOnClickListener(v ->
                 new MaterialAlertDialogBuilder(requireContext())
@@ -339,6 +339,22 @@ public class OptimizationFragment extends Fragment {
         binding.optimizationZbbetterfpsSwitch.setOnCheckedChangeListener((v, checked) ->
                 prefs.edit().putBoolean("zbbetterfps_enabled", checked).apply());
 
+        // ZBBetterFPS instance spinner
+        List<String> zbbNames = new ArrayList<>();
+        if (instances == null || instances.isEmpty()) {
+            zbbNames.add(getString(R.string.select_instance));
+            binding.optimizationZbbetterfpsInstallBtn.setEnabled(false);
+        } else {
+            if (instances.size() > 1) zbbNames.add(getString(R.string.select_instance));
+            for (GameInstance gi : instances) zbbNames.add(gi.getName());
+        }
+        ArrayAdapter<String> zbbAdapter = new ArrayAdapter<>(
+                requireContext(), R.layout.spinner_item, zbbNames);
+        zbbAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        binding.optimizationZbbetterfpsInstanceSpinner.setAdapter(zbbAdapter);
+        if (instances != null && instances.size() == 1)
+            binding.optimizationZbbetterfpsInstanceSpinner.setSelection(0);
+
         binding.optimizationZbbetterFpsBrowseIb.setOnClickListener(v ->
                 zbbetterfpsLauncher.launch(ZIP_MIME));
 
@@ -349,10 +365,24 @@ public class OptimizationFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            int position = binding.optimizationZbbetterfpsInstanceSpinner.getSelectedItemPosition();
+            int instanceIndex = (instances != null && instances.size() > 1) ? position - 1 : position;
+            if (instances == null || instanceIndex < 0 || instanceIndex >= instances.size()) {
+                Toast.makeText(requireContext(),
+                        getString(R.string.select_instance),
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            GameInstance selectedInstance = instances.get(instanceIndex);
+
             Intent installerIntent = new Intent(requireContext(), InstallerService.class);
             installerIntent.putExtra(
                     InstallerService.EXTRA_COMMAND,
                     InstallerService.Task.INSTALL_ZBBETTERFPS.ordinal());
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_GAME_INSTANCE_NAME,
+                    selectedInstance.getName());
             installerIntent.putExtra(InstallerService.EXTRA_ARCHIVE_URI, zbbetterfpsZipUri);
             zbbetterfpsZipUri = null;
             binding.optimizationZbbetterfpsPathEt.setText(getString(R.string.game_instance_no_file_selected));
