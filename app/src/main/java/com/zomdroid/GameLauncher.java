@@ -167,8 +167,7 @@ public class GameLauncher {
             // Add ZBBetterFPS to classpath if present
             String zbBetterFpsPath = home + "/" + C.deps.JARS_ZB_BETTER_FPS;
             if (new File(zbBetterFpsPath).exists()) {
-                // append to existing class path
-                jvmArgs.add("-Djava.class.path=" + zbBetterFpsPath);
+                jvmArgs.add("-Xbootclasspath/a:" + zbBetterFpsPath);
             }
         }
 
