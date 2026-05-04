@@ -73,6 +73,10 @@ public class LauncherPreferences {
         return singleton;
     }
 
+    public SharedPreferences getSharedPrefs() {
+        return sharedPreferences;
+    }
+
     public void saveToPreferences() {
         String json = gson.toJson(this);
         this.sharedPreferences
