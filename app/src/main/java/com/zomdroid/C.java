@@ -8,8 +8,8 @@ public class C {
         // We keep multiple JRE/LIBS versions side-by-side to support different game builds.
         // NOTE: This avoids breaking PZ Build 41 when the launcher ships Java 25 for Build 42+.
         public static final String JRE_ROOT = ROOT + "/jre";
-        public static final String JRE_21 = JRE_ROOT + "21"; 
-        public static final String JRE_25 = JRE_ROOT + "25"; 
+        public static final String JRE_21 = JRE_ROOT + "21";
+        public static final String JRE_25 = JRE_ROOT + "25";
         public static final String LIBS = ROOT + "/libs";
         public static final String JARS = ROOT + "/jars";
         public static final String LIBS_LINUX_X86_64 = LIBS + "/linux-x86_64";
@@ -21,8 +21,11 @@ public class C {
         public static final String LIBS_FMOD_20309 = LIBS_ANDROID_ARM64_v8a + "/fmod-2.03.09";
         public static final String JARS_SQLITE_JDBC_34800 = JARS + "/sqlite-jdbc-3.48.0.0.jar";
         public static final String JARS_ZOMDROID_AGENT = JARS + "/zomdroid-agent.jar";
-        public static final String JARS_ZOMBIE_BUDDY = JARS + "/ZombieBuddy.jar";
-        public static final String JARS_ZB_BETTER_FPS = JARS + "/ZBBetterFPS.jar";
+
+        // ZombieBuddy and ZBBetterFPS jars are stored per-instance in game/ folder.
+        // Use gameInstance.getGamePath() + "/" + filename to get the full path.
+        public static final String ZOMBIE_BUDDY_JAR = "ZombieBuddy.jar";
+        public static final String ZB_BETTER_FPS_JAR = "ZBBetterFPS.jar";
 
         // Custom user-supplied Vulkan driver. Stored directly in LIBS_ANDROID_ARM64_v8a.
         public static final String CUSTOM_DRIVER_FILENAME = "custom_driver.so";

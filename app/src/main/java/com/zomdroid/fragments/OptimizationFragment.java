@@ -301,10 +301,15 @@ public class OptimizationFragment extends Fragment {
                         .setPositiveButton(R.string.dialog_button_ok, null)
                         .show());
 
-        binding.optimizationZombiebuddySwitch.setChecked(
-                prefs.getBoolean("zombiebuddy_enabled", false));
-        binding.optimizationZombiebuddySwitch.setOnCheckedChangeListener((v, checked) ->
-                prefs.edit().putBoolean("zombiebuddy_enabled", checked).apply());
+        binding.optimizationZombiebuddySwitch.setChecked(false);
+        binding.optimizationZombiebuddySwitch.setOnCheckedChangeListener((v, checked) -> {
+            int pos = binding.optimizationZombiebuddyInstanceSpinner.getSelectedItemPosition();
+            int idx = (instances != null && instances.size() > 1) ? pos - 1 : pos;
+            if (instances != null && idx >= 0 && idx < instances.size()) {
+                prefs.edit().putBoolean(
+                        "zombiebuddy_enabled_" + instances.get(idx).getName(), checked).apply();
+            }
+        });
 
         // ZombieBuddy instance spinner
         List<String> zbNames = new ArrayList<>();
@@ -321,6 +326,21 @@ public class OptimizationFragment extends Fragment {
         binding.optimizationZombiebuddyInstanceSpinner.setAdapter(zbAdapter);
         if (instances != null && instances.size() == 1)
             binding.optimizationZombiebuddyInstanceSpinner.setSelection(0);
+
+        binding.optimizationZombiebuddyInstanceSpinner.setOnItemSelectedListener(
+                new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(android.widget.AdapterView<?> parent,
+                                               android.view.View view, int position, long id) {
+                        int idx = (instances != null && instances.size() > 1) ? position - 1 : position;
+                        if (instances != null && idx >= 0 && idx < instances.size()) {
+                            String key = "zombiebuddy_enabled_" + instances.get(idx).getName();
+                            binding.optimizationZombiebuddySwitch.setChecked(prefs.getBoolean(key, false));
+                        }
+                    }
+                    @Override
+                    public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+                });
 
         binding.optimizationZombiebuddyBrowseIb.setOnClickListener(v ->
                 zombiebuddyLauncher.launch(ZIP_MIME));
@@ -364,10 +384,15 @@ public class OptimizationFragment extends Fragment {
                         .setPositiveButton(R.string.dialog_button_ok, null)
                         .show());
 
-        binding.optimizationZbbetterfpsSwitch.setChecked(
-                prefs.getBoolean("zbbetterfps_enabled", false));
-        binding.optimizationZbbetterfpsSwitch.setOnCheckedChangeListener((v, checked) ->
-                prefs.edit().putBoolean("zbbetterfps_enabled", checked).apply());
+        binding.optimizationZbbetterfpsSwitch.setChecked(false);
+        binding.optimizationZbbetterfpsSwitch.setOnCheckedChangeListener((v, checked) -> {
+            int pos = binding.optimizationZbbetterfpsInstanceSpinner.getSelectedItemPosition();
+            int idx = (instances != null && instances.size() > 1) ? pos - 1 : pos;
+            if (instances != null && idx >= 0 && idx < instances.size()) {
+                prefs.edit().putBoolean(
+                        "zbbetterfps_enabled_" + instances.get(idx).getName(), checked).apply();
+            }
+        });
 
         // ZBBetterFPS instance spinner
         List<String> zbbNames = new ArrayList<>();
@@ -384,6 +409,21 @@ public class OptimizationFragment extends Fragment {
         binding.optimizationZbbetterfpsInstanceSpinner.setAdapter(zbbAdapter);
         if (instances != null && instances.size() == 1)
             binding.optimizationZbbetterfpsInstanceSpinner.setSelection(0);
+
+        binding.optimizationZbbetterfpsInstanceSpinner.setOnItemSelectedListener(
+                new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(android.widget.AdapterView<?> parent,
+                                               android.view.View view, int position, long id) {
+                        int idx = (instances != null && instances.size() > 1) ? position - 1 : position;
+                        if (instances != null && idx >= 0 && idx < instances.size()) {
+                            String key = "zbbetterfps_enabled_" + instances.get(idx).getName();
+                            binding.optimizationZbbetterfpsSwitch.setChecked(prefs.getBoolean(key, false));
+                        }
+                    }
+                    @Override
+                    public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+                });
 
         binding.optimizationZbbetterfpsBrowseIb.setOnClickListener(v ->
                 zbbetterfpsLauncher.launch(ZIP_MIME));

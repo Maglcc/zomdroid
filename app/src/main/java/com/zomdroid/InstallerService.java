@@ -1747,10 +1747,8 @@ public class InstallerService extends Service implements TaskProgressListener {
                     return;
                 }
 
-                // Copy jar to JARS folder (global, for all instances)
-                File destDir = new File(AppStorage.requireSingleton().getHomePath() + "/" + C.deps.JARS);
-                destDir.mkdirs();
-                File destFile = new File(destDir, "ZombieBuddy.jar");
+                // Copy jar to game/ folder of the instance
+                File destFile = new File(gameInstance.getGamePath(), C.deps.ZOMBIE_BUDDY_JAR);
                 copyFile(jarFile, destFile);
                 Log.d("ZombieBuddy", "Jar installed to: " + destFile.getAbsolutePath());
 
@@ -1767,9 +1765,9 @@ public class InstallerService extends Service implements TaskProgressListener {
                     Log.d("ZombieBuddy", "Mod installed to: " + modDest.getAbsolutePath());
                 }
 
-                // Enable flag
+                // Enable flag for this instance
                 getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
-                        .edit().putBoolean("zombiebuddy_enabled", true).apply();
+                        .edit().putBoolean("zombiebuddy_enabled_" + gameInstanceName, true).apply();
 
                 finish(getString(R.string.optimization_zombiebuddy_installed), null);
 
@@ -1828,10 +1826,8 @@ public class InstallerService extends Service implements TaskProgressListener {
                     return;
                 }
 
-                // Copy jar to JARS folder
-                File destDir = new File(AppStorage.requireSingleton().getHomePath() + "/" + C.deps.JARS);
-                destDir.mkdirs();
-                File destJar = new File(destDir, "ZBBetterFPS.jar");
+                // Copy jar to game/ folder of the instance
+                File destJar = new File(gameInstance.getGamePath(), C.deps.ZB_BETTER_FPS_JAR);
                 copyFile(jarFile, destJar);
                 Log.d("ZBBetterFPS", "Jar installed to: " + destJar.getAbsolutePath());
 
@@ -1842,11 +1838,10 @@ public class InstallerService extends Service implements TaskProgressListener {
                     return;
                 }
 
-                // Comment out javaJarFile= line in mod.info
-                File modInfo = new File(modRoot, "mod.info");
-                if (modInfo.exists()) {
-                    commentOutJavaJarFile(modInfo);
-                }
+                // Comment out javaJarFile= in all mod.info files recursively.
+                // Since we preload the jar via -Xbootclasspath/a, ZombieBuddy must not
+                // attempt to load it again via addURL — that causes a crash on GL4ES.
+                commentOutJavaJarFileRecursive(modRoot);
 
                 // Install mod to instance mods folder
                 String modName = modRoot.getName();
@@ -1862,9 +1857,9 @@ public class InstallerService extends Service implements TaskProgressListener {
                 copyDirectory(modRoot, modDest);
                 Log.d("ZBBetterFPS", "Mod installed to: " + modDest.getAbsolutePath());
 
-                // Enable flag
+                // Enable flag for this instance
                 getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
-                        .edit().putBoolean("zbbetterfps_enabled", true).apply();
+                        .edit().putBoolean("zbbetterfps_enabled_" + gameInstanceName, true).apply();
 
                 finish(getString(R.string.optimization_zbbetterfps_installed), null);
 
@@ -1888,6 +1883,19 @@ public class InstallerService extends Service implements TaskProgressListener {
             }
         }
         return null;
+    }
+
+    // Recursively find and comment out javaJarFile= in all mod.info files
+    private void commentOutJavaJarFileRecursive(File dir) throws IOException {
+        File[] files = dir.listFiles();
+        if (files == null) return;
+        for (File f : files) {
+            if (f.isDirectory()) {
+                commentOutJavaJarFileRecursive(f);
+            } else if (f.getName().equals("mod.info")) {
+                commentOutJavaJarFile(f);
+            }
+        }
     }
 
     // Comment out javaJarFile= line in mod.info so ZombieBuddy skips addURL

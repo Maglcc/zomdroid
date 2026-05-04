@@ -89,8 +89,8 @@ public class GameLauncher {
 
         if (BuildConfig.DEBUG) {
             //for debugging GL calls, only supported on GL ES 3.2+ with GL_KHR_debug extension present
-                Os.setenv("LIBGL_STACKTRACE","1", false);
-                Os.setenv("LIBGL_LOGSHADERERROR","1", false);
+            Os.setenv("LIBGL_STACKTRACE","1", false);
+            Os.setenv("LIBGL_LOGSHADERERROR","1", false);
                 /*Os.setenv("ZOMDROID_DEBUG_GL", "1", false);
                 Os.setenv("ZOMDROID_DEBUG_GL", "1", false);
                 Os.setenv("LIBGL_GLES", "libGLESv3.so", false);
@@ -141,7 +141,7 @@ public class GameLauncher {
         }
         Log.i("Zomdroid", "JVM ARGS: " + jvmArgs);
         Log.i("Zomdroid", "GAME ARGS: " + args);
-        
+
         if (BuildConfig.DEBUG || LauncherPreferences.requireSingleton().isDebug()) {
             args.add("-debug");
         }
@@ -151,13 +151,13 @@ public class GameLauncher {
 
         // Prefer JRE21 when using GL4ES-style renderers (Build 41 tends to rely on that path).
         // This isolates "old GL4ES pipeline" from "new Java 25 runtime" regressions.
-        boolean preferJre21ForRenderer = isLegacyRendererNeedingJre21(LauncherPreferences.requireSingleton().getRenderer()); 
-        // ZombieBuddy agent — loaded if jar present AND enabled in Optimization settings
-        // Flags are stored in the same SharedPreferences as LauncherPreferences
+        boolean preferJre21ForRenderer = isLegacyRendererNeedingJre21(LauncherPreferences.requireSingleton().getRenderer());
+        // ZombieBuddy agent — loaded if jar present in game folder AND enabled in settings
         android.content.SharedPreferences zbPrefs = LauncherPreferences.requireSingleton().getSharedPrefs();
 
-        String zombieBuddyPath = home + "/" + C.deps.JARS_ZOMBIE_BUDDY;
-        boolean zombieBuddyEnabled = zbPrefs.getBoolean("zombiebuddy_enabled", false);
+        String instanceName = gameInstance.getName();
+        String zombieBuddyPath = gameInstance.getGamePath() + "/" + C.deps.ZOMBIE_BUDDY_JAR;
+        boolean zombieBuddyEnabled = zbPrefs.getBoolean("zombiebuddy_enabled_" + instanceName, false);
         if (new File(zombieBuddyPath).exists() && zombieBuddyEnabled) {
             jvmArgs.add("-javaagent:" + zombieBuddyPath + "=policy=allow-all");
             jvmArgs.add("-Dnet.bytebuddy.processor=ASM_ONLY");
@@ -169,8 +169,8 @@ public class GameLauncher {
             }
 
             // Add ZBBetterFPS to classpath if present AND enabled
-            String zbBetterFpsPath = home + "/" + C.deps.JARS_ZB_BETTER_FPS;
-            boolean zbBetterFpsEnabled = zbPrefs.getBoolean("zbbetterfps_enabled", false);
+            String zbBetterFpsPath = gameInstance.getGamePath() + "/" + C.deps.ZB_BETTER_FPS_JAR;
+            boolean zbBetterFpsEnabled = zbPrefs.getBoolean("zbbetterfps_enabled_" + instanceName, false);
             if (new File(zbBetterFpsPath).exists() && zbBetterFpsEnabled) {
                 jvmArgs.add("-Xbootclasspath/a:" + zbBetterFpsPath);
             }

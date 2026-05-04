@@ -464,18 +464,18 @@
 
     <!-- ===== ZombieBuddy + ZBBetterFPS strings ===== -->
     <string name="optimization_group_zombiebuddy">ZombieBuddy</string>
-    <string name="optimization_zombiebuddy_hint">A framework that enables advanced Java mods for Project Zomboid. Safe to add or remove on existing saves.\n\nTo disable: turn off the switch here AND disable the mod in-game, then restart.</string>
+    <string name="optimization_zombiebuddy_hint">Safe to add or remove on existing saves.\n\nTo disable: turn off the switch here AND disable the mod in-game, then restart.</string>
     <string name="optimization_zombiebuddy_enabled">Enable ZombieBuddy agent</string>
     <string name="optimization_zombiebuddy_help_title">ZombieBuddy</string>
-    <string name="optimization_zombiebuddy_help_message">A framework that enables advanced Java mods for Project Zomboid. Safe to add or remove on existing saves.\n\nDownload ZombieBuddy from Steam Workshop, upload the ZIP here and tap Install.\n\nTo disable: turn off the switch here AND disable the mod in-game, then restart the game.</string>
+    <string name="optimization_zombiebuddy_help_message">A framework that enables advanced Java mods for Project Zomboid. \n\nDownload ZombieBuddy from Steam Workshop ID: 3619862853, upload the ZIP here and tap Install.</string>
     <string name="optimization_zombiebuddy_installing">Installing ZombieBuddy…</string>
     <string name="optimization_zombiebuddy_installed">ZombieBuddy installed</string>
      
     <string name="optimization_group_zbbetterfps">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_hint">A comprehensive performance overhaul that optimizes rendering, game logic and CPU usage via low-level runtime patching.\n\n⚙️ All optimizations are disabled by default. Enable them in Mod Options → ZBBetterFPS after loading the game.\n\n⚠️ ZBBetterFPS and BetterFPS MAY BE incompatible — it is better to use only one of them.\n\nTo disable: turn off the switch here AND disable the mod in-game, then restart.</string>
+    <string name="optimization_zbbetterfps_hint">Enable them in Mod Options → ZBBetterFPS after loading the game.\n\n⚠️ ZBBetterFPS and BetterFPS MAY BE incompatible — it is better to use only one of them.\n\nTo disable: turn off the switch here AND disable the mod in-game, then restart.</string>
     <string name="optimization_zbbetterfps_enabled">Enable ZBBetterFPS</string>
     <string name="optimization_zbbetterfps_help_title">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_help_message">A comprehensive performance overhaul for Project Zomboid that optimizes rendering, game logic, and CPU usage. Unlike traditional mods, ZBBetterFPS uses low-level runtime patching to fix performance bottlenecks deep within the game engine.\n\n⚙️ All optimizations are disabled by default. Enable the ones you want in Mod Options → ZBBetterFPS after loading the game.\n\n⚠️ ZBBetterFPS and BetterFPS MAY BE incompatible — it is better to use only one of them.\n\nRequires ZombieBuddy to be installed and enabled.</string>
+    <string name="optimization_zbbetterfps_help_message">A comprehensive performance overhaul for Project Zomboid that optimizes rendering, game logic, and CPU usage. Unlike traditional mods, ZBBetterFPS uses low-level runtime patching to fix performance bottlenecks deep within the game engine.\n\nRequires ZombieBuddy to be installed and enabled. \n\nDownload ZombieBuddy from Steam Workshop ID: 3622986450, upload the ZIP here and tap Install.</string>
     <string name="optimization_zbbetterfps_installing">Installing ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS installed</string>
 </resources>
