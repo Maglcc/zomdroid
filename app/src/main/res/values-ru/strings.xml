@@ -460,4 +460,21 @@
     <string name="optimization_eto_installing">Установка текстур…</string>
     <string name="optimization_eto_installed">Текстуры успешно установлены</string>
     <string name="optimization_eto_error_no_textures">Не удалось найти папку с текстурами в этом ZIP.</string>
+
+    <!-- ===== ZombieBuddy + ZBBetterFPS strings ===== -->
+    <string name="optimization_group_zombiebuddy">ZombieBuddy</string>
+    <string name="optimization_zombiebuddy_hint">Фреймворк для запуска продвинутых Java-модов в Project Zomboid. Безопасно добавлять и удалять на существующих сохранениях.\n\nЧтобы отключить: выключите переключатель здесь И отключите мод в игре, затем перезапустите игру.</string>
+    <string name="optimization_zombiebuddy_enabled">Включить агент ZombieBuddy</string>
+    <string name="optimization_zombiebuddy_help_title">ZombieBuddy</string>
+    <string name="optimization_zombiebuddy_help_message">Фреймворк для запуска продвинутых Java-модов в Project Zomboid. Безопасно добавлять и удалять на существующих сохранениях.\n\nСкачайте ZombieBuddy из Steam Workshop, загрузите ZIP здесь и нажмите Установить.\n\nЧтобы отключить: выключите переключатель здесь И отключите мод в игре, затем перезапустите игру.</string>
+    <string name="optimization_zombiebuddy_installing">Установка ZombieBuddy…</string>
+    <string name="optimization_zombiebuddy_installed">ZombieBuddy установлен</string>
+     
+    <string name="optimization_group_zbbetterfps">ZBBetterFPS</string>
+    <string name="optimization_zbbetterfps_hint">Комплексная оптимизация производительности: рендеринг, игровая логика и CPU через низкоуровневое патчинг в runtime.\n\n⚙️ Все оптимизации отключены по умолчанию. Включите нужные в Настройки модов → ZBBetterFPS после загрузки игры.\n\n⚠️ ZBBetterFPS и BetterFPS МОГУТ БЫТЬ несовместимы — лучше используйте только один из них.\n\nЧтобы отключить: выключите переключатель здесь И отключите мод в игре, затем перезапустите.</string>
+    <string name="optimization_zbbetterfps_enabled">Включить ZBBetterFPS</string>
+    <string name="optimization_zbbetterfps_help_title">ZBBetterFPS</string>
+    <string name="optimization_zbbetterfps_help_message">Комплексная оптимизация Project Zomboid: рендеринг, игровая логика и использование CPU. В отличие от обычных модов, ZBBetterFPS использует низкоуровневое патчинг в runtime для устранения узких мест производительности.\n\n⚙️ Все оптимизации отключены по умолчанию. Включите нужные в Настройки модов → ZBBetterFPS после загрузки игры.\n\n⚠️ ZBBetterFPS и BetterFPS МОГУТ БЫТЬ несовместимы — лучше используйте только один из них.\n\nТребует установленного и включённого ZombieBuddy.</string>
+    <string name="optimization_zbbetterfps_installing">Установка ZBBetterFPS…</string>
+    <string name="optimization_zbbetterfps_installed">ZBBetterFPS установлен</string>
 </resources>
