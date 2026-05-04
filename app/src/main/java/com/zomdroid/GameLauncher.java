@@ -133,6 +133,7 @@ public class GameLauncher {
 
         jvmArgs.add("-XX:ErrorFile=/dev/stdout"); // print jvm crash report to stdout for now
 
+
         ArrayList<String> args = gameInstance.getArgsAsList();
         if (BuildConfig.DEBUG) {
             //args.add("-debug");
@@ -150,6 +151,18 @@ public class GameLauncher {
         // Prefer JRE21 when using GL4ES-style renderers (Build 41 tends to rely on that path).
         // This isolates "old GL4ES pipeline" from "new Java 25 runtime" regressions.
         boolean preferJre21ForRenderer = isLegacyRendererNeedingJre21(LauncherPreferences.requireSingleton().getRenderer()); 
+        // ZombieBuddy agent — loaded automatically if jar is present in dependencies folder
+        String zombieBuddyPath = home + "/" + C.deps.JARS_ZOMBIE_BUDDY;
+        if (new File(zombieBuddyPath).exists()) {
+            jvmArgs.add("-javaagent:" + zombieBuddyPath + "=policy=allow-all");
+            jvmArgs.add("-Dnet.bytebuddy.processor=ASM_ONLY");
+            jvmArgs.add("-Dnet.bytebuddy.experimental=true");
+            // JRE25 (ZINK renderers) needs explicit classfile version hints for ByteBuddy
+            if (!preferJre21ForRenderer) {
+                jvmArgs.add("-Dnet.bytebuddy.classfile.version=65");
+                jvmArgs.add("-Dnet.bytebuddy.unsupported.classfile.version=69");
+            }
+        }
 
         // Try to use dedicated folders if present (jre21 / jre25). If not present, fall back to C.deps.JRE.
         String jreFolder = preferJre21ForRenderer ? C.deps.JRE_21 : C.deps.JRE_25;
