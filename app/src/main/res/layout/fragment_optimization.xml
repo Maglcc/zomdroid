@@ -671,6 +671,12 @@
                             android:textSize="11sp"
                             android:textColor="?android:attr/textColorSecondary"/>
 
+                        <Spinner
+                            android:id="@+id/optimization_zombiebuddy_instance_spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"/>
+
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/optimization_zombiebuddy_switch"
                             android:layout_width="wrap_content"
