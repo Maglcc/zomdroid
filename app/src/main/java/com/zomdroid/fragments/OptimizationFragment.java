@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import android.content.SharedPreferences;
 import com.zomdroid.InstallerService;
 import com.zomdroid.R;
 import com.zomdroid.databinding.FragmentOptimizationBinding;
@@ -50,6 +51,8 @@ public class OptimizationFragment extends Fragment {
     private final String ZIP_MIME = "application/zip";
     private Uri betterFpsZipUri = null;
     private Uri etoZipUri = null;
+    private Uri zombiebuddyZipUri = null;
+    private Uri zbbetterfpsZipUri = null;
     private List<GameInstance> instances;
 
     private final ServiceConnection installerServiceConnection = new ServiceConnection() {
@@ -110,6 +113,34 @@ public class OptimizationFragment extends Fragment {
                 if (Objects.equals(cr.getType(uri), ZIP_MIME)) {
                     etoZipUri = uri;
                     binding.optimizationEtoPathEt.setText(extractFileName(uri));
+                } else {
+                    Toast.makeText(requireContext(),
+                            getString(R.string.game_instance_unsupported_extension),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+
+    private final ActivityResultLauncher<String> zombiebuddyLauncher =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+                if (uri == null) return;
+                ContentResolver cr = requireContext().getContentResolver();
+                if (Objects.equals(cr.getType(uri), ZIP_MIME)) {
+                    zombiebuddyZipUri = uri;
+                    binding.optimizationZombiebuddyPathEt.setText(extractFileName(uri));
+                } else {
+                    Toast.makeText(requireContext(),
+                            getString(R.string.game_instance_unsupported_extension),
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+
+    private final ActivityResultLauncher<String> zbbetterfpsLauncher =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+                if (uri == null) return;
+                ContentResolver cr = requireContext().getContentResolver();
+                if (Objects.equals(cr.getType(uri), ZIP_MIME)) {
+                    zbbetterfpsZipUri = uri;
+                    binding.optimizationZbbetterfpsPathEt.setText(extractFileName(uri));
                 } else {
                     Toast.makeText(requireContext(),
                             getString(R.string.game_instance_unsupported_extension),
@@ -259,6 +290,76 @@ public class OptimizationFragment extends Fragment {
             bindInstallerService();
         });
 
+        // ===== ZombieBuddy section =====
+        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext());
+
+        binding.optimizationZombiebuddyHelpIb.setOnClickListener(v ->
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.optimization_zombiebuddy_help_title)
+                        .setMessage(R.string.optimization_zombiebuddy_help_message)
+                        .setPositiveButton(R.string.dialog_button_ok, null)
+                        .show());
+
+        binding.optimizationZombiebuddySwitch.setChecked(
+                prefs.getBoolean("zombiebuddy_enabled", false));
+        binding.optimizationZombiebuddySwitch.setOnCheckedChangeListener((v, checked) ->
+                prefs.edit().putBoolean("zombiebuddy_enabled", checked).apply());
+
+        binding.optimizationZombiebuddyBrowseIb.setOnClickListener(v ->
+                zombiebuddyLauncher.launch(ZIP_MIME));
+
+        binding.optimizationZombiebuddyInstallBtn.setOnClickListener(v -> {
+            if (zombiebuddyZipUri == null) {
+                Toast.makeText(requireContext(),
+                        R.string.game_instance_no_file_selected,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent installerIntent = new Intent(requireContext(), InstallerService.class);
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_COMMAND,
+                    InstallerService.Task.INSTALL_ZOMBIEBUDDY.ordinal());
+            installerIntent.putExtra(InstallerService.EXTRA_ARCHIVE_URI, zombiebuddyZipUri);
+            zombiebuddyZipUri = null;
+            binding.optimizationZombiebuddyPathEt.setText(getString(R.string.game_instance_no_file_selected));
+            requireContext().startForegroundService(installerIntent);
+            bindInstallerService();
+        });
+
+        // ===== ZBBetterFPS section =====
+        binding.optimizationZbbetterfpsHelpIb.setOnClickListener(v ->
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.optimization_zbbetterfps_help_title)
+                        .setMessage(R.string.optimization_zbbetterfps_help_message)
+                        .setPositiveButton(R.string.dialog_button_ok, null)
+                        .show());
+
+        binding.optimizationZbbetterfpsSwitch.setChecked(
+                prefs.getBoolean("zbbetterfps_enabled", false));
+        binding.optimizationZbbetterfpsSwitch.setOnCheckedChangeListener((v, checked) ->
+                prefs.edit().putBoolean("zbbetterfps_enabled", checked).apply());
+
+        binding.optimizationZbbetterFpsBrowseIb.setOnClickListener(v ->
+                zbbetterfpsLauncher.launch(ZIP_MIME));
+
+        binding.optimizationZbbetterfpsInstallBtn.setOnClickListener(v -> {
+            if (zbbetterfpsZipUri == null) {
+                Toast.makeText(requireContext(),
+                        R.string.game_instance_no_file_selected,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent installerIntent = new Intent(requireContext(), InstallerService.class);
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_COMMAND,
+                    InstallerService.Task.INSTALL_ZBBETTERFPS.ordinal());
+            installerIntent.putExtra(InstallerService.EXTRA_ARCHIVE_URI, zbbetterfpsZipUri);
+            zbbetterfpsZipUri = null;
+            binding.optimizationZbbetterfpsPathEt.setText(getString(R.string.game_instance_no_file_selected));
+            requireContext().startForegroundService(installerIntent);
+            bindInstallerService();
+        });
+
         // ===== Collapsible sections =====
         setupCollapsible(
                 binding.optimizationJvm4gbHeader,
@@ -276,6 +377,14 @@ public class OptimizationFragment extends Fragment {
                 binding.optimizationEtoHeader,
                 binding.optimizationEtoContent,
                 binding.optimizationEtoExpandIv);
+        setupCollapsible(
+                binding.optimizationZombiebuddyHeader,
+                binding.optimizationZombiebuddyContent,
+                binding.optimizationZombiebuddyExpandIv);
+        setupCollapsible(
+                binding.optimizationZbbetterfpsHeader,
+                binding.optimizationZbbetterfpsContent,
+                binding.optimizationZbbetterfpsExpandIv);
 
         // ===== ETO section =====
         binding.optimizationEtoHelpIb.setOnClickListener(v ->
