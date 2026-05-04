@@ -306,6 +306,22 @@ public class OptimizationFragment extends Fragment {
         binding.optimizationZombiebuddySwitch.setOnCheckedChangeListener((v, checked) ->
                 prefs.edit().putBoolean("zombiebuddy_enabled", checked).apply());
 
+        // ZombieBuddy instance spinner
+        List<String> zbNames = new ArrayList<>();
+        if (instances == null || instances.isEmpty()) {
+            zbNames.add(getString(R.string.select_instance));
+            binding.optimizationZombiebuddyInstallBtn.setEnabled(false);
+        } else {
+            if (instances.size() > 1) zbNames.add(getString(R.string.select_instance));
+            for (GameInstance gi : instances) zbNames.add(gi.getName());
+        }
+        ArrayAdapter<String> zbAdapter = new ArrayAdapter<>(
+                requireContext(), R.layout.spinner_item, zbNames);
+        zbAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        binding.optimizationZombiebuddyInstanceSpinner.setAdapter(zbAdapter);
+        if (instances != null && instances.size() == 1)
+            binding.optimizationZombiebuddyInstanceSpinner.setSelection(0);
+
         binding.optimizationZombiebuddyBrowseIb.setOnClickListener(v ->
                 zombiebuddyLauncher.launch(ZIP_MIME));
 
@@ -316,10 +332,23 @@ public class OptimizationFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 return;
             }
+            int position = binding.optimizationZombiebuddyInstanceSpinner.getSelectedItemPosition();
+            int instanceIndex = (instances != null && instances.size() > 1) ? position - 1 : position;
+            if (instances == null || instanceIndex < 0 || instanceIndex >= instances.size()) {
+                Toast.makeText(requireContext(),
+                        getString(R.string.select_instance),
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            GameInstance selectedInstance = instances.get(instanceIndex);
+
             Intent installerIntent = new Intent(requireContext(), InstallerService.class);
             installerIntent.putExtra(
                     InstallerService.EXTRA_COMMAND,
                     InstallerService.Task.INSTALL_ZOMBIEBUDDY.ordinal());
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_GAME_INSTANCE_NAME,
+                    selectedInstance.getName());
             installerIntent.putExtra(InstallerService.EXTRA_ARCHIVE_URI, zombiebuddyZipUri);
             zombiebuddyZipUri = null;
             binding.optimizationZombiebuddyPathEt.setText(getString(R.string.game_instance_no_file_selected));
