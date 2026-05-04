@@ -153,8 +153,8 @@ public class GameLauncher {
         // This isolates "old GL4ES pipeline" from "new Java 25 runtime" regressions.
         boolean preferJre21ForRenderer = isLegacyRendererNeedingJre21(LauncherPreferences.requireSingleton().getRenderer()); 
         // ZombieBuddy agent — loaded if jar present AND enabled in Optimization settings
-        android.content.SharedPreferences zbPrefs =
-                LauncherPreferences.requireSingleton().getSharedPreferences();
+        // Flags are stored in the same SharedPreferences as LauncherPreferences
+        android.content.SharedPreferences zbPrefs = LauncherPreferences.requireSingleton().getSharedPrefs();
 
         String zombieBuddyPath = home + "/" + C.deps.JARS_ZOMBIE_BUDDY;
         boolean zombieBuddyEnabled = zbPrefs.getBoolean("zombiebuddy_enabled", false);
