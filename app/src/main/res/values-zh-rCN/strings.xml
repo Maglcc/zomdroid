@@ -457,18 +457,18 @@
 
     <!-- ===== ZombieBuddy + ZBBetterFPS strings ===== -->
     <string name="optimization_group_zombiebuddy">ZombieBuddy</string>
-    <string name="optimization_zombiebuddy_hint">一个支持 Project Zomboid 高级 Java mod 的框架。可以在现有存档上安全添加或移除。\n\n如需禁用：在此关闭开关并在游戏中禁用该 mod，然后重启游戏。</string>
+    <string name="optimization_zombiebuddy_hint">框架 mod。\n可以在现有存档上安全添加或移除。\n\n如需禁用：在此关闭开关并在游戏中禁用该 mod，然后重启。</string>
     <string name="optimization_zombiebuddy_enabled">启用 ZombieBuddy 代理</string>
     <string name="optimization_zombiebuddy_help_title">ZombieBuddy</string>
-    <string name="optimization_zombiebuddy_help_message">一个支持 Project Zomboid 高级 Java mod 的框架。可以在现有存档上安全添加或移除。\n\n从 Steam Workshop 下载 ZombieBuddy，在此上传 ZIP 文件并点击安装。\n\n如需禁用：在此关闭开关并在游戏中禁用该 mod，然后重启游戏。</string>
+    <string name="optimization_zombiebuddy_help_message">一个支持 Project Zomboid 高级 Java mod 的框架。\n\n从 Steam 下载 ZombieBuddy，Workshop ID：3619862853，在此上传 ZIP 文件并点击安装。</string>
     <string name="optimization_zombiebuddy_installing">正在安装 ZombieBuddy…</string>
     <string name="optimization_zombiebuddy_installed">ZombieBuddy 安装成功</string>
      
     <string name="optimization_group_zbbetterfps">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_hint">通过运行时底层补丁优化渲染、游戏逻辑和 CPU 使用的综合性能改进 mod。\n\n⚙️ 所有优化默认关闭。加载游戏后在 Mod 选项 → ZBBetterFPS 中启用所需项目。\n\n⚠️ ZBBetterFPS 与 BetterFPS 可能不兼容——建议只使用其中一个。\n\n如需禁用：在此关闭开关并在游戏中禁用该 mod，然后重启。</string>
+    <string name="optimization_zbbetterfps_hint">优化 mod。\n加载游戏后在 Mod 选项 → ZBBetterFPS 中启用所需项目。\n\n⚠️ ZBBetterFPS 与 BetterFPS 可能不兼容——建议只使用其中一个。\n\n如需禁用：在此关闭开关并在游戏中禁用该 mod，然后重启。</string>
     <string name="optimization_zbbetterfps_enabled">启用 ZBBetterFPS</string>
     <string name="optimization_zbbetterfps_help_title">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_help_message">针对 Project Zomboid 的综合性能优化，改善渲染、游戏逻辑和 CPU 使用。与传统 mod 不同，ZBBetterFPS 使用底层运行时补丁修复深层性能瓶颈。\n\n⚙️ 所有优化默认关闭。加载游戏后在 Mod 选项 → ZBBetterFPS 中启用所需项目。\n\n⚠️ ZBBetterFPS 与 BetterFPS 可能不兼容——建议只使用其中一个。\n\n需要安装并启用 ZombieBuddy。</string>
+    <string name="optimization_zbbetterfps_help_message">针对 Project Zomboid 的综合性能优化，通过运行时底层补丁改善渲染、游戏逻辑和 CPU 使用。\n\n需要 ZombieBuddy（B41 还需要 ModOptions）。\n\n从 Steam Workshop ID：3622986450 下载 ZBBetterFPS，在此上传 ZIP 文件并点击安装。</string>
     <string name="optimization_zbbetterfps_installing">正在安装 ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS 安装成功</string>
 </resources>
