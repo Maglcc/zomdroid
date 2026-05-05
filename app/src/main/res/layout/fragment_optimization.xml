@@ -98,7 +98,7 @@
                             android:orientation="vertical"
                             android:visibility="gone">
 
-                             <!-- 4 GB Balanced -->
+                            <!-- 4 GB Balanced -->
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -802,6 +802,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="12dp"/>
+
+                        <TextView
+                            android:id="@+id/optimization_zbbetterfps_gl4es_warning_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:text="@string/optimization_zbbetterfps_gl4es_warning"
+                            android:textSize="11sp"
+                            android:textColor="#FF6B6B"
+                            android:visibility="gone"/>
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/optimization_zbbetterfps_switch"

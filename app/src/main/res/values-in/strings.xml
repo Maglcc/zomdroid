@@ -406,13 +406,13 @@
     <string name="mod_fix_error_no_mod_folder">Tidak ada folder mod ditemukan dalam arsip</string>
     <string name="mod_fix_error_not_b42">Mod ini tampaknya bukan mod Build 42: %1$s</string>
     <string name="mod_fix_group_double_path">Perbaikan jalur ganda</string>
-    <string name="mod_fix_double_path_hint">Fix for Build 41/42 mods with path errors on Android. Known mods: Tsar\'s Common Library (ID: 3402491515), Simple Flashlight on Belt (ID: 3394588830).</string>
+    <string name="mod_fix_double_path_hint">Perbaikan untuk mod Build 41/42 dengan kesalahan path di Android. Mod yang diketahui: Tsar\'s Common Library (ID: 3402491515), Simple Flashlight on Belt (ID: 3394588830).</string>
     <string name="mod_fix_help_title">Apa perbaikan ini?</string>
-    <string name="mod_fix_help_message">Some mods use a folder structure that causes a path conflict on Android. The game ends up looking for files in a doubled path and cannot find them.\n\nThis fix installs the mod twice — once with the original folder names, and once with all names in lowercase — so the game finds the files regardless of which path it uses.\n\nKnown affected mods:\n• Tsar\'s Common Library — ID: 3402491515\n• [B42] Simple Flashlight on Belt — ID: 3394588830\n\nTo use: download the mod and load it here.</string>
+    <string name="mod_fix_help_message">Beberapa mod menggunakan struktur folder yang menyebabkan konflik path di Android. Akibatnya, game mencari file di path yang terduplikasi dan tidak dapat menemukannya.\n\nPerbaikan ini menginstal mod dua kali — sekali dengan nama folder asli, dan sekali lagi dengan semua nama dalam huruf kecil — sehingga game dapat menemukan file terlepas dari path yang digunakan.\n\nMod yang diketahui terdampak:\n• Tsar\'s Common Library — ID: 3402491515\n• [B42] Simple Flashlight on Belt — ID: 3394588830\n\nCara menggunakan: unduh mod dan muat di sini.</string>
 
     <!-- CPU/GPU autodetect -->
-    <string name="preset_dialog_gpu_hint_qualcomm">\u2705 Snapdragon detected. ZINK_ZFA renderer has been set automatically. We recommend selecting a Freedreno/Turnip driver in the app Settings for best results.</string>
-    <string name="preset_dialog_gpu_hint_mediatek">\u2705 MediaTek detected. ZINK_ZFA renderer has been set, but ZINK support on Mali GPUs varies. If the game doesn\'t start, try to activate ANGLE built-in graphical driver in the Developer options.</string>
+    <string name="preset_dialog_gpu_hint_qualcomm">\u2705 Snapdragon terdeteksi. Renderer ZINK_ZFA telah diatur secara otomatis. Kami menyarankan memilih driver Freedreno/Turnip di pengaturan aplikasi untuk hasil terbaik.</string>
+    <string name="preset_dialog_gpu_hint_mediatek">\u2705 MediaTek terdeteksi. Renderer ZINK_ZFA telah diatur, tetapi dukungan ZINK pada GPU Mali bervariasi. Jika game tidak dapat dijalankan, coba aktifkan driver grafis bawaan ANGLE di opsi pengembang.</string>
 
     <!-- Manual mods installation -->
     <string name="install_mod_manual_group">Instalasi manual</string>
@@ -478,4 +478,5 @@
     <string name="optimization_zbbetterfps_help_message">A comprehensive performance overhaul for Project Zomboid that optimizes rendering, game logic, and CPU usage. Unlike traditional mods, ZBBetterFPS uses low-level runtime patching to fix performance bottlenecks deep within the game engine.\n\nRequires ZombieBuddy (+ModOptions on B41) to be installed and enabled. \n\nDownload ZBBetterFPS from Steam Workshop ID: 3622986450, upload the ZIP here and tap Install.</string>
     <string name="optimization_zbbetterfps_installing">Menginstal ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS terinstal</string>
+    <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS hanya bekerja dengan renderer ZINK. Untuk GL4ES, gunakan mod BetterFPS biasa.</string>
 </resources>

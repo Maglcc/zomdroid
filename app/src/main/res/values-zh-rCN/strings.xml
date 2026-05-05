@@ -471,4 +471,5 @@
     <string name="optimization_zbbetterfps_help_message">针对 Project Zomboid 的综合性能优化，通过运行时底层补丁改善渲染、游戏逻辑和 CPU 使用。\n\n需要 ZombieBuddy（B41 还需要 ModOptions）。\n\n从 Steam Workshop ID：3622986450 下载 ZBBetterFPS，在此上传 ZIP 文件并点击安装。</string>
     <string name="optimization_zbbetterfps_installing">正在安装 ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS 安装成功</string>
+    <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS 仅支持 ZINK 渲染器。如使用 GL4ES，请改用普通的 BetterFPS mod。</string>
 </resources>

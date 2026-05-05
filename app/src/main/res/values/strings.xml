@@ -478,4 +478,5 @@
     <string name="optimization_zbbetterfps_help_message">A comprehensive performance overhaul for Project Zomboid that optimizes rendering, game logic, and CPU usage. Unlike traditional mods, ZBBetterFPS uses low-level runtime patching to fix performance bottlenecks deep within the game engine.\n\nRequires ZombieBuddy (+ModOptions on B41) to be installed and enabled. \n\nDownload ZBBetterFPS from Steam Workshop ID: 3622986450, upload the ZIP here and tap Install.</string>
     <string name="optimization_zbbetterfps_installing">Installing ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS installed</string>
+    <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS only works with ZINK renderer. For GL4ES, use the regular BetterFPS mod instead.</string>
 </resources>

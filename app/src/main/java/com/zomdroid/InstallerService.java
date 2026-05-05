@@ -1820,7 +1820,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                 }
 
                 // Find ZBBetterFPS.jar recursively
-                File jarFile = findFileRecursive(tmpDir, "ZBBetterFPS.jar");
+                /*File jarFile = findFileRecursive(tmpDir, "ZBBetterFPS.jar");
                 if (jarFile == null) {
                     finishWithError(taskTitle, "ZBBetterFPS.jar not found in archive");
                     return;
@@ -1830,7 +1830,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                 File destJar = new File(gameInstance.getGamePath(), C.deps.ZB_BETTER_FPS_JAR);
                 copyFile(jarFile, destJar);
                 Log.d("ZBBetterFPS", "Jar installed to: " + destJar.getAbsolutePath());
-
+                */
                 // Find mod root
                 File modRoot = findModRoot(tmpDir);
                 if (modRoot == null) {
@@ -1838,10 +1838,9 @@ public class InstallerService extends Service implements TaskProgressListener {
                     return;
                 }
 
-                // Comment out javaJarFile= in all mod.info files recursively.
-                // Since we preload the jar via -Xbootclasspath/a, ZombieBuddy must not
-                // attempt to load it again via addURL — that causes a crash on GL4ES.
-                commentOutJavaJarFileRecursive(modRoot);
+                // javaJarFile= is left intact in mod.info.
+                // ZBBetterFPS is loaded by ZombieBuddy automatically via mod.info on ZINK.
+                // On GL4ES it will fail silently — users should use regular BetterFPS instead.
 
                 // Install mod to instance mods folder
                 String modName = modRoot.getName();

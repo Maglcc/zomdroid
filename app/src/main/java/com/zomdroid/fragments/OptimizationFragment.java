@@ -420,6 +420,11 @@ public class OptimizationFragment extends Fragment {
                             String key = "zbbetterfps_enabled_" + instances.get(idx).getName();
                             binding.optimizationZbbetterfpsSwitch.setChecked(prefs.getBoolean(key, false));
                         }
+                        // Warn if GL4ES renderer is selected — ZBBetterFPS only works with ZINK
+                        boolean isGl4es = com.zomdroid.LauncherPreferences.requireSingleton().getRenderer()
+                                == com.zomdroid.LauncherPreferences.Renderer.GL4ES;
+                        binding.optimizationZbbetterfpsGl4esWarningTv.setVisibility(
+                                isGl4es ? android.view.View.VISIBLE : android.view.View.GONE);
                     }
                     @Override
                     public void onNothingSelected(android.widget.AdapterView<?> parent) {}

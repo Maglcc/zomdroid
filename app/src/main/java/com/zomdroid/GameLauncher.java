@@ -162,17 +162,10 @@ public class GameLauncher {
             jvmArgs.add("-javaagent:" + zombieBuddyPath + "=policy=allow-all");
             jvmArgs.add("-Dnet.bytebuddy.processor=ASM_ONLY");
             jvmArgs.add("-Dnet.bytebuddy.experimental=true");
-            // JRE25 (ZINK renderers) needs explicit classfile version hints for ByteBuddy
+            // On JRE25 (ZINK) we do NOT set classfile.version — ByteBuddy must handle
             if (!preferJre21ForRenderer) {
                 jvmArgs.add("-Dnet.bytebuddy.classfile.version=65");
                 jvmArgs.add("-Dnet.bytebuddy.unsupported.classfile.version=69");
-            }
-
-            // Add ZBBetterFPS to classpath if present AND enabled
-            String zbBetterFpsPath = gameInstance.getGamePath() + "/" + C.deps.ZB_BETTER_FPS_JAR;
-            boolean zbBetterFpsEnabled = zbPrefs.getBoolean("zbbetterfps_enabled_" + instanceName, false);
-            if (new File(zbBetterFpsPath).exists() && zbBetterFpsEnabled) {
-                jvmArgs.add("-Xbootclasspath/a:" + zbBetterFpsPath);
             }
         }
 
