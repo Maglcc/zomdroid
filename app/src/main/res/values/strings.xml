@@ -472,10 +472,10 @@
     <string name="optimization_zombiebuddy_installed">ZombieBuddy installed</string>
      
     <string name="optimization_group_zbbetterfps">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_hint">Optimizing mod. \nEnable it in Mod Options → ZBBetterFPS after loading the game.\n\n⚠️ ZBBetterFPS and BetterFPS MAY BE incompatible — it is better to use only one of them.\n\nTo disable: turn off the switch here AND disable the mod in-game, then restart.</string>
+    <string name="optimization_zbbetterfps_hint">Optimizing mod. All options are disabled by default. Enable them in Mod Options after installing the mod.\n\nThis mod is modified for Zomdroid for compatibility with Android.\n\n⚠️ ZBBetterFPS and BetterFPS are not compatible, use only one of them.</string>
     <string name="optimization_zbbetterfps_enabled">Enable ZBBetterFPS</string>
     <string name="optimization_zbbetterfps_help_title">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_help_message">A comprehensive performance overhaul for Project Zomboid that optimizes rendering, game logic, and CPU usage. Unlike traditional mods, ZBBetterFPS uses low-level runtime patching to fix performance bottlenecks deep within the game engine.\n\nRequires ZombieBuddy (+ModOptions on B41) to be installed and enabled. \n\nDownload ZBBetterFPS from Steam Workshop ID: 3622986450, upload the ZIP here and tap Install.</string>
+    <string name="optimization_zbbetterfps_help_message">A comprehensive performance overhaul for Project Zomboid that optimizes rendering, game logic, and CPU usage. Author: Zed.\n\nRequires ZombieBuddy (+ModOptions on B41) to be installed and enabled. \n\nDownload ZBBetterFPS from Steam Workshop ID: 3622986450, upload the ZIP here and tap Install.</string>
     <string name="optimization_zbbetterfps_installing">Installing ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS installed</string>
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS only works with ZINK renderer. For GL4ES, use the regular BetterFPS mod instead.</string>
