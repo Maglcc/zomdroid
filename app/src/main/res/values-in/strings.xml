@@ -390,7 +390,7 @@
     <string name="optimization_betterfps_file_label">Mod BetterFPS (zip)</string>
     <string name="optimization_install">Instal</string>
     <string name="optimization_betterfps_help_title">Cara kerja BetterFPS</string>
-    <string name="optimization_betterfps_help_message">Steam Workshop ID: 3022543997\n\n"Project Zomboid renders a 190×190 tile zone around the player. This mod reduces the size of this zone and avoids loading unnecessary chunks."\n— mod description\n\nVariants:\n• PotatoePC — maximum performance\n• 1080 — balanced\n• 4k — best quality (still lower than the original)\n• All_Settings — custom area sizes from 30×30 to 190×190; must be installed manually\n\nWe recommend starting with PotatoePC. You can go lower manually if needed.</string>
+    <string name="optimization_betterfps_help_message">Steam Workshop ID: 3022543997\n\n"Project Zomboid merender area 190×190 tile di sekitar pemain. Mod ini mengurangi ukuran area tersebut dan menghindari pemuatan chunk yang tidak diperlukan."\n— deskripsi mod\n\nVarian:\n• PotatoePC — performa maksimal\n• 1080 — seimbang\n• 4k — kualitas terbaik (masih lebih rendah dibandingkan aslinya)\n• All_Settings — ukuran area kustom dari 30×30 hingga 190×190; harus diinstal secara manual\n\nKami merekomendasikan mulai dengan PotatoePC. Jika perlu, Anda dapat memilih pengaturan yang lebih rendah secara manual.</string>
     <string name="optimization_jvm_copied">Disalin ke clipboard</string>
     <string name="optimization_betterfps_installed">BetterFPS berhasil diinstal</string>
     <string name="optimization_betterfps_installing">Menginstal BetterFPS…</string>
@@ -416,7 +416,7 @@
 
     <!-- Manual mods installation -->
     <string name="install_mod_manual_group">Instalasi manual</string>
-    <string name="install_mod_manual_hint">Copy mod folder to the mods folder inside the Zomboid folder. Create the mods folder if it doesn\'t exist (lowercase "mods"). Mod folder must not contain any extra wrapper folders.</string>
+    <string name="install_mod_manual_hint">Salin folder mod ke dalam folder mods di dalam folder Zomboid. Buat folder mods jika belum ada (huruf kecil "mods"). Folder mod tidak boleh berisi folder pembungkus tambahan.</string>
     <string name="install_mod_open_folder">Buka folder mods</string>
     <string name="install_mod_manual_help_title">Instalasi manual</string>
     <string name="install_mod_manual_help_message">
@@ -457,25 +457,25 @@
     <string name="optimization_group_eto">Every Texture Optimized</string>
     <string name="optimization_eto_hint">Menginstal tekstur yang dioptimalkan untuk performa lebih baik. Pilih instans game Anda — versi tekstur yang benar (B41 atau B42) akan diterapkan secara otomatis.</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
-    <string name="optimization_eto_help_message">Steam Workshop ID: 3119788162 [B42] and ID: 2812026801 [B41]\n\nDownload the mod ZIP from Steam Workshop or Skymods.\n\nSelect your game instance and the ZIP file, then tap Install. The launcher will automatically choose the correct texture folder for your build version and copy the files into the game\'s media/textures directory, replacing the original ones.\n\nThe original textures folder will be renamed to textures.bak. To roll back the mod, delete the new textures folder and rename textures.bak back to textures.</string>
+    <string name="optimization_eto_help_message">Steam Workshop ID: 3119788162 [B42] dan ID: 2812026801 [B41]\n\nUnduh file ZIP mod dari Steam Workshop atau Skymods.\n\nPilih instance game dan file ZIP, lalu tekan Install. Launcher akan secara otomatis memilih folder tekstur yang sesuai dengan versi build Anda dan menyalin file ke direktori media/textures game, menggantikan file asli.\n\nFolder textures asli akan diubah namanya menjadi textures.bak. Untuk mengembalikan mod, hapus folder textures yang baru dan ubah nama textures.bak kembali menjadi textures.</string>
     <string name="optimization_eto_installing">Menginstal tekstur…</string>
     <string name="optimization_eto_installed">Tekstur berhasil diinstal</string>
     <string name="optimization_eto_error_no_textures">Tidak dapat menemukan folder tekstur dalam ZIP ini.</string>
 
     <!-- ===== ZombieBuddy + ZBBetterFPS strings ===== -->
     <string name="optimization_group_zombiebuddy">ZombieBuddy</string>
-    <string name="optimization_zombiebuddy_hint">A framework mod. \nSafe to add or remove on existing saves.\n\nTo disable: turn off the switch here AND disable the mod in-game, then restart.</string>
+    <string name="optimization_zombiebuddy_hint">Mod framework.\nAman untuk ditambahkan atau dihapus pada save yang sudah ada.\n\nUntuk menonaktifkan: matikan sakelar di sini DAN nonaktifkan mod di dalam game, lalu restart.</string>
     <string name="optimization_zombiebuddy_enabled">Aktifkan agen ZombieBuddy</string>
     <string name="optimization_zombiebuddy_help_title">ZombieBuddy</string>
-    <string name="optimization_zombiebuddy_help_message">A framework that enables advanced Java mods for Project Zomboid. \n\nDownload ZombieBuddy from Steam, Workshop ID: 3619862853, upload the ZIP here and tap Install.</string>
+    <string name="optimization_zombiebuddy_help_message">Framework yang memungkinkan mod Java tingkat lanjut untuk Project Zomboid.\n\nUnduh ZombieBuddy dari Steam, Workshop ID: 3619862853, unggah file ZIP di sini lalu tekan Install.</string>
     <string name="optimization_zombiebuddy_installing">Menginstal ZombieBuddy…</string>
     <string name="optimization_zombiebuddy_installed">ZombieBuddy terinstal</string>
 
     <string name="optimization_group_zbbetterfps">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_hint">Optimizing mod. \nEnable it in Mod Options → ZBBetterFPS after loading the game.\n\n⚠️ ZBBetterFPS and BetterFPS MAY BE incompatible — it is better to use only one of them.\n\nTo disable: turn off the switch here AND disable the mod in-game, then restart.</string>
+    <string name="optimization_zbbetterfps_hint">Mod optimasi. Semua opsi dinonaktifkan secara default. Aktifkan di Opsi Mod setelah menginstal mod.\n\nMod ini dimodifikasi untuk Zomdroid agar kompatibel dengan Android.\n\n⚠️ ZBBetterFPS dan BetterFPS tidak kompatibel, gunakan hanya salah satu.</string>
     <string name="optimization_zbbetterfps_enabled">Aktifkan ZBBetterFPS</string>
     <string name="optimization_zbbetterfps_help_title">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_help_message">A comprehensive performance overhaul for Project Zomboid that optimizes rendering, game logic, and CPU usage. Unlike traditional mods, ZBBetterFPS uses low-level runtime patching to fix performance bottlenecks deep within the game engine.\n\nRequires ZombieBuddy (+ModOptions on B41) to be installed and enabled. \n\nDownload ZBBetterFPS from Steam Workshop ID: 3622986450, upload the ZIP here and tap Install.</string>
+    <string name="optimization_zbbetterfps_help_message">Peningkatan performa komprehensif untuk Project Zomboid yang mengoptimalkan rendering, logika game, dan penggunaan CPU. Penulis: Zed.\n\nMemerlukan ZombieBuddy (+ ModOptions di B41). \n\nUnduh ZBBetterFPS dari Steam Workshop ID: 3622986450, unggah ZIP di sini dan ketuk Instal.</string>
     <string name="optimization_zbbetterfps_installing">Menginstal ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS terinstal</string>
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS hanya bekerja dengan renderer ZINK. Untuk GL4ES, gunakan mod BetterFPS biasa.</string>
