@@ -1462,9 +1462,9 @@ public class InstallerService extends Service implements TaskProgressListener {
         if (files == null) return false;
         for (File f : files) {
             String name = f.getName().toLowerCase();
-            // media/ or common/ are primary indicators
             if (f.isDirectory() && (name.equals("media") || name.equals("common"))) return true;
-            // mod.info as fallback
+            if (f.isDirectory() && (name.equals("41") || name.equals("42") || 
+                name.startsWith("42.") || name.startsWith("41."))) return true;
             if (!f.isDirectory() && name.equals("mod.info")) return true;
         }
         return false;
@@ -1821,18 +1821,6 @@ public class InstallerService extends Service implements TaskProgressListener {
                     }
                 }
 
-                // Find ZBBetterFPS.jar recursively
-                /*File jarFile = findFileRecursive(tmpDir, "ZBBetterFPS.jar");
-                if (jarFile == null) {
-                    finishWithError(taskTitle, "ZBBetterFPS.jar not found in archive");
-                    return;
-                }
-
-                // Copy jar to game/ folder of the instance
-                File destJar = new File(gameInstance.getGamePath(), C.deps.ZB_BETTER_FPS_JAR);
-                copyFile(jarFile, destJar);
-                Log.d("ZBBetterFPS", "Jar installed to: " + destJar.getAbsolutePath());
-                */
                 // Find mod root
                 File modRoot = findModRoot(tmpDir);
                 if (modRoot == null) {
@@ -1840,11 +1828,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                     return;
                 }
 
-                // javaJarFile= is left intact in mod.info.
-                // ZBBetterFPS is loaded by ZombieBuddy automatically via mod.info on ZINK.
-                // On GL4ES it will fail silently — users should use regular BetterFPS instead.
-
-                // Install mod to instance mods folder
+                // Install mod to instance mods folder as-is
                 String modName = modRoot.getName();
                 if (modName.equals(tmpDir.getName())) {
                     modName = extractZipName(archiveUri);
@@ -1857,6 +1841,25 @@ public class InstallerService extends Service implements TaskProgressListener {
                 if (modDest.exists()) FileUtils.deleteDirectory(modDest);
                 copyDirectory(modRoot, modDest);
                 Log.d("ZBBetterFPS", "Mod installed to: " + modDest.getAbsolutePath());
+
+                // Replace ZBBetterFPS.jar with our Java 21 compatible version.
+                // Rename the original jar to .ver25 as backup, then copy our patched jar.
+                File originalJar = findFileRecursive(modDest, "ZBBetterFPS.jar");
+                if (originalJar != null) {
+                    File renamedJar = new File(originalJar.getParent(), "ZBBetterFPS.jar.ver25");
+                    originalJar.renameTo(renamedJar);
+                    Log.d("ZBBetterFPS", "Original jar backed up as: " + renamedJar.getName());
+
+                    // Copy our Java 21 compatible jar from assets
+                    try (InputStream assetIs = getAssets().open("patches/ZBBetterFPS.jar.ver21");
+                         FileOutputStream fos = new FileOutputStream(originalJar)) {
+                        byte[] buf = new byte[8192]; int len;
+                        while ((len = assetIs.read(buf)) > 0) fos.write(buf, 0, len);
+                    }
+                    Log.d("ZBBetterFPS", "Java 21 compatible jar installed: " + originalJar.getAbsolutePath());
+                } else {
+                    Log.w("ZBBetterFPS", "ZBBetterFPS.jar not found in installed mod — skipping jar replacement");
+                }
 
                 // Enable flag for this instance
                 getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
