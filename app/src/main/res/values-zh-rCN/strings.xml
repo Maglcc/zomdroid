@@ -465,10 +465,10 @@
     <string name="optimization_zombiebuddy_installed">ZombieBuddy 安装成功</string>
      
     <string name="optimization_group_zbbetterfps">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_hint">优化 mod。\n加载游戏后在 Mod 选项 → ZBBetterFPS 中启用所需项目。\n\n⚠️ ZBBetterFPS 与 BetterFPS 可能不兼容——建议只使用其中一个。\n\n如需禁用：在此关闭开关并在游戏中禁用该 mod，然后重启。</string>
+    <string name="optimization_zbbetterfps_hint">优化 mod。所有选项默认关闭。安装 mod 后在 Mod 选项中启用。\n\n此 mod 已为 Zomdroid 修改以兼容 Android。\n\n⚠️ ZBBetterFPS 与 BetterFPS 不兼容，只能使用其中一个。</string>
     <string name="optimization_zbbetterfps_enabled">启用 ZBBetterFPS</string>
     <string name="optimization_zbbetterfps_help_title">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_help_message">针对 Project Zomboid 的综合性能优化，通过运行时底层补丁改善渲染、游戏逻辑和 CPU 使用。\n\n需要 ZombieBuddy（B41 还需要 ModOptions）。\n\n从 Steam Workshop ID：3622986450 下载 ZBBetterFPS，在此上传 ZIP 文件并点击安装。</string>
+    <string name="optimization_zbbetterfps_help_message">针对 Project Zomboid 的综合性能优化，改善渲染、游戏逻辑和 CPU 使用。作者：Zed。\n\n需要 ZombieBuddy（B41 还需要 ModOptions）。\n\n从 Steam Workshop ID：3622986450 下载 ZBBetterFPS，在此上传 ZIP 文件并点击安装。</string>
     <string name="optimization_zbbetterfps_installing">正在安装 ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS 安装成功</string>
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS 仅支持 ZINK 渲染器。如使用 GL4ES，请改用普通的 BetterFPS mod。</string>
