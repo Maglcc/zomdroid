@@ -1463,8 +1463,8 @@ public class InstallerService extends Service implements TaskProgressListener {
         for (File f : files) {
             String name = f.getName().toLowerCase();
             if (f.isDirectory() && (name.equals("media") || name.equals("common"))) return true;
-            if (f.isDirectory() && (name.equals("41") || name.equals("42") || 
-                name.startsWith("42.") || name.startsWith("41."))) return true;
+            if (f.isDirectory() && (name.equals("41") || name.equals("42") ||
+                    name.startsWith("42.") || name.startsWith("41."))) return true;
             if (!f.isDirectory() && name.equals("mod.info")) return true;
         }
         return false;
@@ -1914,14 +1914,15 @@ public class InstallerService extends Service implements TaskProgressListener {
     // For B41: only replaces in 41/ subfolder.
     // For B42: replaces in all 42.x/ subfolders.
     private void replaceZbBetterFpsJars(File modDir, boolean isBuild42) throws IOException {
+        // Only replace jars in 42.x folders — the 41/ folder has its own compatible jar.
+        if (!isBuild42) return;
         File[] children = modDir.listFiles();
         if (children == null) return;
         for (File child : children) {
             if (!child.isDirectory()) continue;
             String name = child.getName();
-            boolean isB41Folder = name.equals("41") || name.startsWith("41.");
             boolean isB42Folder = name.equals("42") || name.startsWith("42.");
-            if ((!isBuild42 && isB41Folder) || (isBuild42 && isB42Folder)) {
+            if (isB42Folder) {
                 File jar = findFileRecursive(child, "ZBBetterFPS.jar");
                 if (jar != null) {
                     File backup = new File(jar.getParent(), "ZBBetterFPS.jar.ver25");

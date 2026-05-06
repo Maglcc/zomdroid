@@ -385,7 +385,7 @@
     <string name="optimization_copy">Copiar</string>
     <string name="optimization_open_settings">→ Abrir Configurações</string>
     <string name="optimization_group_betterfps">BetterFPS b41</string>
-    <string name="optimization_betterfps_hint">Reduz a área de renderização ao redor do jogador. Steam Workshop ID: 3022543997. Baixe o mod, envie o arquivo zip e selecione um dos três modos mais populares.</string>
+    <string name="optimization_betterfps_hint">Reduz a área de renderização ao redor do jogador. \n\nSteam Workshop ID: 3022543997. Baixe o mod, envie o arquivo ZIP e selecione um dos três modos mais populares.</string>
     <string name="optimization_betterfps_file_label">Mod BetterFPS (arquivo zip)</string>
     <string name="optimization_install">Instalar</string>
     <string name="optimization_betterfps_help_title">Como o BetterFPS funciona</string>
@@ -454,7 +454,7 @@
 
     <!-- ===== ETO + collapsible strings ===== -->
     <string name="optimization_group_eto">Every Texture Optimized</string>
-    <string name="optimization_eto_hint">Instala texturas otimizadas para melhor desempenho. Selecione a instância do jogo — a versão correta das texturas (B41 ou B42) será aplicada automaticamente.</string>
+    <string name="optimization_eto_hint">Instala texturas otimizadas para melhor desempenho. \n⚠️ Pode ser instalado como um mod normal através do gerenciador de mods do jogo, mas para dispositivos de baixo desempenho com 4 GB de RAM, é altamente recomendada a substituição única das texturas. \n\nSelecione a instância do jogo — a versão correta das texturas (B41 ou B42) será aplicada automaticamente.</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
     <string name="optimization_eto_help_message">Steam Workshop ID: 3119788162 [B42] e ID: 2812026801 [B41]\n\nBaixe o arquivo ZIP do mod pelo Steam Workshop ou Skymods.\n\nSelecione a instância do jogo e o arquivo ZIP, depois toque em Install. O launcher escolherá automaticamente a pasta de texturas correta para a sua versão e copiará os arquivos para o diretório media/textures do jogo, substituindo os originais.\n\nA pasta original textures será renomeada para textures.bak. Para reverter o mod, exclua a nova pasta textures e renomeie textures.bak de volta para textures.</string>
     <string name="optimization_eto_installing">Instalando texturas…</string>

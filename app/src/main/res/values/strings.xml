@@ -264,7 +264,7 @@
 
     <!-- JVM args dialog -->
     <string name="jvm_args_dialog_title">JVM arguments</string>
-    <string name="jvm_args_dialog_message">Additional JVM arguments, e.g.:\n\n• -Xmx2G - allocate 2Gb of memory\n• -Xms512M - process starts with 1Gb RAM\n• -XX:+UseG1GC - enable G1 garbage collector\n\nIn theory, it should help when there\'s not enough RAM. Some arguments are already set by settings.\nIf you set it incorrectly and the app doesn\'t run, reinstall it or just clear the app cache.</string>
+    <string name="jvm_args_dialog_message">Additional JVM arguments, e.g.:\n\n• -Xmx2G - allocate 2Gb of memory\n• -Xms512M - process starts with 512MB RAM\n• -XX:+UseG1GC - enable G1 garbage collector\n\nIn theory, it should help when there\'s not enough RAM. Some arguments are already set by settings.\nIf you set it incorrectly and the app doesn\'t run, reinstall it or just clear the app cache.</string>
 
     <!-- Custom Driver import/export -->
     <string name="install_driver_menu">Import/Export Custom Driver</string>
@@ -386,7 +386,7 @@
     <string name="optimization_copy">Copy</string>
     <string name="optimization_open_settings">→ Open Settings</string>
     <string name="optimization_group_betterfps">BetterFPS b41</string>
-    <string name="optimization_betterfps_hint">Reduces the render area around the player. Steam Workshop ID: 3022543997. Download the mod, upload the zip file, and select one of the three most popular modes.</string>
+    <string name="optimization_betterfps_hint">Reduces the render area around the player. \n\nDownload the mod, upload the zip file, and select one of the three most popular modes.</string>
     <string name="optimization_betterfps_file_label">BetterFPS mod (zipped)</string>
     <string name="optimization_install">Install</string>
     <string name="optimization_betterfps_help_title">How BetterFPS works</string>
@@ -455,7 +455,7 @@
 
     <!-- ===== ETO + collapsible strings ===== -->
     <string name="optimization_group_eto">Every Texture Optimized</string>
-    <string name="optimization_eto_hint">Installs optimized textures for better performance. Select your game instance — the correct texture version (B41 or B42) will be applied automatically.</string>
+    <string name="optimization_eto_hint">Installs optimized textures for better performance. \n⚠️ Can be installed as a regular mod via the in-game mod manager, but for low-end devices with 4GB RAM, a one-time texture replacement is highly recommended. \n\nSelect your game instance — the correct texture version (B41 or B42) will be applied automatically.</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
     <string name="optimization_eto_help_message">Steam Workshop ID: 3119788162 [B42] and ID: 2812026801 [B41]\n\nDownload the mod ZIP from Steam Workshop or Skymods.\n\nSelect your game instance and the ZIP file, then tap Install. The launcher will automatically choose the correct texture folder for your build version and copy the files into the game\'s media/textures directory, replacing the original ones.\n\nThe original textures folder will be renamed to textures.bak. To roll back the mod, delete the new textures folder and rename textures.bak back to textures.</string>
     <string name="optimization_eto_installing">Installing textures…</string>

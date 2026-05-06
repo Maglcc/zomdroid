@@ -379,7 +379,7 @@
     <string name="optimization_copy">复制</string>
     <string name="optimization_open_settings">→ 打开设置</string>
     <string name="optimization_group_betterfps">BetterFPS b41</string>
-    <string name="optimization_betterfps_hint">减少玩家周围的渲染区域。Steam Workshop ID：3022543997。下载该模组，上传 zip 文件，然后选择三个最常用模式之一。</string>
+    <string name="optimization_betterfps_hint">减少玩家周围的渲染区域。 \n\nSteam Workshop ID: 3022543997。下载模组，上传 ZIP 文件，并选择三种最常用模式之一。</string>
     <string name="optimization_betterfps_file_label">BetterFPS 模组（zip 压缩包）</string>
     <string name="optimization_install">安装</string>
     <string name="optimization_betterfps_help_title">BetterFPS 原理</string>
@@ -448,7 +448,7 @@
 
     <!-- ===== ETO + collapsible strings ===== -->
     <string name="optimization_group_eto">Every Texture Optimized</string>
-    <string name="optimization_eto_hint">安装优化纹理以提升性能。选择游戏实例，系统将自动应用正确的纹理版本（B41 或 B42）。</string>
+    <string name="optimization_eto_hint">安装优化纹理以提升性能。 \n⚠️ 可以通过游戏内模组管理器作为普通模组安装，但对于只有 4GB 内存的低端设备，强烈建议进行一次性纹理替换。 \n\n选择游戏实例，系统将自动应用正确的纹理版本（B41 或 B42）。</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
     <string name="optimization_eto_help_message">Steam Workshop ID：3119788162 [B42] 和 ID：2812026801 [B41]\n\n从 Steam Workshop 或 Skymods 下载该模组的 ZIP 文件。\n\n选择游戏实例和 ZIP 文件，然后点击 Install。启动器会自动选择适用于你版本的纹理文件夹，并将文件复制到游戏的 media/textures 目录中，替换原始文件。\n\n原始的 textures 文件夹将被重命名为 textures.bak。若需回滚模组，请删除新的 textures 文件夹，并将 textures.bak 重命名回 textures。</string>
     <string name="optimization_eto_installing">正在安装纹理…</string>

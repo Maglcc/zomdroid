@@ -264,7 +264,7 @@
 
     <!-- JVM args dialog -->
     <string name="jvm_args_dialog_title">Argumen JVM</string>
-    <string name="jvm_args_dialog_message">Additional JVM arguments, e.g.:\n\n• -Xmx2G - allocate 2Gb of memory\n• -Xms512M - process starts with 1Gb RAM\n• -XX:+UseG1GC - enable G1 garbage collector\n\nIn theory, it should help when there\'s not enough RAM. Some arguments are already set by settings.\nIf you set it incorrectly and the app doesn\'t run, reinstall it or just clear the app cache.</string>
+    <string name="jvm_args_dialog_message">Argumen JVM tambahan, misalnya:\n\n• -Xmx2G - mengalokasikan 2GB memori\n• -Xms512M - proses dimulai dengan 512MB RAM\n• -XX:+UseG1GC - mengaktifkan garbage collector G1\n\nSecara teori, ini dapat membantu jika RAM tidak mencukupi. Beberapa argumen sudah diatur melalui pengaturan.\nJika dikonfigurasi secara tidak tepat dan aplikasi tidak dapat dijalankan, instal ulang aplikasi atau cukup hapus cache aplikasi.</string>
 
     <!-- Custom Driver import/export -->
     <string name="install_driver_menu">Impor/Ekspor Driver Kustom</string>
@@ -292,12 +292,12 @@
 
     <string name="nav_menu_reddit">Reddit</string>
     <string name="reddit_dialog_title">Zomdroid di Reddit</string>
-    <string name="reddit_message">Join our community on Reddit:\nhttps://www.reddit.com/r/zomdroid</string>
+    <string name="reddit_message">Gabung dengan komunitas kami di Reddit:\nhttps://www.reddit.com/r/zomdroid</string>
 
     <string name="settings_env_vars">Variabel lingkungan</string>
     <string name="settings_env_vars_hint">Misalnya: TU_DEBUG=nogmem</string>
 
-    <string name="settings_env_vars_dialog_message">Environment variables passed directly to the system before the game starts.\n\nUse to configure renderers, drivers and other components, e.g.:\n\nTU_DEBUG=nogmem\nZINK_DEBUG=norp\n\nUse with caution — incorrect values may cause crashes.</string>
+    <string name="settings_env_vars_dialog_message">Variabel lingkungan diteruskan langsung ke sistem sebelum game dimulai.\n\nDigunakan untuk mengonfigurasi renderer, driver, dan komponen lainnya, misalnya:\n\nTU_DEBUG=nogmem\nZINK_DEBUG=norp\n\nGunakan dengan hati-hati — nilai yang tidak tepat dapat menyebabkan crash.</string>
 
     <!-- Controls Editor -->
     <string name="controls_editor_layout_dialog_title">Tata letak</string>
@@ -315,7 +315,7 @@
 
     <!-- New instance -->
     <string name="native_libs_dialog_title">Library native (opsional)</string>
-    <string name="native_libs_dialog_message">Native libraries are files from build 42.12. These are mainly two files:\n\n🌐 libRakNet64.so\n🌐 libZNetNoSteam64.so\n\nThey are required for multiplayer support on build 41.78. You can read more about them on the Wiki.</string>
+    <string name="native_libs_dialog_message">Library native adalah file dari build 42.12. Ini terutama terdiri dari dua file:\n\n🌐 libRakNet64.so\n🌐 libZNetNoSteam64.so\n\nFile-file ini diperlukan untuk dukungan multiplayer pada build 41.78. Anda dapat membaca lebih lanjut tentangnya di Wiki.</string>
     <string name="dialog_button_wiki">Wiki</string>
 
     <string name="preset_dialog_title_b41">Build 41</string>
@@ -386,7 +386,7 @@
     <string name="optimization_copy">Salin</string>
     <string name="optimization_open_settings">→ Buka Pengaturan</string>
     <string name="optimization_group_betterfps">BetterFPS b41</string>
-    <string name="optimization_betterfps_hint">Mengurangi area render di sekitar pemain. Steam Workshop ID: 3022543997. Unduh mod, unggah file zip, dan pilih salah satu dari tiga mode paling populer.</string>
+    <string name="optimization_betterfps_hint">Mengurangi area render di sekitar pemain. \n\nSteam Workshop ID: 3022543997. Unduh mod, unggah file ZIP, dan pilih salah satu dari tiga mode yang paling populer.</string>
     <string name="optimization_betterfps_file_label">Mod BetterFPS (zip)</string>
     <string name="optimization_install">Instal</string>
     <string name="optimization_betterfps_help_title">Cara kerja BetterFPS</string>
@@ -455,7 +455,7 @@
 
     <!-- ===== ETO + collapsible strings ===== -->
     <string name="optimization_group_eto">Every Texture Optimized</string>
-    <string name="optimization_eto_hint">Menginstal tekstur yang dioptimalkan untuk performa lebih baik. Pilih instans game Anda — versi tekstur yang benar (B41 atau B42) akan diterapkan secara otomatis.</string>
+    <string name="optimization_eto_hint">Menginstal tekstur yang dioptimalkan untuk performa lebih baik. \n⚠️ Dapat dipasang sebagai mod biasa melalui mod manager dalam game, tetapi untuk perangkat kelas bawah dengan RAM 4GB, sangat disarankan melakukan penggantian tekstur satu kali.\n\nPilih instans game Anda — versi tekstur yang benar (B41 atau B42) akan diterapkan secara otomatis.</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
     <string name="optimization_eto_help_message">Steam Workshop ID: 3119788162 [B42] dan ID: 2812026801 [B41]\n\nUnduh file ZIP mod dari Steam Workshop atau Skymods.\n\nPilih instance game dan file ZIP, lalu tekan Install. Launcher akan secara otomatis memilih folder tekstur yang sesuai dengan versi build Anda dan menyalin file ke direktori media/textures game, menggantikan file asli.\n\nFolder textures asli akan diubah namanya menjadi textures.bak. Untuk mengembalikan mod, hapus folder textures yang baru dan ubah nama textures.bak kembali menjadi textures.</string>
     <string name="optimization_eto_installing">Menginstal tekstur…</string>

@@ -444,6 +444,9 @@ public class OptimizationFragment extends Fragment {
             installerIntent.putExtra(
                     InstallerService.EXTRA_GAME_INSTANCE_NAME,
                     selectedInstance.getName());
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_BUILD_VERSION,
+                    selectedInstance.getBuildVersion());
             installerIntent.putExtra(InstallerService.EXTRA_ARCHIVE_URI, zbbetterfpsZipUri);
             zbbetterfpsZipUri = null;
             binding.optimizationZbbetterfpsPathEt.setText(getString(R.string.game_instance_no_file_selected));

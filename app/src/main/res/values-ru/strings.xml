@@ -385,7 +385,7 @@
     <string name="optimization_copy">Копировать</string>
     <string name="optimization_open_settings">→ Открыть Настройки</string>
     <string name="optimization_group_betterfps">BetterFPS b41</string>
-    <string name="optimization_betterfps_hint">Уменьшает область рендера вокруг игрока. Steam Workshop ID: 3022543997. Скачайте мод, загрузите zip-файл и выберите один из трёх самых популярных режимов.</string>
+    <string name="optimization_betterfps_hint">Уменьшает область рендеринга вокруг игрока.  \n\nSteam Workshop ID: 3022543997. Скачайте мод, загрузите ZIP-файл и выберите один из трёх самых популярных режимов.</string>
     <string name="optimization_betterfps_file_label">Мод BetterFPS (zip-архив)</string>
     <string name="optimization_install">Установить</string>
     <string name="optimization_betterfps_help_title">Как работает BetterFPS</string>
@@ -454,7 +454,7 @@
 
     <!-- ===== ETO + collapsible strings ===== -->
     <string name="optimization_group_eto">Every Texture Optimized</string>
-    <string name="optimization_eto_hint">Устанавливает оптимизированные текстуры для повышения производительности. Выберите инстанс — нужная версия текстур (B41 или B42) будет применена автоматически.</string>
+    <string name="optimization_eto_hint">Устанавливает оптимизированные текстуры для повышения производительности. \n⚠️ Может быть установлен как обычный мод через внутриигровой менеджер модов, но для слабых устройств с 4 ГБ ОЗУ настоятельно рекомендуется разовая замена текстур.\n\nВыберите инстанс — нужная версия текстур (B41 или B42) будет применена автоматически.</string>
     <string name="optimization_eto_help_title">Every Texture Optimized</string>
     <string name="optimization_eto_help_message">Steam Workshop ID: 3119788162 [B42] и ID: 2812026801 [B41]\n\nСкачайте ZIP-файл мода из Steam Workshop или Skymods.\n\nВыберите игровой инстанс и ZIP-файл, затем нажмите Install. Лаунчер автоматически выберет правильную папку текстур для вашей версии билда и скопирует файлы в каталог media/textures игры, заменив оригинальные.\n\nОригинальная папка textures будет переименована в textures.bak. Чтобы откатить мод, удалите новую папку textures и переименуйте textures.bak обратно в textures.</string>
     <string name="optimization_eto_installing">Установка текстур…</string>
