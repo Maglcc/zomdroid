@@ -1399,9 +1399,9 @@ public class InstallerService extends Service implements TaskProgressListener {
                 Log.d("SmartMod", "needsInception=" + needsInception + ", isBuild42=" + isBuild42);
 
                 // Step 5: Merge 42.x version folders if B42
-                if (isBuild42) {
-                    mergeVersionsForB42(modRoot);
-                }
+                //if (isBuild42) {
+                //    mergeVersionsForB42(modRoot);
+                //}
 
                 // Step 6: Install normal-case copy
                 GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(instanceName);
@@ -1462,8 +1462,10 @@ public class InstallerService extends Service implements TaskProgressListener {
         if (files == null) return false;
         for (File f : files) {
             String name = f.getName().toLowerCase();
-            if (name.equals("mod.info")) return true;
+            // media/ or common/ are primary indicators
             if (f.isDirectory() && (name.equals("media") || name.equals("common"))) return true;
+            // mod.info as fallback
+            if (!f.isDirectory() && name.equals("mod.info")) return true;
         }
         return false;
     }
