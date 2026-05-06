@@ -1843,23 +1843,10 @@ public class InstallerService extends Service implements TaskProgressListener {
                 Log.d("ZBBetterFPS", "Mod installed to: " + modDest.getAbsolutePath());
 
                 // Replace ZBBetterFPS.jar with our Java 21 compatible version.
-                // Rename the original jar to .ver25 as backup, then copy our patched jar.
-                File originalJar = findFileRecursive(modDest, "ZBBetterFPS.jar");
-                if (originalJar != null) {
-                    File renamedJar = new File(originalJar.getParent(), "ZBBetterFPS.jar.ver25");
-                    originalJar.renameTo(renamedJar);
-                    Log.d("ZBBetterFPS", "Original jar backed up as: " + renamedJar.getName());
-
-                    // Copy our Java 21 compatible jar from assets
-                    try (InputStream assetIs = getAssets().open("patches/ZBBetterFPS.jar.ver21");
-                         FileOutputStream fos = new FileOutputStream(originalJar)) {
-                        byte[] buf = new byte[8192]; int len;
-                        while ((len = assetIs.read(buf)) > 0) fos.write(buf, 0, len);
-                    }
-                    Log.d("ZBBetterFPS", "Java 21 compatible jar installed: " + originalJar.getAbsolutePath());
-                } else {
-                    Log.w("ZBBetterFPS", "ZBBetterFPS.jar not found in installed mod — skipping jar replacement");
-                }
+                // For B41: replace only in 41/ subfolder.
+                // For B42: replace in all 42.x/ subfolders (ZombieBuddy picks the right one).
+                boolean isBuild42 = "42".equals(intent.getStringExtra(EXTRA_BUILD_VERSION));
+                replaceZbBetterFpsJars(modDest, isBuild42);
 
                 // Enable flag for this instance
                 getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
@@ -1919,6 +1906,34 @@ public class InstallerService extends Service implements TaskProgressListener {
             for (String line : lines) {
                 bw.write(line);
                 bw.newLine();
+            }
+        }
+    }
+
+    // Replace ZBBetterFPS.jar in the installed mod with our Java 21 compatible version.
+    // For B41: only replaces in 41/ subfolder.
+    // For B42: replaces in all 42.x/ subfolders.
+    private void replaceZbBetterFpsJars(File modDir, boolean isBuild42) throws IOException {
+        File[] children = modDir.listFiles();
+        if (children == null) return;
+        for (File child : children) {
+            if (!child.isDirectory()) continue;
+            String name = child.getName();
+            boolean isB41Folder = name.equals("41") || name.startsWith("41.");
+            boolean isB42Folder = name.equals("42") || name.startsWith("42.");
+            if ((!isBuild42 && isB41Folder) || (isBuild42 && isB42Folder)) {
+                File jar = findFileRecursive(child, "ZBBetterFPS.jar");
+                if (jar != null) {
+                    File backup = new File(jar.getParent(), "ZBBetterFPS.jar.ver25");
+                    jar.renameTo(backup);
+                    Log.d("ZBBetterFPS", "Backed up: " + backup.getAbsolutePath());
+                    try (InputStream assetIs = getAssets().open("patches/ZBBetterFPS.jar.ver21");
+                         FileOutputStream fos = new FileOutputStream(jar)) {
+                        byte[] buf = new byte[8192]; int len;
+                        while ((len = assetIs.read(buf)) > 0) fos.write(buf, 0, len);
+                    }
+                    Log.d("ZBBetterFPS", "Replaced with Java 21 jar: " + jar.getAbsolutePath());
+                }
             }
         }
     }
