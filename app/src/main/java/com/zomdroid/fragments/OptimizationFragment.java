@@ -384,16 +384,6 @@ public class OptimizationFragment extends Fragment {
                         .setPositiveButton(R.string.dialog_button_ok, null)
                         .show());
 
-        binding.optimizationZbbetterfpsSwitch.setChecked(false);
-        binding.optimizationZbbetterfpsSwitch.setOnCheckedChangeListener((v, checked) -> {
-            int pos = binding.optimizationZbbetterfpsInstanceSpinner.getSelectedItemPosition();
-            int idx = (instances != null && instances.size() > 1) ? pos - 1 : pos;
-            if (instances != null && idx >= 0 && idx < instances.size()) {
-                prefs.edit().putBoolean(
-                        "zbbetterfps_enabled_" + instances.get(idx).getName(), checked).apply();
-            }
-        });
-
         // ZBBetterFPS instance spinner
         List<String> zbbNames = new ArrayList<>();
         if (instances == null || instances.isEmpty()) {
@@ -416,10 +406,7 @@ public class OptimizationFragment extends Fragment {
                     public void onItemSelected(android.widget.AdapterView<?> parent,
                                                android.view.View view, int position, long id) {
                         int idx = (instances != null && instances.size() > 1) ? position - 1 : position;
-                        if (instances != null && idx >= 0 && idx < instances.size()) {
-                            String key = "zbbetterfps_enabled_" + instances.get(idx).getName();
-                            binding.optimizationZbbetterfpsSwitch.setChecked(prefs.getBoolean(key, false));
-                        }
+                        // no switch to update
                         // Warn if GL4ES renderer is selected — ZBBetterFPS only works with ZINK
                         boolean isGl4es = com.zomdroid.LauncherPreferences.requireSingleton().getRenderer()
                                 == com.zomdroid.LauncherPreferences.Renderer.GL4ES;
