@@ -164,9 +164,9 @@ public class GameLauncher {
             jvmArgs.add("-Dnet.bytebuddy.experimental=true");
             // On JRE25 (ZINK) we do NOT set classfile.version — ByteBuddy must handle
             if (!preferJre21ForRenderer) {
-                Log.i("ZBBetterFPS", "in GameLauncher ZINK loaded, ZombieBuddy loaded.");
-                jvmArgs.add("-Dnet.bytebuddy.classfile.version=65");
-                jvmArgs.add("-Dnet.bytebuddy.unsupported.classfile.version=69");
+                Log.i("ZombieBuddy", "in GameLauncher ZINK loaded, ZombieBuddy loaded.");
+                //jvmArgs.add("-Dnet.bytebuddy.classfile.version=65");
+                //jvmArgs.add("-Dnet.bytebuddy.unsupported.classfile.version=69");
             }
         }
 
