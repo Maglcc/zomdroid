@@ -988,9 +988,9 @@ public class InstallerService extends Service implements TaskProgressListener {
                 Log.d("ModFix", "  needsInception: " + needsInception);
 
                 // Step 5: Merge 42.x version folders if B42
-                if (isBuild42) {
-                    mergeVersionsForB42(modRoot);
-                }
+                //if (isBuild42) {
+                //    mergeVersionsForB42(modRoot);
+                //}
 
                 String modsPath = gameInstance.getHomePath() + "/Zomboid/mods";
                 new File(modsPath).mkdirs();
