@@ -161,7 +161,7 @@
     <string name="dialog_title_failed_to_install_saves">导入存档失败</string>
     <string name="dialog_title_saves_installed">存档已导入</string>
 
-    <string name="install_mod_zip_warning">ZIP 文件必须在根目录包含 mod.info。</string>
+    <string name="install_mod_zip_warning">某些模组更适合通过优化菜单安装。</string>
 
     <string name="install_mod_zip_help_title">模组压缩包结构</string>
 
@@ -457,7 +457,7 @@
 
     <!-- ===== ZombieBuddy + ZBBetterFPS strings ===== -->
     <string name="optimization_group_zombiebuddy">ZombieBuddy</string>
-    <string name="optimization_zombiebuddy_hint">框架 mod。\n可以在现有存档上安全添加或移除。\n\n如需禁用：在此关闭开关并在游戏中禁用该 mod，然后重启。</string>
+    <string name="optimization_zombiebuddy_hint">框架模组。 \n⚠️ 使用 ZombieBuddy 的模组可能与其他模组不兼容。如出现问题，请尝试调整加载顺序或更换模组版本。\n\n要禁用：在此关闭开关，并在游戏中禁用该模组，然后重启。</string>
     <string name="optimization_zombiebuddy_enabled">启用 ZombieBuddy 代理</string>
     <string name="optimization_zombiebuddy_help_title">ZombieBuddy</string>
     <string name="optimization_zombiebuddy_help_message">一个支持 Project Zomboid 高级 Java mod 的框架。\n\n从 Steam 下载 ZombieBuddy，Workshop ID：3619862853，在此上传 ZIP 文件并点击安装。</string>
@@ -468,7 +468,7 @@
     <string name="optimization_zbbetterfps_hint">优化 mod。所有选项默认关闭。安装 mod 后在 Mod 选项中启用。\n\n此 mod 已为 Zomdroid 修改以兼容 Android。\n\n⚠️ ZBBetterFPS 与 BetterFPS 不兼容，只能使用其中一个。</string>
     <string name="optimization_zbbetterfps_enabled">启用 ZBBetterFPS</string>
     <string name="optimization_zbbetterfps_help_title">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_help_message">针对 Project Zomboid 的综合性能优化，改善渲染、游戏逻辑和 CPU 使用。作者：Zed。\n\n需要 ZombieBuddy（B41 还需要 ModOptions）。\n\n从 Steam Workshop ID：3622986450 下载 ZBBetterFPS，在此上传 ZIP 文件并点击安装。</string>
+    <string name="optimization_zbbetterfps_help_message">一个全面的性能优化模组，用于优化 Project Zomboid 的渲染、游戏逻辑和 CPU 使用。作者：Zed。\n\n需要已安装并启用 ZombieBuddy（B41 还需 ModOptions）。\n⚠️ 使用 ZombieBuddy 的模组可能与其他模组不兼容。如出现问题，请尝试调整加载顺序或更换模组版本。 \n\n从 Steam Workshop 或 Skymods 下载 ZBBetterFPS（ID：3622986450），上传 ZIP 文件并点击 Install。</string>
     <string name="optimization_zbbetterfps_installing">正在安装 ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS 安装成功</string>
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS 仅支持 ZINK 渲染器。如使用 GL4ES，请改用普通的 BetterFPS mod。</string>
