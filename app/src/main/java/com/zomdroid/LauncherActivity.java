@@ -155,11 +155,6 @@ public class LauncherActivity extends AppCompatActivity {
                 binding.drawerLayout.close();
                 navController.navigate(R.id.action_open_optimization);
                 return true;
-            } else if (item.getItemId() == R.id.action_open_mod_fixes) {
-                binding.drawerLayout.close();
-                navController.navigate(R.id.action_open_mod_fixes);
-                return true;
-
         }
 
         binding.drawerLayout.close();
