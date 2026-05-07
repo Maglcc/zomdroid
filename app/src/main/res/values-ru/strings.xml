@@ -161,7 +161,7 @@
     <string name="dialog_title_failed_to_install_saves">Не удалось импортировать сохранения</string>
     <string name="dialog_title_saves_installed">Сохранения импортированы</string>
 
-    <string name="install_mod_zip_warning">ZIP должен содержать mod.info на верхнем уровне.</string>
+    <string name="install_mod_zip_warning">Некоторые моды лучше устанавливать через меню оптимизации.</string>
 
     <string name="install_mod_zip_help_title">Структура архива с модом</string>
 
@@ -463,7 +463,7 @@
 
     <!-- ===== ZombieBuddy + ZBBetterFPS strings ===== -->
     <string name="optimization_group_zombiebuddy">ZombieBuddy</string>
-    <string name="optimization_zombiebuddy_hint">Фреймворк-мод. \nБезопасно добавлять и удалять на существующих сохранениях.\n\nЧтобы отключить: выключите переключатель здесь И отключите мод в игре, затем перезапустите.</string>
+    <string name="optimization_zombiebuddy_hint">Фреймворк-мод. \n⚠️ Моды, использующие ZombieBuddy, могут быть несовместимы с другими модами. Если возникают проблемы, попробуйте изменить порядок загрузки или использовать другие версии модов.\n\nЧтобы отключить: выключите переключатель здесь и отключите мод в игре, затем перезапустите.</string>
     <string name="optimization_zombiebuddy_enabled">Включить агент ZombieBuddy</string>
     <string name="optimization_zombiebuddy_help_title">ZombieBuddy</string>
     <string name="optimization_zombiebuddy_help_message">Фреймворк для запуска продвинутых Java-модов в Project Zomboid. \n\nСкачайте ZombieBuddy из Steam, Workshop ID: 3619862853, загрузите ZIP здесь и нажмите Установить.</string>
@@ -474,7 +474,7 @@
     <string name="optimization_zbbetterfps_hint">Мод оптимизации. Все опции отключены по умолчанию. Включите их в Настройках модов после установки мода.\n\nЭтот мод модифицирован для Zomdroid для совместимости с Android.\n\n⚠️ ZBBetterFPS и BetterFPS несовместимы, используйте только один из них.</string>
     <string name="optimization_zbbetterfps_enabled">Включить ZBBetterFPS</string>
     <string name="optimization_zbbetterfps_help_title">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_help_message">Комплексная оптимизация Project Zomboid: рендеринг, игровая логика и использование CPU. Автор: Zed.\n\nТребует ZombieBuddy (+ ModOptions для B41). \n\nСкачайте ZBBetterFPS из Steam Workshop ID: 3622986450, загрузите ZIP здесь и нажмите Установить.</string>
+    <string name="optimization_zbbetterfps_help_message">Комплексный мод для повышения производительности Project Zomboid, оптимизирующий рендеринг, игровую логику и использование CPU. Автор: Zed.\n\nТребуется установленный и включённый ZombieBuddy (+ModOptions для B41).\n⚠️ Моды, использующие ZombieBuddy, могут быть несовместимы с другими модами. Если возникают проблемы, попробуйте изменить порядок загрузки или использовать другие версии модов. \n\nСкачайте ZBBetterFPS из Steam Workshop или Skymods (ID: 3622986450), загрузите ZIP-файл здесь и нажмите Установить.</string>
     <string name="optimization_zbbetterfps_installing">Установка ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS установлен</string>
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS работает только с рендерером ZINK. Для GL4ES используйте обычный мод BetterFPS.</string>
