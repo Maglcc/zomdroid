@@ -54,11 +54,6 @@
             android:title="@string/nav_menu_install_mod"
             android:icon="@drawable/ic_mods"
             app:showAsAction="never"/>
-        <item
-            android:id="@+id/action_open_mod_fixes"
-            android:title="@string/nav_menu_mod_fixes"
-            android:icon="@drawable/ic_mods"
-            app:showAsAction="never"/>
     </group>
 
     <group android:id="@+id/group_android" android:checkableBehavior="none">
