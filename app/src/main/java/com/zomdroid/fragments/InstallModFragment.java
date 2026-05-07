@@ -227,7 +227,7 @@ public class InstallModFragment extends Fragment {
             Intent installerIntent = new Intent(requireContext(), InstallerService.class);
             installerIntent.putExtra(
                     InstallerService.EXTRA_COMMAND,
-                    InstallerService.Task.INSTALL_MOD_SMART.ordinal()
+                    InstallerService.Task.INSTALL_MOD_WITH_FIX.ordinal()
             );
             installerIntent.putExtra(
                     InstallerService.EXTRA_GAME_INSTANCE_NAME,
