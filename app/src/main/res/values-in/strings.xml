@@ -160,7 +160,7 @@
     <string name="dialog_title_failed_to_install_saves">Gagal mengimpor simpanan</string>
     <string name="dialog_title_saves_installed">Simpanan diimpor</string>
 
-    <string name="install_mod_zip_warning">ZIP harus berisi mod.info di level teratas.</string>
+    <string name="install_mod_zip_warning">Beberapa mod lebih baik dipasang melalui menu optimasi.</string>
 
     <string name="install_mod_zip_help_title">Struktur arsip mod</string>
 
@@ -464,7 +464,7 @@
 
     <!-- ===== ZombieBuddy + ZBBetterFPS strings ===== -->
     <string name="optimization_group_zombiebuddy">ZombieBuddy</string>
-    <string name="optimization_zombiebuddy_hint">Mod framework.\nAman untuk ditambahkan atau dihapus pada save yang sudah ada.\n\nUntuk menonaktifkan: matikan sakelar di sini DAN nonaktifkan mod di dalam game, lalu restart.</string>
+    <string name="optimization_zombiebuddy_hint">Mod framework. \n⚠️ Mod yang menggunakan ZombieBuddy dapat tidak kompatibel dengan mod lain. Jika terjadi masalah, coba ubah urutan pemuatan atau gunakan versi mod yang berbeda.\n\nUntuk menonaktifkan: matikan sakelar di sini DAN nonaktifkan mod di dalam game, lalu restart.</string>
     <string name="optimization_zombiebuddy_enabled">Aktifkan agen ZombieBuddy</string>
     <string name="optimization_zombiebuddy_help_title">ZombieBuddy</string>
     <string name="optimization_zombiebuddy_help_message">Framework yang memungkinkan mod Java tingkat lanjut untuk Project Zomboid.\n\nUnduh ZombieBuddy dari Steam, Workshop ID: 3619862853, unggah file ZIP di sini lalu tekan Install.</string>
@@ -475,7 +475,7 @@
     <string name="optimization_zbbetterfps_hint">Mod optimasi. Semua opsi dinonaktifkan secara default. Aktifkan di Opsi Mod setelah menginstal mod.\n\nMod ini dimodifikasi untuk Zomdroid agar kompatibel dengan Android.\n\n⚠️ ZBBetterFPS dan BetterFPS tidak kompatibel, gunakan hanya salah satu.</string>
     <string name="optimization_zbbetterfps_enabled">Aktifkan ZBBetterFPS</string>
     <string name="optimization_zbbetterfps_help_title">ZBBetterFPS</string>
-    <string name="optimization_zbbetterfps_help_message">Peningkatan performa komprehensif untuk Project Zomboid yang mengoptimalkan rendering, logika game, dan penggunaan CPU. Penulis: Zed.\n\nMemerlukan ZombieBuddy (+ ModOptions di B41). \n\nUnduh ZBBetterFPS dari Steam Workshop ID: 3622986450, unggah ZIP di sini dan ketuk Instal.</string>
+    <string name="optimization_zbbetterfps_help_message">Mod peningkatan performa yang komprehensif untuk Project Zomboid yang mengoptimalkan rendering, logika game, dan penggunaan CPU. Penulis: Zed.\n\nMemerlukan ZombieBuddy (serta ModOptions untuk B41) yang sudah dipasang dan diaktifkan.\n⚠️ Mod yang menggunakan ZombieBuddy dapat tidak kompatibel dengan mod lain. Jika terjadi masalah, coba ubah urutan pemuatan atau gunakan versi mod yang berbeda. \n\nUnduh ZBBetterFPS dari Steam Workshop atau Skymods (ID: 3622986450), unggah file ZIP di sini lalu tekan Install.</string>
     <string name="optimization_zbbetterfps_installing">Menginstal ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS terinstal</string>
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS hanya bekerja dengan renderer ZINK. Untuk GL4ES, gunakan mod BetterFPS biasa.</string>
