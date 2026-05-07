@@ -1,3 +1,51 @@
+## [1.4.3] - 2026-07-05
+
+### Added
+✅ Build 42.17 support  
+Support for the latest Build 42.17.
+
+✅ CPU/GPU detection  
+When creating a new game instance, the app now detects your CPU/GPU and suggests a better renderer.
+
+✅ Optimization tools update  
+- BetterFPS now supports full mode — users can select a mode instead of uploading a single file  
+- Every Texture Optimized helper added — replaces the texture pack automatically (recommended for 4GB devices)  
+- ZombieBuddy framework installation added  
+- ZB BetterFPS mod installer added (works only with ZINK)
+
+✅ Indonesian language  
+Added Indonesian localization.
+
+✅ New menu icons  
+Updated UI with new icons.
+
+---
+
+### Changed
+🔧 Improved Mod Fix algorithm  
+Better handling of problematic mods with path issues.
+
+🔧 Mod Fix merged with Import Mods  
+No need to manually decide if a mod needs fixing — the installer handles double-path issues automatically.
+
+🔧 Smart import improved  
+Mods can now be wrapped in additional folders — the installer handles it correctly.
+
+🔧 Gamepad connection handling reworked  
+Reduced crashes when connecting/disconnecting controllers (needs more feedback).
+
+---
+
+### Fixed / Stability
+🛠️ JNI sig cache size restored to 64  
+Reduces cache misses on older devices and improves stability during long sessions on Build 41.
+
+🛠️ Mutex added to JNI trampoline generation  
+Prevents race conditions during world load on Build 42.
+
+🛠️ Keep screen on  
+The screen now stays on while the game is running.
+
 ## [1.4.1] - 2026-04-04
 ### Added
 ✅ Voice Chat Support (Experimental)
