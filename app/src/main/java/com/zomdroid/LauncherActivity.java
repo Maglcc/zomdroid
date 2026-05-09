@@ -101,8 +101,10 @@ public class LauncherActivity extends AppCompatActivity {
                 startActivity(chooserIntent);
                 return true;
             } else if (item.getItemId() == R.id.action_open_controls_editor) {
-                Intent intent = new Intent(this, ControlsEditorActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(this, ControlsEditorActivity.class);
+                //startActivity(intent);
+                binding.drawerLayout.close();
+                navController.navigate(R.id.action_open_controls_editor_launch);
                 return true;
             } else if (item.getItemId() == R.id.action_open_gamepad_mapper) {
                 // Navigate to gamepad mapper using NavController
@@ -153,11 +155,6 @@ public class LauncherActivity extends AppCompatActivity {
                 binding.drawerLayout.close();
                 navController.navigate(R.id.action_open_optimization);
                 return true;
-            } else if (item.getItemId() == R.id.action_open_mod_fixes) {
-                binding.drawerLayout.close();
-                navController.navigate(R.id.action_open_mod_fixes);
-                return true;
-
         }
 
         binding.drawerLayout.close();

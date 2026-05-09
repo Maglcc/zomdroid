@@ -48,8 +48,5 @@
                 <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
             </intent-filter>
         </provider>
-        <meta-data
-            android:name="android.graphics.angle.enable"
-            android:value="true" />
     </application>
 </manifest>

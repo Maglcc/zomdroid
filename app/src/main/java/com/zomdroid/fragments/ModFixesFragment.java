@@ -126,28 +126,34 @@ public class ModFixesFragment extends Fragment {
                         .setPositiveButton(R.string.dialog_button_ok, null)
                         .show());
 
+        // Default banner — always show before any early return
+        binding.modFixesBannerIv.setImageResource(R.drawable.banner_default);
+
         // Instance spinner
         instances = GameInstanceManager.requireSingleton().getInstances();
 
+        List<String> names = new ArrayList<>();
         if (instances == null || instances.isEmpty()) {
-            binding.modFixesInstanceSpinner.setEnabled(false);
+            instances = new ArrayList<>();
+            names.add(getString(R.string.select_instance));
             binding.modFixesInstallBtn.setEnabled(false);
         } else {
-            List<String> names = new ArrayList<>();
             if (instances.size() > 1) {
                 names.add(getString(R.string.select_instance));
             }
             for (GameInstance gi : instances) {
                 names.add(gi.getName());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                    requireContext(),
-                    R.layout.spinner_item,
-                    names);
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-            binding.modFixesInstanceSpinner.setAdapter(adapter);
+        }
 
-            binding.modFixesInstanceSpinner.setOnItemSelectedListener(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                R.layout.spinner_item,
+                names);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        binding.modFixesInstanceSpinner.setAdapter(adapter);
+
+        binding.modFixesInstanceSpinner.setOnItemSelectedListener(
                 new android.widget.AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(android.widget.AdapterView<?> parent,
@@ -179,9 +185,8 @@ public class ModFixesFragment extends Fragment {
                     }
                 });
 
-            if (instances.size() == 1) {
-                binding.modFixesInstanceSpinner.setSelection(0);
-            }
+        if (instances.size() == 1) {
+            binding.modFixesInstanceSpinner.setSelection(0);
         }
 
         // Browse button
@@ -216,6 +221,10 @@ public class ModFixesFragment extends Fragment {
             installerIntent.putExtra(
                     InstallerService.EXTRA_GAME_INSTANCE_NAME,
                     selectedInstance.getName());
+            // Pass build version so InstallerService can choose the correct install strategy
+            installerIntent.putExtra(
+                    InstallerService.EXTRA_BUILD_VERSION,
+                    selectedInstance.getBuildVersion());
             installerIntent.putExtra(
                     InstallerService.EXTRA_MODS_URI,
                     modZipUri);

@@ -35,11 +35,11 @@
                     android:visibility="visible"/>
 
                 <View
+                    android:id="@+id/install_mod_banner_overlay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/banner_gradient_overlay"
-                    android:visibility="invisible"
-                    android:id="@+id/install_mod_banner_overlay"/>
+                    android:visibility="invisible"/>
 
             </FrameLayout>
 
@@ -86,7 +86,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Card 2: Mod file -->
+        <!-- Card 2: Mod file (ZIP install) -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -125,16 +125,6 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceBodySmall"
                         android:text="@string/install_mod_zip_label"/>
-
-                    <ImageButton
-                        style="@style/AppTheme.ImageButton"
-                        android:id="@+id/install_mod_zip_help_ib"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="4dp"
-                        android:scaleType="fitCenter"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/mt_icon_help"/>
 
                 </LinearLayout>
 
@@ -186,6 +176,7 @@
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
 
     </LinearLayout>
 </ScrollView>

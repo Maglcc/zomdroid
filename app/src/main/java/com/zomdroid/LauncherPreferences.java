@@ -73,6 +73,10 @@ public class LauncherPreferences {
         return singleton;
     }
 
+    public SharedPreferences getSharedPrefs() {
+        return sharedPreferences;
+    }
+
     public void saveToPreferences() {
         String json = gson.toJson(this);
         this.sharedPreferences
@@ -149,6 +153,7 @@ public class LauncherPreferences {
     public enum Renderer {
         ZINK_ZFA("libzfa.so"),
         ZINK_OSMESA("libOSMesa.so"),
+        //NG_GL4ES("libholy_gl4es.so"),
         GL4ES("libgl4es.so");
 
         final String libName;

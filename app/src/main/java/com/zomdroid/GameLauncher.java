@@ -57,22 +57,26 @@ public class GameLauncher {
                 }
                 break;
             /*case NG_GL4ES: {
-                Os.setenv("LIBGL_ES", "3", true);
+                //Os.setenv("LIBGL_ES", "3", true);
                 //Os.setenv("LIBGL_GL", "21", true); // если нужен OpenGL 2.1 для движка
                 //Os.setenv("LIBGL_NOBANNER", "0", true);
                 //Os.setenv("LIBGL_SILENTSTUB", "0", true); // если хотите убрать шум
                 //Os.setenv("LIBGL_FB", "2", true);
                 //Os.setenv("LIBGL_FBONOALPHA", "1", true);
-                Os.setenv("ZOMDROID_GLES_MAJOR", "3", true);
-                Os.setenv("ZOMDROID_GLES_MINOR", "1", true);
                 //Os.setenv("LIBGL_SIMPLE_SHADERCONV", "1", true);
-                Os.setenv("LIBGL_DBGSHADERCONV", "15", true);
+                //Os.setenv("LIBGL_DBGSHADERCONV", "15", true);
                 // Force SPIRV-Cross path instead of old ConvertShader
                 // Without this, esversion stays 200 and shaders go through
                 // the old converter that doesn't understand modern GLSL
                 //Os.setenv("LIBGL_VGPU_FORCE", "1", true);
-                Os.setenv("LIBGL_VGPU_PRECISION", "1", true);
-              break;
+                //Os.setenv("LIBGL_VGPU_PRECISION", "1", true);
+                Os.setenv("ZOMDROID_GLES_MAJOR", "3", false);
+                Os.setenv("ZOMDROID_GLES_MINOR", "0", false);
+                Os.setenv("LIBGL_ES", "3", false);
+                Os.setenv("LIBGL_MIPMAP", "1", false);
+                Os.setenv("LIBGL_LOGSHADERERROR", "1", false);
+                Os.setenv("LIBGL_VGPU_DUMP", "1", false);
+                break;
             }*/
             default: {
                 Os.setenv("ZOMDROID_GLES_MAJOR", "2", false);
@@ -85,8 +89,8 @@ public class GameLauncher {
 
         if (BuildConfig.DEBUG) {
             //for debugging GL calls, only supported on GL ES 3.2+ with GL_KHR_debug extension present
-                Os.setenv("LIBGL_STACKTRACE","1", false);
-                Os.setenv("LIBGL_LOGSHADERERROR","1", false);
+            Os.setenv("LIBGL_STACKTRACE","1", false);
+            Os.setenv("LIBGL_LOGSHADERERROR","1", false);
                 /*Os.setenv("ZOMDROID_DEBUG_GL", "1", false);
                 Os.setenv("ZOMDROID_DEBUG_GL", "1", false);
                 Os.setenv("LIBGL_GLES", "libGLESv3.so", false);
@@ -129,13 +133,15 @@ public class GameLauncher {
 
         jvmArgs.add("-XX:ErrorFile=/dev/stdout"); // print jvm crash report to stdout for now
 
+
         ArrayList<String> args = gameInstance.getArgsAsList();
         if (BuildConfig.DEBUG) {
             //args.add("-debug");
             //args.add("-debuglog=Shader");
-            Log.i("Zomdroid", "JVM ARGS: " + jvmArgs);
-            Log.i("Zomdroid", "GAME ARGS: " + args);
         }
+        Log.i("Zomdroid", "JVM ARGS: " + jvmArgs);
+        Log.i("Zomdroid", "GAME ARGS: " + args);
+
         if (BuildConfig.DEBUG || LauncherPreferences.requireSingleton().isDebug()) {
             args.add("-debug");
         }
@@ -145,7 +151,24 @@ public class GameLauncher {
 
         // Prefer JRE21 when using GL4ES-style renderers (Build 41 tends to rely on that path).
         // This isolates "old GL4ES pipeline" from "new Java 25 runtime" regressions.
-        boolean preferJre21ForRenderer = isLegacyRendererNeedingJre21(LauncherPreferences.requireSingleton().getRenderer()); 
+        boolean preferJre21ForRenderer = isLegacyRendererNeedingJre21(LauncherPreferences.requireSingleton().getRenderer());
+        // ZombieBuddy agent — loaded if jar present in game folder AND enabled in settings
+        android.content.SharedPreferences zbPrefs = LauncherPreferences.requireSingleton().getSharedPrefs();
+
+        String instanceName = gameInstance.getName();
+        String zombieBuddyPath = gameInstance.getGamePath() + "/" + C.deps.ZOMBIE_BUDDY_JAR;
+        boolean zombieBuddyEnabled = zbPrefs.getBoolean("zombiebuddy_enabled_" + instanceName, false);
+        if (new File(zombieBuddyPath).exists() && zombieBuddyEnabled) {
+            jvmArgs.add("-javaagent:" + zombieBuddyPath + "=policy=allow-all");
+            jvmArgs.add("-Dnet.bytebuddy.processor=ASM_ONLY");
+            jvmArgs.add("-Dnet.bytebuddy.experimental=true");
+            // On JRE25 (ZINK) we do NOT set classfile.version — ByteBuddy must handle
+            if (!preferJre21ForRenderer) {
+                Log.i("ZombieBuddy", "in GameLauncher ZINK loaded, ZombieBuddy loaded.");
+                //jvmArgs.add("-Dnet.bytebuddy.classfile.version=65");
+                //jvmArgs.add("-Dnet.bytebuddy.unsupported.classfile.version=69");
+            }
+        }
 
         // Try to use dedicated folders if present (jre21 / jre25). If not present, fall back to C.deps.JRE.
         String jreFolder = preferJre21ForRenderer ? C.deps.JRE_21 : C.deps.JRE_25;
@@ -169,6 +192,7 @@ public class GameLauncher {
     }
 
     private static boolean isLegacyRendererNeedingJre21(LauncherPreferences.Renderer r) {
+        //boolean result = (r == LauncherPreferences.Renderer.GL4ES) || (r == LauncherPreferences.Renderer.NG_GL4ES);
         boolean result = (r == LauncherPreferences.Renderer.GL4ES);
 
         if (BuildConfig.DEBUG) {

@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Manages gamepad connection and input mapping for Android.
@@ -18,6 +20,9 @@ public class GamepadManager implements InputManager.InputDeviceListener {
 
     // Onscreen controls always shown
     private static boolean touchOverride = false;
+
+    // Set of currently connected gamepad device IDs — avoids full rescan on disconnect
+    private final Set<Integer> connectedGamepadIds = new HashSet<>();
 
     // Number of logical gamepad buttons (no D-Pad)
     public static final int GAMEPAD_BUTTON_COUNT = 11; // 11, D-Pad not included
@@ -139,15 +144,18 @@ public class GamepadManager implements InputManager.InputDeviceListener {
 
     // Register for gamepad device events
     public void register() {
+        connectedGamepadIds.clear();
         inputManager.registerInputDeviceListener(this, null);
         // Check on start if a gamepad is already connected
         int[] deviceIds = inputManager.getInputDeviceIds();
         for (int id : deviceIds) {
             InputDevice dev = inputManager.getInputDevice(id);
             if (dev != null && isGamepadDevice(dev)) {
-                listener.onGamepadConnected();
-                break;
+                connectedGamepadIds.add(id);
             }
+        }
+        if (!connectedGamepadIds.isEmpty()) {
+            listener.onGamepadConnected();
         }
     }
 
@@ -181,29 +189,36 @@ public class GamepadManager implements InputManager.InputDeviceListener {
     public void onInputDeviceAdded(int deviceId) {
         InputDevice dev = inputManager.getInputDevice(deviceId);
         if (dev != null && isGamepadDevice(dev)) {
-            listener.onGamepadConnected();
+            boolean wasEmpty = connectedGamepadIds.isEmpty();
+            connectedGamepadIds.add(deviceId);
+            if (wasEmpty) listener.onGamepadConnected();
         }
     }
 
     @Override
     public void onInputDeviceRemoved(int deviceId) {
-        int[] deviceIds = inputManager.getInputDeviceIds();
-        boolean anyGamepad = false;
-        for (int id : deviceIds) {
-            InputDevice dev = inputManager.getInputDevice(id);
-            if (dev != null && isGamepadDevice(dev)) {
-                anyGamepad = true;
-                break;
-            }
-        }
-        if (!anyGamepad) {
+        connectedGamepadIds.remove(deviceId);
+        if (connectedGamepadIds.isEmpty()) {
             listener.onGamepadDisconnected();
         }
     }
 
     @Override
     public void onInputDeviceChanged(int deviceId) {
-        // Not used
+        InputDevice dev = inputManager.getInputDevice(deviceId);
+        if (dev == null) {
+            connectedGamepadIds.remove(deviceId);
+            if (connectedGamepadIds.isEmpty()) listener.onGamepadDisconnected();
+            return;
+        }
+        if (isGamepadDevice(dev)) {
+            boolean wasEmpty = connectedGamepadIds.isEmpty();
+            connectedGamepadIds.add(deviceId);
+            if (wasEmpty) listener.onGamepadConnected();
+        } else {
+            connectedGamepadIds.remove(deviceId);
+            if (connectedGamepadIds.isEmpty()) listener.onGamepadDisconnected();
+        }
     }
 
     // True if KeyEvent is from a gamepad or joystick
