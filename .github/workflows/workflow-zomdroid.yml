@@ -10,7 +10,7 @@ on:
         type: choice
         options:
         - master
-        - regroup
+        - 6381cb2
         - gl4esplus
         
 jobs:
