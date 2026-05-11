@@ -878,15 +878,12 @@ public class InstallerService extends Service implements TaskProgressListener {
         if (files == null) return null;
         for (File f : files) {
             if (f.isDirectory()) {
-                // Check if this is the mode folder we want
-                if (f.getName().equalsIgnoreCase(mode)) {
-                    // Look for zombie/iso/IsoChunkMap.class inside
-                    File candidate = new File(f, "zombie/iso/IsoChunkMap.class");
-                    if (candidate.isFile()) return candidate;
-                }
-                // Recurse
                 File found = findBetterFpsClass(f, mode);
                 if (found != null) return found;
+            } else if (f.getName().equals("IsoChunkMap.class")) {
+                if (f.getAbsolutePath().toLowerCase().contains(mode.toLowerCase())) {
+                    return f;
+                }
             }
         }
         return null;
@@ -952,71 +949,72 @@ public class InstallerService extends Service implements TaskProgressListener {
                                 while ((r = zis.read(buf)) != -1) fos.write(buf, 0, r);
                             }
                         }
-                        zis.closeEntry();
-                        Log.d("ModFix", "Step 1 done. tmpDir contents:");
-                        File[] tmpContents = tmpDir.listFiles();
-                        if (tmpContents != null) {
-                            for (File f : tmpContents) {
-                                Log.d("ModFix", "  " + f.getName() + (f.isDirectory() ? "/" : " [file]"));
-                            }
-                        } else {
-                            Log.d("ModFix", "  tmpDir is empty or null!");
-                        }
+                        zis.closeEntry();                       
                     }
                 }
+                Log.d("ModFix", "Step 1 done. tmpDir contents:");
+                File[] tmpContents = tmpDir.listFiles();
+                if (tmpContents != null) {
+                    for (File f : tmpContents) {
+                        Log.d("ModFix", "  " + f.getName() + (f.isDirectory() ? "/" : " [file]"));
+                    }
+                } else {
+                    Log.d("ModFix", "  tmpDir is empty or null!");
+                }
 
-                // Step 2: Find mod root using smart detection
-                // Same logic as INSTALL_MOD_SMART: looks for mod.info, media/ or common/
-                File modRoot = findModRoot(tmpDir);
-                if (modRoot == null) {
+                // Step 2: Find all mod roots using smart detection
+                List<File> modRoots = new ArrayList<>();
+                collectModRoots(tmpDir, modRoots);
+                if (modRoots.isEmpty()) {
                     finishWithError(taskTitle, getString(R.string.install_mod_smart_no_root));
                     return;
                 }
-                Log.d("ModFix", "Found mod root: " + modRoot.getAbsolutePath());
-
-                // Step 3: Determine mod name
-                String modName = modRoot.getName();
-                if (modName.equals(tmpDir.getName())) {
-                    modName = extractZipName(archiveUri);
-                    if (modName != null && modName.endsWith(".zip"))
-                        modName = modName.substring(0, modName.length() - 4);
-                }
-                Log.d("ModFix", "Processing mod: " + modName + " (isBuild42=" + isBuild42 + ")");
-
-                // Step 4: Check if inception copy needed (scripts/ folder)
-                boolean needsInception = needsLowercaseFix(modRoot);
-                Log.d("ModFix", "  needsInception: " + needsInception);
-
-                // Step 5: Merge 42.x version folders if B42
-                //if (isBuild42) {
-                //    mergeVersionsForB42(modRoot);
-                //}
+                Log.d("ModFix", "Found " + modRoots.size() + " mod root(s)");
 
                 String modsPath = gameInstance.getHomePath() + "/Zomboid/mods";
                 new File(modsPath).mkdirs();
+                String instanceNameLower = gameInstance.getName().toLowerCase();
+                String inceptionRelPath = "data/user/0/com.zomdroid/files/instances/"
+                        + instanceNameLower + "/zomboid/mods";
+                File inceptionDir = new File(modsPath, inceptionRelPath);
 
-                // Step 6: Install normal-case copy
-                File normalDest = new File(modsPath, modName);
-                if (normalDest.exists()) FileUtils.deleteDirectory(normalDest);
-                copyDirectory(modRoot, normalDest);
-                Log.d("ModFix", "  Installed normal: " + normalDest.getAbsolutePath());
+                for (File modRoot : modRoots) {
+                    // Step 3: Determine mod name
+                    String modName = modRoot.getName();
+                    if (modName.equals(tmpDir.getName())) {
+                        modName = extractZipName(archiveUri);
+                        if (modName != null && modName.endsWith(".zip"))
+                            modName = modName.substring(0, modName.length() - 4);
+                    }
+                    Log.d("ModFix", "Processing mod: " + modName + " (isBuild42=" + isBuild42 + ")");
 
-                // Step 7: If scripts/ present, also install lowercase inception copy
-                if (needsInception) {
-                    String instanceNameLower = gameInstance.getName().toLowerCase();
-                    String inceptionRelPath = "data/user/0/com.zomdroid/files/instances/"
-                            + instanceNameLower + "/zomboid/mods";
-                    File inceptionDir = new File(modsPath, inceptionRelPath);
-                    inceptionDir.mkdirs();
-                    String lowerName = modName.toLowerCase();
-                    File lowerDest = new File(inceptionDir, lowerName);
-                    if (lowerDest.exists()) FileUtils.deleteDirectory(lowerDest);
-                    copyDirectoryLowercase(modRoot, lowerDest);
-                    Log.d("ModFix", "  Installed lowercase: " + lowerDest.getAbsolutePath());
+                    // Step 4: Check if inception copy needed (scripts/ folder)
+                    boolean needsInception = needsLowercaseFix(modRoot);
+                    Log.d("ModFix", "  needsInception: " + needsInception);
+
+                    // Step 5: Merge 42.x version folders if B42
+                    //if (isBuild42) {
+                    //    mergeVersionsForB42(modRoot);
+                    //}
+
+                    // Step 6: Install normal-case copy
+                    File normalDest = new File(modsPath, modName);
+                    if (normalDest.exists()) FileUtils.deleteDirectory(normalDest);
+                    copyDirectory(modRoot, normalDest);
+                    Log.d("ModFix", "  Installed normal: " + normalDest.getAbsolutePath());
+
+                    // Step 7: If scripts/ present, also install lowercase inception copy
+                    if (needsInception) {
+                        inceptionDir.mkdirs();
+                        String lowerName = modName.toLowerCase();
+                        File lowerDest = new File(inceptionDir, lowerName);
+                        if (lowerDest.exists()) FileUtils.deleteDirectory(lowerDest);
+                        copyDirectoryLowercase(modRoot, lowerDest);
+                        Log.d("ModFix", "  Installed lowercase: " + lowerDest.getAbsolutePath());
+                    }
                 }
 
-                finish(getString(R.string.mod_fix_installed), null);
-
+                finish(getString(R.string.mod_fix_installed), null);   
             } catch (Exception e) {
                 finishWithError(taskTitle, e.toString());
             } finally {
@@ -1421,7 +1419,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                 // Step 7: If needed, install lowercase inception copy
                 if (needsInception) {
                     String inceptionRelPath = "data/user/0/com.zomdroid/files/instances/"
-                            + instanceName + "/Zomboid/mods";
+                            + instanceName.toLowerCase() + "/zomboid/mods";
                     File inceptionDir = new File(modsDir, inceptionRelPath);
                     inceptionDir.mkdirs();
                     String lowerName = modName.toLowerCase();
