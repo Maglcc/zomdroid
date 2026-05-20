@@ -105,7 +105,7 @@ public class InputControlsView extends View {
 
         ArrayAdapter<AbstractControlElement.Type> adapter =
                 new ArrayAdapter<>(this.getContext(),
-                        android.R.layout.simple_spinner_dropdown_item,
+                        R.layout.spinner_small,
                         palette);
 
         new MaterialAlertDialogBuilder(this.getContext())
