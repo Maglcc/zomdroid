@@ -105,7 +105,7 @@ public class InputControlsView extends View {
 
         ArrayAdapter<AbstractControlElement.Type> adapter =
                 new ArrayAdapter<>(this.getContext(),
-                        R.layout.spinner_small,
+                        R.layout.spinner_item,
                         palette);
 
         new MaterialAlertDialogBuilder(this.getContext())
