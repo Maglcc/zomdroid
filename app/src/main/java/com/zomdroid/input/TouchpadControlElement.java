@@ -39,7 +39,7 @@ public class TouchpadControlElement extends AbstractControlElement {
     public TouchpadControlElement(InputControlsView parentView,
                                   ControlElementDescription description) {
         super(parentView, description);
-        this.sensitivity = description.sensitivity;
+        this.sensitivity = (description.sensitivity > 0f) ? description.sensitivity : ControlElementDescription.DEFAULT_SENSITIVITY;
         this.drawable = new TouchpadDrawable(parentView, description);
         debugCursorFill.setStyle(Paint.Style.FILL);
         debugCursorFill.setColor(Color.WHITE);
