@@ -479,4 +479,6 @@
     <string name="optimization_zbbetterfps_installing">Installing ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS installed</string>
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS only works with ZINK renderer. For GL4ES, use the regular BetterFPS mod instead.</string>
+
+    <string name="control_element_sensitivity">Sensitivity</string>
 </resources>
