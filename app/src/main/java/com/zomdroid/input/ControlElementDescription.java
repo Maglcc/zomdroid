@@ -29,11 +29,25 @@ public class ControlElementDescription {
     public final AbstractControlElement.InputType inputType;
     public final Icon icon;
     public final boolean isToggle;
+    public final float sensitivity;
+
+    public static final float DEFAULT_SENSITIVITY = 2.0f;
+    public static final float MIN_SENSITIVITY = 0.25f;
+    public static final float MAX_SENSITIVITY = 8.0f;
 
     public ControlElementDescription(float centerXRelative, float centerYRelative, float scale,
                                      @NonNull AbstractControlElement.Type type, @NonNull GLFWBinding[] bindings,
                                      String text, int color, int alpha,
                                      AbstractControlElement.InputType inputType, @NonNull Icon icon, boolean isToggle) {
+        this(centerXRelative, centerYRelative, scale, type, bindings, text, color, alpha,
+                inputType, icon, isToggle, DEFAULT_SENSITIVITY);
+    }
+
+    public ControlElementDescription(float centerXRelative, float centerYRelative, float scale,
+                                     @NonNull AbstractControlElement.Type type, @NonNull GLFWBinding[] bindings,
+                                     String text, int color, int alpha,
+                                     AbstractControlElement.InputType inputType, @NonNull Icon icon,
+                                     boolean isToggle, float sensitivity) {
         this.centerXRelative = centerXRelative;
         this.centerYRelative = centerYRelative;
         this.scale = scale;
@@ -45,6 +59,7 @@ public class ControlElementDescription {
         this.inputType = inputType;
         this.icon = icon;
         this.isToggle = isToggle;
+        this.sensitivity = sensitivity;
         validate();
     }
 
