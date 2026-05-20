@@ -144,6 +144,41 @@ public class ControlsEditorActivity extends AppCompatActivity {
                 });
 
 
+                // Sensitivity — only for TOUCHPAD and STICK_MOUSE
+                boolean hasSensitivity = (element.getType() == AbstractControlElement.Type.TOUCHPAD
+                        || element.getType() == AbstractControlElement.Type.STICK_MOUSE);
+
+                if (hasSensitivity && element instanceof com.zomdroid.input.TouchpadControlElement) {
+                    com.zomdroid.input.TouchpadControlElement touchpad =
+                            (com.zomdroid.input.TouchpadControlElement) element;
+
+                    // sensitivity 0.25..8.0 mapped to SeekBar 25..800
+                    int sensProgress = Math.round(touchpad.getSensitivity() * 100);
+                    binding.elementSensitivityTv.setVisibility(View.VISIBLE);
+                    binding.elementSensitivityPercentTv.setVisibility(View.VISIBLE);
+                    binding.elementSensitivityPercentTv.setText(
+                            getResources().getString(R.string.percentage_format, sensProgress));
+                    binding.elementSensitivityPercentTv.setVisibility(View.VISIBLE);
+                    binding.elementSensitivityTv.setVisibility(View.VISIBLE);
+                    binding.elementSensitivitySb.setVisibility(View.VISIBLE);
+                    binding.elementSensitivitySb.setOnSeekBarChangeListener(null);
+                    binding.elementSensitivitySb.setProgress(sensProgress);
+                    binding.elementSensitivitySb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            binding.elementSensitivityPercentTv.setText(
+                                    getResources().getString(R.string.percentage_format, progress));
+                            touchpad.setSensitivity(progress / 100f);
+                        }
+                        @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                        @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+                    });
+                } else {
+                    binding.elementSensitivityTv.setVisibility(View.GONE);
+                    binding.elementSensitivityPercentTv.setVisibility(View.GONE);
+                    binding.elementSensitivitySb.setVisibility(View.GONE);
+                }
+
                 // apply UI for current type
                 applyInputType(element, element.getInputType());
 
