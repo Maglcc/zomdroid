@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:min="25"
-                    android:max="400"
+                    android:max="800"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/element_sensitivity_tv"
