@@ -229,6 +229,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     case BUTTON_CIRCLE:
                     case BUTTON_RECT: {
                         binding.elementToggleTextRowLl.setVisibility(View.VISIBLE);
+                        binding.elementToggleTextFieldsLl.setVisibility(View.VISIBLE);
                         binding.elementTextEt.setVisibility(View.VISIBLE);
                         binding.elementTextEt.removeTextChangedListener(controlElementTextWatcher);
                         controlElementTextWatcher = new TextWatcher() {
@@ -324,8 +325,10 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     case DPAD:
                     case STICK:
                     case STICK_WASD:
-                    case STICK_MOUSE: {
+                    case STICK_MOUSE:
+                    case TOUCHPAD: {
                         binding.elementToggleTextRowLl.setVisibility(View.GONE);
+                        binding.elementToggleTextFieldsLl.setVisibility(View.GONE);
                         binding.elementTextEt.setVisibility(View.GONE);
 
                         binding.elementIconTv.setVisibility(View.GONE);
