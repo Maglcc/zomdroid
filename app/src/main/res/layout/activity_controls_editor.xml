@@ -212,6 +212,7 @@
 
 
                 <Spinner
+                    android:textSize="12sp"
                     android:id="@+id/element_icon_s"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -228,6 +229,7 @@
 
 
                 <Spinner
+                    android:textSize="12sp"
                     android:id="@+id/element_input_type_s"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -284,6 +286,7 @@
 
 
                     <Spinner
+                        android:textSize="12sp"
                         android:id="@+id/element_binding_left_s"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -304,6 +307,7 @@
 
 
                     <Spinner
+                        android:textSize="12sp"
                         android:id="@+id/element_binding_up_s"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -324,6 +328,7 @@
 
 
                     <Spinner
+                        android:textSize="12sp"
                         android:id="@+id/element_binding_right_s"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -344,6 +349,7 @@
 
 
                     <Spinner
+                        android:textSize="12sp"
                         android:id="@+id/element_binding_down_s"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -366,6 +372,7 @@
 
 
                 <Spinner
+                    android:textSize="12sp"
                     android:id="@+id/element_stick_binding_s"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
