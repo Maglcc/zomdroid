@@ -472,4 +472,6 @@
     <string name="optimization_zbbetterfps_installing">正在安装 ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS 安装成功</string>
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS 仅支持 ZINK 渲染器。如使用 GL4ES，请改用普通的 BetterFPS mod。</string>
+
+    <string name="control_element_sensitivity">灵敏度</string>
 </resources>
