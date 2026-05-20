@@ -104,9 +104,21 @@ public class InputControlsView extends View {
         }
 
         ArrayAdapter<AbstractControlElement.Type> adapter =
-                new ArrayAdapter<>(this.getContext(),
+                new ArrayAdapter<AbstractControlElement.Type>(this.getContext(),
                         R.layout.spinner_item,
-                        palette);
+                        palette) {
+                    @Override
+                    public android.view.View getView(int position, android.view.View convertView, android.view.ViewGroup parent) {
+                        android.view.View view = super.getView(position, convertView, parent);
+                        view.setPadding(
+                                (int)(16 * getContext().getResources().getDisplayMetrics().density),
+                                view.getPaddingTop(),
+                                view.getPaddingRight(),
+                                view.getPaddingBottom()
+                        );
+                        return view;
+                    }
+                };
 
         new MaterialAlertDialogBuilder(this.getContext())
                 .setTitle(this.getContext().getString(R.string.controls_editor_add_element))
