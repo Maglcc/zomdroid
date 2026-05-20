@@ -202,7 +202,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     binding.elementInputTypeS.setVisibility(View.GONE);
                 } else {
                     ArrayAdapter<AbstractControlElement.InputType> inputTypeAdapter =
-                            new ArrayAdapter<>(ControlsEditorActivity.this, android.R.layout.simple_spinner_dropdown_item,
+                            new ArrayAdapter<>(ControlsEditorActivity.this, R.layout.spinner_small,
                                     AbstractControlElement.InputType.values());
 
                     binding.elementInputTypeS.setVisibility(View.GONE);
@@ -294,7 +294,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                             }
                         };*/
                         ArrayAdapter<ControlElementDescription.Icon> adapterIcon = new ArrayAdapter<>(ControlsEditorActivity.this,
-                                android.R.layout.simple_spinner_dropdown_item,
+                                R.layout.spinner_small,
                                 ControlElementDescription.Icon.values());
                         binding.elementIconS.setAdapter(adapterIcon);
                         binding.elementIconS.setOnItemSelectedListener(null);
@@ -427,7 +427,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
 
                     GLFWBinding bindingLeft = element.getBindingLeft();
                     ArrayAdapter<GLFWBinding> adapterLeft = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item,
+                            R.layout.spinner_small,
                             GLFWBinding.valuesForType(AbstractControlElement.InputType.MNK));
                     binding.elementBindingLeftS.setAdapter(adapterLeft);
                     binding.elementBindingLeftS.setOnItemSelectedListener(null);
@@ -449,7 +449,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
 
                     GLFWBinding bindingUp = element.getBindingUp();
                     ArrayAdapter<GLFWBinding> adapterUp = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item,
+                            R.layout.spinner_small,
                             GLFWBinding.valuesForType(AbstractControlElement.InputType.MNK));
                     binding.elementBindingUpS.setAdapter(adapterUp);
                     binding.elementBindingUpS.setOnItemSelectedListener(null);
@@ -471,7 +471,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
 
                     GLFWBinding bindingRight = element.getBindingRight();
                     ArrayAdapter<GLFWBinding> adapterRight = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item,
+                            R.layout.spinner_small,
                             GLFWBinding.valuesForType(AbstractControlElement.InputType.MNK));
                     binding.elementBindingRightS.setAdapter(adapterRight);
                     binding.elementBindingRightS.setOnItemSelectedListener(null);
@@ -493,7 +493,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
 
                     GLFWBinding bindingDown = element.getBindingDown();
                     ArrayAdapter<GLFWBinding> adapterDown = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item,
+                            R.layout.spinner_small,
                             GLFWBinding.valuesForType(AbstractControlElement.InputType.MNK));
                     binding.elementBindingDownS.setAdapter(adapterDown);
                     binding.elementBindingDownS.setOnItemSelectedListener(null);
@@ -580,7 +580,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementStickBindingTv.setVisibility(View.VISIBLE);
 
                         ArrayAdapter<GLFWBinding> adapterStick = new ArrayAdapter<>(this,
-                                android.R.layout.simple_spinner_dropdown_item,
+                                R.layout.spinner_small,
                                 new GLFWBinding[]{GLFWBinding.LEFT_JOYSTICK, GLFWBinding.RIGHT_JOYSTICK});
                         binding.elementStickBindingS.setAdapter(adapterStick);
                         binding.elementStickBindingS.setOnItemSelectedListener(null);
@@ -613,7 +613,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
         ElementBindingFieldBinding fieldBinding = ElementBindingFieldBinding.inflate(getLayoutInflater());
 
         ArrayAdapter<GLFWBinding> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,
+                R.layout.spinner_small,
                 GLFWBinding.valuesForType(inputType));
         fieldBinding.elementBindingS.setAdapter(adapter);
         fieldBinding.elementBindingS.setSelection(adapter.getPosition(binding));
