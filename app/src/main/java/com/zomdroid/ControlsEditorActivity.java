@@ -228,7 +228,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                 switch (element.getType()) {
                     case BUTTON_CIRCLE:
                     case BUTTON_RECT: {
-                        binding.elementTextTv.setVisibility(View.VISIBLE);
+                        binding.elementToggleTextRowLl.setVisibility(View.VISIBLE);
                         binding.elementTextEt.setVisibility(View.VISIBLE);
                         binding.elementTextEt.removeTextChangedListener(controlElementTextWatcher);
                         controlElementTextWatcher = new TextWatcher() {
@@ -325,7 +325,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     case STICK:
                     case STICK_WASD:
                     case STICK_MOUSE: {
-                        binding.elementTextTv.setVisibility(View.GONE);
+                        binding.elementToggleTextRowLl.setVisibility(View.GONE);
                         binding.elementTextEt.setVisibility(View.GONE);
 
                         binding.elementIconTv.setVisibility(View.GONE);
@@ -537,9 +537,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementBindingsTv.setVisibility(View.VISIBLE);
                         binding.elementBindingsAddIb.setVisibility(View.VISIBLE);
 
-                        binding.elementTogglingTv.setVisibility(View.VISIBLE);
-                        binding.elementTogglingCb.setVisibility(View.VISIBLE);
-
                         binding.elementTogglingCb.setOnCheckedChangeListener(null);
                         binding.elementTogglingCb.setChecked(element.getToggle());
                         binding.elementTogglingCb.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -563,7 +560,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementBindingsAddIb.setVisibility(View.GONE);
                         binding.elementBindingsContainerLl.removeAllViews();
 
-                        binding.elementTogglingTv.setVisibility(View.GONE);
                         binding.elementTogglingCb.setVisibility(View.GONE);
 
                         binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
@@ -577,7 +573,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementBindingsAddIb.setVisibility(View.GONE);
                         binding.elementBindingsContainerLl.removeAllViews();
 
-                        binding.elementTogglingTv.setVisibility(View.GONE);
                         binding.elementTogglingCb.setVisibility(View.GONE);
 
                         binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
