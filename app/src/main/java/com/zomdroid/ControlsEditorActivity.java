@@ -144,6 +144,50 @@ public class ControlsEditorActivity extends AppCompatActivity {
                 });
 
 
+                // Sensitivity — only for TOUCHPAD and STICK_MOUSE
+                boolean hasSensitivity = (element.getType() == AbstractControlElement.Type.TOUCHPAD
+                        || element.getType() == AbstractControlElement.Type.STICK_MOUSE);
+
+                if (hasSensitivity) {
+                    // Get current sensitivity from whichever element type it is
+                    final float currentSens;
+                    if (element instanceof com.zomdroid.input.TouchpadControlElement) {
+                        currentSens = ((com.zomdroid.input.TouchpadControlElement) element).getSensitivity();
+                    } else if (element instanceof com.zomdroid.input.MouseStickControlElement) {
+                        currentSens = ((com.zomdroid.input.MouseStickControlElement) element).getSensitivity();
+                    } else {
+                        currentSens = ControlElementDescription.DEFAULT_SENSITIVITY;
+                    }
+
+                    int sensProgress = Math.round(currentSens * 100);
+                    binding.elementSensitivityTv.setVisibility(View.VISIBLE);
+                    binding.elementSensitivityPercentTv.setVisibility(View.VISIBLE);
+                    binding.elementSensitivityPercentTv.setText(
+                            getResources().getString(R.string.percentage_format, sensProgress));
+                    binding.elementSensitivitySb.setVisibility(View.VISIBLE);
+                    binding.elementSensitivitySb.setOnSeekBarChangeListener(null);
+                    binding.elementSensitivitySb.setProgress(sensProgress);
+                    binding.elementSensitivitySb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            binding.elementSensitivityPercentTv.setText(
+                                    getResources().getString(R.string.percentage_format, progress));
+                            float s = progress / 100f;
+                            if (element instanceof com.zomdroid.input.TouchpadControlElement) {
+                                ((com.zomdroid.input.TouchpadControlElement) element).setSensitivity(s);
+                            } else if (element instanceof com.zomdroid.input.MouseStickControlElement) {
+                                ((com.zomdroid.input.MouseStickControlElement) element).setSensitivity(s);
+                            }
+                        }
+                        @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                        @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+                    });
+                } else {
+                    binding.elementSensitivityTv.setVisibility(View.GONE);
+                    binding.elementSensitivityPercentTv.setVisibility(View.GONE);
+                    binding.elementSensitivitySb.setVisibility(View.GONE);
+                }
+
                 // apply UI for current type
                 applyInputType(element, element.getInputType());
 
@@ -158,7 +202,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     binding.elementInputTypeS.setVisibility(View.GONE);
                 } else {
                     ArrayAdapter<AbstractControlElement.InputType> inputTypeAdapter =
-                            new ArrayAdapter<>(ControlsEditorActivity.this, android.R.layout.simple_spinner_dropdown_item,
+                            new ArrayAdapter<>(ControlsEditorActivity.this, R.layout.spinner_item,
                                     AbstractControlElement.InputType.values());
 
                     binding.elementInputTypeS.setVisibility(View.GONE);
@@ -184,7 +228,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                 switch (element.getType()) {
                     case BUTTON_CIRCLE:
                     case BUTTON_RECT: {
-                        binding.elementTextTv.setVisibility(View.VISIBLE);
+                        binding.elementToggleTextRowLl.setVisibility(View.VISIBLE);
                         binding.elementTextEt.setVisibility(View.VISIBLE);
                         binding.elementTextEt.removeTextChangedListener(controlElementTextWatcher);
                         controlElementTextWatcher = new TextWatcher() {
@@ -250,7 +294,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                             }
                         };*/
                         ArrayAdapter<ControlElementDescription.Icon> adapterIcon = new ArrayAdapter<>(ControlsEditorActivity.this,
-                                android.R.layout.simple_spinner_dropdown_item,
+                                R.layout.spinner_item,
                                 ControlElementDescription.Icon.values());
                         binding.elementIconS.setAdapter(adapterIcon);
                         binding.elementIconS.setOnItemSelectedListener(null);
@@ -281,7 +325,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     case STICK:
                     case STICK_WASD:
                     case STICK_MOUSE: {
-                        binding.elementTextTv.setVisibility(View.GONE);
+                        binding.elementToggleTextRowLl.setVisibility(View.GONE);
                         binding.elementTextEt.setVisibility(View.GONE);
 
                         binding.elementIconTv.setVisibility(View.GONE);
@@ -383,7 +427,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
 
                     GLFWBinding bindingLeft = element.getBindingLeft();
                     ArrayAdapter<GLFWBinding> adapterLeft = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item,
+                            R.layout.spinner_item,
                             GLFWBinding.valuesForType(AbstractControlElement.InputType.MNK));
                     binding.elementBindingLeftS.setAdapter(adapterLeft);
                     binding.elementBindingLeftS.setOnItemSelectedListener(null);
@@ -405,7 +449,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
 
                     GLFWBinding bindingUp = element.getBindingUp();
                     ArrayAdapter<GLFWBinding> adapterUp = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item,
+                            R.layout.spinner_item,
                             GLFWBinding.valuesForType(AbstractControlElement.InputType.MNK));
                     binding.elementBindingUpS.setAdapter(adapterUp);
                     binding.elementBindingUpS.setOnItemSelectedListener(null);
@@ -427,7 +471,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
 
                     GLFWBinding bindingRight = element.getBindingRight();
                     ArrayAdapter<GLFWBinding> adapterRight = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item,
+                            R.layout.spinner_item,
                             GLFWBinding.valuesForType(AbstractControlElement.InputType.MNK));
                     binding.elementBindingRightS.setAdapter(adapterRight);
                     binding.elementBindingRightS.setOnItemSelectedListener(null);
@@ -449,7 +493,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
 
                     GLFWBinding bindingDown = element.getBindingDown();
                     ArrayAdapter<GLFWBinding> adapterDown = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item,
+                            R.layout.spinner_item,
                             GLFWBinding.valuesForType(AbstractControlElement.InputType.MNK));
                     binding.elementBindingDownS.setAdapter(adapterDown);
                     binding.elementBindingDownS.setOnItemSelectedListener(null);
@@ -493,9 +537,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementBindingsTv.setVisibility(View.VISIBLE);
                         binding.elementBindingsAddIb.setVisibility(View.VISIBLE);
 
-                        binding.elementTogglingTv.setVisibility(View.VISIBLE);
-                        binding.elementTogglingCb.setVisibility(View.VISIBLE);
-
                         binding.elementTogglingCb.setOnCheckedChangeListener(null);
                         binding.elementTogglingCb.setChecked(element.getToggle());
                         binding.elementTogglingCb.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -519,7 +560,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementBindingsAddIb.setVisibility(View.GONE);
                         binding.elementBindingsContainerLl.removeAllViews();
 
-                        binding.elementTogglingTv.setVisibility(View.GONE);
                         binding.elementTogglingCb.setVisibility(View.GONE);
 
                         binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
@@ -533,7 +573,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementBindingsAddIb.setVisibility(View.GONE);
                         binding.elementBindingsContainerLl.removeAllViews();
 
-                        binding.elementTogglingTv.setVisibility(View.GONE);
                         binding.elementTogglingCb.setVisibility(View.GONE);
 
                         binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
@@ -541,7 +580,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementStickBindingTv.setVisibility(View.VISIBLE);
 
                         ArrayAdapter<GLFWBinding> adapterStick = new ArrayAdapter<>(this,
-                                android.R.layout.simple_spinner_dropdown_item,
+                                R.layout.spinner_item,
                                 new GLFWBinding[]{GLFWBinding.LEFT_JOYSTICK, GLFWBinding.RIGHT_JOYSTICK});
                         binding.elementStickBindingS.setAdapter(adapterStick);
                         binding.elementStickBindingS.setOnItemSelectedListener(null);
@@ -574,7 +613,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
         ElementBindingFieldBinding fieldBinding = ElementBindingFieldBinding.inflate(getLayoutInflater());
 
         ArrayAdapter<GLFWBinding> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,
+                R.layout.spinner_item,
                 GLFWBinding.valuesForType(inputType));
         fieldBinding.elementBindingS.setAdapter(adapter);
         fieldBinding.elementBindingS.setSelection(adapter.getPosition(binding));
