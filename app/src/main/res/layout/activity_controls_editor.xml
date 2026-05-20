@@ -117,34 +117,75 @@
                     app:layout_constraintTop_toBottomOf="@id/element_transparency_tv"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
+                <!-- Sensitivity (only for TOUCHPAD / STICK_MOUSE) -->
                 <TextView
-                    android:id="@+id/element_toggling_tv"
+                    android:id="@+id/element_sensitivity_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="start"
-                    android:text="Toggle"
+                    android:text="@string/control_element_sensitivity"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/element_opacity_sb"
-                    app:layout_constraintEnd_toStartOf="@+id/element_toggling_cb"/>
-
-                <CheckBox
-                    android:id="@+id/element_toggling_cb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    app:layout_constraintStart_toEndOf="@id/element_toggling_tv"
-                    app:layout_constraintTop_toTopOf="@id/element_toggling_tv"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toStartOf="@+id/element_sensitivity_percent_tv"/>
 
                 <TextView
-                    android:id="@+id/element_text_tv"
+                    android:id="@+id/element_sensitivity_percent_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="@string/control_element_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/element_toggling_cb"
+                    android:gravity="end"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toEndOf="@+id/element_sensitivity_tv"
+                    app:layout_constraintTop_toTopOf="@+id/element_sensitivity_tv"
                     app:layout_constraintEnd_toEndOf="parent"/>
+
+                <SeekBar
+                    android:id="@+id/element_sensitivity_sb"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:min="25"
+                    android:max="400"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/element_sensitivity_tv"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <!-- Toggle + Text label in one row -->
+                <LinearLayout
+                    android:id="@+id/element_toggle_text_row_ll"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/element_sensitivity_sb">
+
+                    <TextView
+                        android:id="@+id/element_toggling_tv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start|center_vertical"
+                        android:text="Toggle" />
+
+                    <CheckBox
+                        android:id="@+id/element_toggling_cb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:layout_marginEnd="4dp" />
+
+                    <TextView
+                        android:id="@+id/element_text_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/control_element_text" />
+
+                </LinearLayout>
 
                 <EditText
                     android:id="@+id/element_text_et"
@@ -156,7 +197,7 @@
                     android:maxLength="10"
                     android:maxLines="1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/element_text_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/element_toggle_text_row_ll"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
                 <TextView
