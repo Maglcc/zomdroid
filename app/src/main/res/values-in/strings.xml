@@ -245,22 +245,19 @@
 
     <!-- Vulkan Driver dialogs -->
     <string name="vulkan_driver_freedreno_8xx_title">Freedreno 8xx</string>
-    <string name="vulkan_driver_freedreno_8xx_message">Freedreno 8xx is experimental.\n\nSnapdragon 8 Gen 3/4/5/Elite and 7 Gen 3 devices.</string>
-
+    <string name="vulkan_driver_freedreno_8xx_message">Driver kustom untuk GPU Adreno 8xx (by whitebelyash).\n\nSnapdragon 8 Gen 3/4/5/Elite + 7 Gen 3.</string>
     <string name="vulkan_driver_freedreno_840_title">Freedreno 830/840</string>
-    <string name="vulkan_driver_freedreno_840_message">This Freedreno driver works best for Adreno 830/840.\n\nSnapdragon 8 Gen 5/Elite.</string>
-
-    <string name="vulkan_driver_turnip_8gen2_title">TURNIP bbdd688 8g2</string>
-    <string name="vulkan_driver_turnip_8gen2_message">This is for Snapdragon 8 Gen 2 only.\n\nFixes flickering that may occur after updating to HyperOS 3.</string>
-
-    <string name="vulkan_driver_turnip_bbdd688_title">TURNIP bbdd688</string>
-    <string name="vulkan_driver_turnip_bbdd688_message">Driver ini ditujukan untuk GPU Adreno 7xx.</string>
-
-    <string name="vulkan_driver_turnip_gmem_title">TURNIP 25.1.3 GMEM</string>
-    <string name="vulkan_driver_turnip_gmem_message">Driver ini hanya untuk GPU Adreno 710. Snapdragon 7 Gen 1.</string>
-
+    <string name="vulkan_driver_freedreno_840_message">Driver kustom yang dioptimalkan untuk GPU Adreno 830/840.\n\nSnapdragon 8 Gen 5/Elite.</string>
+    <string name="vulkan_driver_turnip_8gen2_title">TURNIP 740 (bbdd688)</string>
+    <string name="vulkan_driver_turnip_8gen2_message">Driver kustom untuk GPU Adreno 740.\n\nSnapdragon 8 Gen 2. Memperbaiki flickering setelah pembaruan HyperOS 3 / OneUI (by Weab-chan).</string>
+    <string name="vulkan_driver_turnip_bbdd688_title">TURNIP 7xx (bbdd688)</string>
+    <string name="vulkan_driver_turnip_bbdd688_message">Driver kustom untuk GPU Adreno 7xx (by Weab-chan).\n\nSnapdragon seri 7.</string>
+    <string name="vulkan_driver_turnip_gmem_title">TURNIP 710</string>
+    <string name="vulkan_driver_turnip_gmem_message">Driver kustom untuk GPU Adreno 710 (sebelumnya dikenal sebagai TURNIP 25.1.3 GMEM by K11MCH1).\n\nSnapdragon 7 Gen 1.</string>
+    <string name="vulkan_driver_turnip_a6xx_title">TURNIP Adreno 6xx</string>
+    <string name="vulkan_driver_turnip_a6xx_message">Driver kustom untuk GPU Adreno 6xx lama oleh K11MCH1.\n\nSnapdragon seri 600. Gunakan jika driver Freedreno default tidak berfungsi.</string>
     <string name="vulkan_driver_freedreno">Freedreno</string>
-    <string name="vulkan_driver_freedreno_message">Driver ini untuk Adreno 6xx/7xx (Snapdragon).</string>
+    <string name="vulkan_driver_freedreno_message">Driver default untuk GPU Adreno 7xx.\n\nSnapdragon seri 7. Mungkin juga berfungsi pada beberapa perangkat 6xx.</string>
 
     <!-- JVM args dialog -->
     <string name="jvm_args_dialog_title">Argumen JVM</string>
@@ -481,4 +478,42 @@
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS hanya bekerja dengan renderer ZINK. Untuk GL4ES, gunakan mod BetterFPS biasa.</string>
 
     <string name="control_element_sensitivity">Sensitivitas</string>
+
+    <!-- ===== Game Settings strings ===== -->
+    <string name="game_settings_menu">Impor/Ekspor Pengaturan Game</string>
+    <string name="game_settings_import_title">Impor</string>
+    <string name="game_settings_import_hint">Pilih file options.ini untuk diimpor. File akan disimpan sebagai options.ini di folder Zomboid instans yang dipilih.</string>
+    <string name="game_settings_export_title">Ekspor</string>
+    <string name="game_settings_export_hint">Menyimpan file options.ini saat ini dari instans yang dipilih. File akan diberi nama dengan tanggal dan waktu saat ini.</string>
+    <string name="game_settings_importing">Mengimpor pengaturan game…</string>
+    <string name="game_settings_imported">Pengaturan game diimpor</string>
+    <string name="game_settings_exporting">Mengekspor pengaturan game…</string>
+    <string name="game_settings_exported">Pengaturan game diekspor</string>
+    <string name="game_settings_not_found">options.ini tidak ditemukan. Game mungkin belum pernah dijalankan.</string>
+    <string name="game_settings_wrong_format">Silakan pilih file .ini</string>
+    <string name="import_label">Impor</string>
+    <string name="export_label">Ekspor</string>
+
+    <!-- ===== Workshop Download strings ===== -->
+    <string name="install_mod_workshop_section">Unduh dari Steam Workshop</string>
+    <string name="install_mod_workshop_disclaimer">Didukung oleh ggntw.com — layanan pihak ketiga, bisa berhenti berfungsi kapan saja.\nPenggunaan pertama kali mungkin menampilkan banyak iklan sebelum mengunduh.</string>
+    <string name="install_mod_workshop_btn">Unduh dari Workshop</string>
+    <string name="install_mod_workshop_dialog_title">Steam Workshop ID</string>
+    <string name="install_mod_workshop_dialog_message">Masukkan ID mod dari URL halaman mod.\n\nContoh: steamcommunity.com/sharedfiles/filedetails/?id=3619862853\nWorkshop ID: 3619862853</string>
+    <string name="install_mod_workshop_download">Unduh</string>
+    <string name="install_mod_workshop_id_empty">Harap masukkan Workshop ID</string>
+    <string name="install_mod_workshop_requesting">Meminta tautan unduhan…</string>
+    <string name="install_mod_workshop_error">Tidak dapat memperoleh tautan. Coba lagi nanti.</string>
+    <string name="install_mod_workshop_webview_title">Selesaikan unduhan</string>
+    <string name="install_mod_workshop_downloading">Mengunduh mod…</string>
+    <string name="install_mod_workshop_downloaded">Mod diunduh. Ketuk Instal untuk melanjutkan.</string>
+    <string name="install_mod_workshop_download_failed">Unduhan gagal. Coba lagi.</string>
+
+    <!-- ===== Native Libs strings ===== -->
+    <string name="native_libs_menu">Impor library untuk MP (B41)</string>
+    <string name="native_libs_hint">🎮 Di sini Anda dapat menginstal library native tambahan libRakNet64.so dan libZNetNoSteam64.so untuk dukungan multiplayer di Build 41.\n\nLibrary ini pertama kali muncul di Build 42.12+. Untuk menggunakannya di Build 41, salin dari folder instans Build 42: game/android/arm64-v8a — ini bukan kesalahan.</string>
+    <string name="native_libs_group_file">Arsip ZIP dengan file .so</string>
+    <string name="native_libs_install">Instal</string>
+    <string name="native_libs_installing">Menginstal library native…</string>
+    <string name="native_libs_installed">Library native terinstal</string>
 </resources>

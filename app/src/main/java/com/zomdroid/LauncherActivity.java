@@ -88,17 +88,10 @@ public class LauncherActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.launcherNv, navController);
 
-
         binding.launcherNv.setNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.action_manage_storage) {
-                Uri folderUri = DocumentsContract.buildDocumentUri(C.STORAGE_PROVIDER_AUTHORITY, AppStorage.requireSingleton().getHomePath());
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(folderUri, DocumentsContract.Document.MIME_TYPE_DIR);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Intent chooserIntent = Intent.createChooser(intent, null);
-                startActivity(chooserIntent);
+            if (item.getItemId() == R.id.action_game_settings) {
+                binding.drawerLayout.close();
+                navController.navigate(R.id.action_game_settings);
                 return true;
             } else if (item.getItemId() == R.id.action_open_controls_editor) {
                 //Intent intent = new Intent(this, ControlsEditorActivity.class);
@@ -154,6 +147,10 @@ public class LauncherActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.action_open_optimization) {
                 binding.drawerLayout.close();
                 navController.navigate(R.id.action_open_optimization);
+                return true;
+            } else if (item.getItemId() == R.id.action_install_native_libs) {
+                binding.drawerLayout.close();
+                navController.navigate(R.id.action_install_native_libs);
                 return true;
         }
 

@@ -245,22 +245,19 @@
 
     <!-- Vulkan Driver dialogs -->
     <string name="vulkan_driver_freedreno_8xx_title">Freedreno 8xx</string>
-    <string name="vulkan_driver_freedreno_8xx_message">Freedreno 8xx é experimental.\n\nDispositivos Snapdragon 8 Gen 3/4/5/Elite e 7 Gen 3.</string>
-
+    <string name="vulkan_driver_freedreno_8xx_message">Driver personalizado para GPUs Adreno 8xx (by whitebelyash).\n\nSnapdragon 8 Gen 3/4/5/Elite + 7 Gen 3.</string>
     <string name="vulkan_driver_freedreno_840_title">Freedreno 830/840</string>
-    <string name="vulkan_driver_freedreno_840_message">Este driver Freedreno funciona melhor para Adreno 830/840.\n\nSnapdragon 8 Gen 5/Elite.</string>
-
-    <string name="vulkan_driver_turnip_8gen2_title">TURNIP bbdd688 8g2</string>
-    <string name="vulkan_driver_turnip_8gen2_message">Este driver é apenas para Snapdragon 8 Gen 2.\n\nCorrige cintilação que pode ocorrer após atualizar para o HyperOS 3.</string>
-
-    <string name="vulkan_driver_turnip_bbdd688_title">TURNIP bbdd688</string>
-    <string name="vulkan_driver_turnip_bbdd688_message">Este driver é destinado a GPUs Adreno 7xx.</string>
-
-    <string name="vulkan_driver_turnip_gmem_title">TURNIP 25.1.3 GMEM</string>
-    <string name="vulkan_driver_turnip_gmem_message">Este driver é apenas para GPU Adreno 710. Snapdragon 7 Gen 1.</string>
-
+    <string name="vulkan_driver_freedreno_840_message">Driver personalizado otimizado para GPUs Adreno 830/840.\n\nSnapdragon 8 Gen 5/Elite.</string>
+    <string name="vulkan_driver_turnip_8gen2_title">TURNIP 740 (bbdd688)</string>
+    <string name="vulkan_driver_turnip_8gen2_message">Driver personalizado para GPU Adreno 740.\n\nSnapdragon 8 Gen 2. Corrige flickering após atualização do HyperOS 3 / OneUI (by Weab-chan).</string>
+    <string name="vulkan_driver_turnip_bbdd688_title">TURNIP 7xx (bbdd688)</string>
+    <string name="vulkan_driver_turnip_bbdd688_message">Driver personalizado para GPUs Adreno 7xx (by Weab-chan).\n\nSnapdragon série 7.</string>
+    <string name="vulkan_driver_turnip_gmem_title">TURNIP 710</string>
+    <string name="vulkan_driver_turnip_gmem_message">Driver personalizado para GPU Adreno 710 (anteriormente conhecido como TURNIP 25.1.3 GMEM by K11MCH1).\n\nSnapdragon 7 Gen 1.</string>
+    <string name="vulkan_driver_turnip_a6xx_title">TURNIP Adreno 6xx</string>
+    <string name="vulkan_driver_turnip_a6xx_message">Driver personalizado para GPUs Adreno 6xx mais antigos por K11MCH1.\n\nSnapdragon série 600. Use se o driver Freedreno padrão não funcionar.</string>
     <string name="vulkan_driver_freedreno">Freedreno</string>
-    <string name="vulkan_driver_freedreno_message">Este driver é para Adreno 6xx/7xx (Snapdragons).</string>
+    <string name="vulkan_driver_freedreno_message">Driver padrão para GPUs Adreno 7xx.\n\nSnapdragon série 7. Pode funcionar em alguns dispositivos com 6xx.</string>
 
     <!-- JVM args dialog -->
     <string name="jvm_args_dialog_title">Argumentos JVM</string>
@@ -480,4 +477,42 @@
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS funciona apenas com o renderer ZINK. Para GL4ES, use o mod BetterFPS padrão.</string>
 
     <string name="control_element_sensitivity">Sensibilidade</string>
+
+    <!-- ===== Game Settings strings ===== -->
+    <string name="game_settings_menu">Importar/Exportar Configurações do Jogo</string>
+    <string name="game_settings_import_title">Importar</string>
+    <string name="game_settings_import_hint">Selecione um arquivo options.ini para importar. Ele será salvo como options.ini na pasta Zomboid da instância selecionada.</string>
+    <string name="game_settings_export_title">Exportar</string>
+    <string name="game_settings_export_hint">Salva o arquivo options.ini atual da instância selecionada. O arquivo será nomeado com a data e hora atuais.</string>
+    <string name="game_settings_importing">Importando configurações do jogo…</string>
+    <string name="game_settings_imported">Configurações do jogo importadas</string>
+    <string name="game_settings_exporting">Exportando configurações do jogo…</string>
+    <string name="game_settings_exported">Configurações do jogo exportadas</string>
+    <string name="game_settings_not_found">options.ini não encontrado. O jogo pode ainda não ter sido executado.</string>
+    <string name="game_settings_wrong_format">Por favor, selecione um arquivo .ini</string>
+    <string name="import_label">Importar</string>
+    <string name="export_label">Exportar</string>
+
+    <!-- ===== Workshop Download strings ===== -->
+    <string name="install_mod_workshop_section">Baixar do Steam Workshop</string>
+    <string name="install_mod_workshop_disclaimer">Funciona via ggntw.com — serviço de terceiros, pode parar de funcionar a qualquer momento.\nNa primeira utilização, pode aparecer muita publicidade antes do download.</string>
+    <string name="install_mod_workshop_btn">Baixar do Workshop</string>
+    <string name="install_mod_workshop_dialog_title">ID do Steam Workshop</string>
+    <string name="install_mod_workshop_dialog_message">Digite o ID do mod da URL da página do mod.\n\nExemplo: steamcommunity.com/sharedfiles/filedetails/?id=3619862853\nWorkshop ID: 3619862853</string>
+    <string name="install_mod_workshop_download">Baixar</string>
+    <string name="install_mod_workshop_id_empty">Por favor, insira um Workshop ID</string>
+    <string name="install_mod_workshop_requesting">Solicitando link de download…</string>
+    <string name="install_mod_workshop_error">Não foi possível obter o link. Tente novamente.</string>
+    <string name="install_mod_workshop_webview_title">Conclua o download</string>
+    <string name="install_mod_workshop_downloading">Baixando mod…</string>
+    <string name="install_mod_workshop_downloaded">Mod baixado. Toque em Instalar.</string>
+    <string name="install_mod_workshop_download_failed">Download falhou. Tente novamente.</string>
+
+    <!-- ===== Native Libs strings ===== -->
+    <string name="native_libs_menu">Importar libs para MP (B41)</string>
+    <string name="native_libs_hint">🎮 Aqui você pode instalar as bibliotecas nativas adicionais libRakNet64.so e libZNetNoSteam64.so para suporte a multijogador no Build 41.\n\nEstas bibliotecas apareceram apenas no Build 42.12+. Para usá-las no Build 41, copie-as da pasta da instância Build 42: game/android/arm64-v8a — isso não é um erro.</string>
+    <string name="native_libs_group_file">Arquivo ZIP com arquivos .so</string>
+    <string name="native_libs_install">Instalar</string>
+    <string name="native_libs_installing">Instalando bibliotecas nativas…</string>
+    <string name="native_libs_installed">Bibliotecas nativas instaladas</string>
 </resources>
