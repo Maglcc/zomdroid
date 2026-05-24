@@ -247,7 +247,7 @@
     <string name="vulkan_driver_turnip_bbdd688_title">TURNIP 7xx (bbdd688)</string>
     <string name="vulkan_driver_turnip_bbdd688_message">适用于Adreno 7xx GPU的自定义驱动 (by Weab-chan)。\n\nSnapdragon 7系列。</string>
     <string name="vulkan_driver_turnip_gmem_title">TURNIP 710</string>
-    <string name="vulkan_driver_turnip_gmem_message">适用于Adreno 710 GPU的自定义驱动（原名TURNIP 25.1.3 GMEM by K11MCH1）。\n\nSnapdragon 7 Gen 1。</string>
+    <string name="vulkan_driver_turnip_gmem_message">适用于Adreno 710 GPU的自定义驱动（原名TURNIP 25.1.3 GMEM by duduproad）。\n\nSnapdragon 7 Gen 1。</string>
     <string name="vulkan_driver_turnip_a6xx_title">TURNIP Adreno 6xx</string>
     <string name="vulkan_driver_turnip_a6xx_message">由K11MCH1制作的适用于旧款Adreno 6xx GPU的自定义驱动。\n\nSnapdragon 600系列。如果默认Freedreno驱动不可用，请使用此驱动。</string>
     <string name="vulkan_driver_freedreno">Freedreno</string>
