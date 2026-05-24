@@ -1425,6 +1425,23 @@ public class InstallerService extends Service implements TaskProgressListener {
                 copyDirectory(modRoot, normalDest);
                 Log.d("SmartMod", "Installed normal: " + normalDest.getAbsolutePath());
 
+                // Expand common/ into each version folder so assets are accessible
+                // (B42 looks in 42.x/ not in root, so common/ must be merged into each version folder)
+                File commonDir = new File(normalDest, "common");
+                if (commonDir.exists() && commonDir.isDirectory()) {
+                    File[] versionDirs = normalDest.listFiles(File::isDirectory);
+                    if (versionDirs != null) {
+                        for (File vd : versionDirs) {
+                            String name = vd.getName();
+                            if (name.equals("42") || name.startsWith("42.") ||
+                                name.equals("41") || name.startsWith("41.")) {
+                                copyDirectoryNoOverwrite(commonDir, vd);
+                                Log.d("SmartMod", "Expanded common/ into " + vd.getName());
+                            }
+                        }
+                    }
+                }
+
                 // Step 7: If needed, install lowercase inception copy
                 if (needsInception) {
                     String inceptionRelPath = "data/user/0/com.zomdroid/files/instances/"
@@ -1436,6 +1453,21 @@ public class InstallerService extends Service implements TaskProgressListener {
                     if (lowerDest.exists()) FileUtils.deleteDirectory(lowerDest);
                     copyDirectoryLowercase(modRoot, lowerDest);
                     Log.d("SmartMod", "Installed lowercase: " + lowerDest.getAbsolutePath());
+
+                    // Expand common/ into version folders for inception copy too
+                    File commonDirLower = new File(lowerDest, "common");
+                    if (commonDirLower.exists() && commonDirLower.isDirectory()) {
+                        File[] versionDirs = lowerDest.listFiles(File::isDirectory);
+                        if (versionDirs != null) {
+                            for (File vd : versionDirs) {
+                                String name = vd.getName();
+                                if (name.equals("42") || name.startsWith("42.") ||
+                                    name.equals("41") || name.startsWith("41.")) {
+                                    copyDirectoryNoOverwrite(commonDirLower, vd);
+                                }
+                            }
+                        }
+                    }
                 }
 
                 finish(getString(R.string.install_mod_smart_done), null);
