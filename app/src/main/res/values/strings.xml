@@ -257,7 +257,7 @@
     <string name="vulkan_driver_turnip_bbdd688_message">Custom driver for Adreno 7xx GPUs  (by Weab-chan).\n\nSnapdragon 7-series. </string>
 
     <string name="vulkan_driver_turnip_gmem_title">TURNIP 710</string>
-    <string name="vulkan_driver_turnip_gmem_message">Custom driver for Adreno 710 GPU (previously known as TURNIP 25.1.3 GMEM by K11MCH1).\n\nSnapdragon 7 Gen 1.</string>
+    <string name="vulkan_driver_turnip_gmem_message">Custom driver for Adreno 710 GPU (previously known as TURNIP 25.1.3 GMEM by duduproad).\n\nSnapdragon 7 Gen 1.</string>
 
     <string name="vulkan_driver_turnip_a6xx_title">TURNIP Adreno 6xx</string>
     <string name="vulkan_driver_turnip_a6xx_message">Custom driver for older Adreno 6xx GPUs by K11MCH1.\n\nSnapdragon 600-series. Use if the default Freedreno driver doesn\'t work.</string>
