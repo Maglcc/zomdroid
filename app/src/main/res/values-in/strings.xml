@@ -499,7 +499,7 @@
     <string name="install_mod_workshop_disclaimer">Didukung oleh ggntw.com — layanan pihak ketiga, bisa berhenti berfungsi kapan saja.\nPenggunaan pertama kali mungkin menampilkan banyak iklan sebelum mengunduh.</string>
     <string name="install_mod_workshop_btn">Unduh dari Workshop</string>
     <string name="install_mod_workshop_dialog_title">Steam Workshop ID</string>
-    <string name="install_mod_workshop_dialog_message">Masukkan ID mod dari URL halaman mod.\n\nContoh: steamcommunity.com/sharedfiles/filedetails/?id=3619862853\nWorkshop ID: 3619862853</string>
+    <string name="install_mod_workshop_dialog_message">Masukkan ID mod dari URL halaman mod.\n\nContoh: Workshop ID: 3619862853</string>
     <string name="install_mod_workshop_download">Unduh</string>
     <string name="install_mod_workshop_id_empty">Harap masukkan Workshop ID</string>
     <string name="install_mod_workshop_requesting">Meminta tautan unduhan…</string>
@@ -516,4 +516,6 @@
     <string name="native_libs_install">Instal</string>
     <string name="native_libs_installing">Menginstal library native…</string>
     <string name="native_libs_installed">Library native terinstal</string>
+
+    <string name="control_element_opacity_all">Ke semua</string>
 </resources>
