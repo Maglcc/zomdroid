@@ -492,7 +492,7 @@
     <string name="install_mod_workshop_disclaimer">由 ggntw.com 提供 — 第三方服务，随时可能停止运行。\n首次使用时，下载前可能会显示大量广告。</string>
     <string name="install_mod_workshop_btn">从 Workshop 下载</string>
     <string name="install_mod_workshop_dialog_title">Steam Workshop ID</string>
-    <string name="install_mod_workshop_dialog_message">从 mod 页面 URL 中输入 Workshop ID。\n\n示例：steamcommunity.com/sharedfiles/filedetails/?id=3619862853\nWorkshop ID：3619862853</string>
+    <string name="install_mod_workshop_dialog_message">从 mod 页面 URL 中输入 Workshop ID。\n\n示例：Workshop ID：3619862853</string>
     <string name="install_mod_workshop_download">下载</string>
     <string name="install_mod_workshop_id_empty">请输入 Workshop ID</string>
     <string name="install_mod_workshop_requesting">正在请求下载链接…</string>
@@ -509,4 +509,6 @@
     <string name="native_libs_install">安装</string>
     <string name="native_libs_installing">正在安装本机库…</string>
     <string name="native_libs_installed">本机库已安装</string>
+
+    <string name="control_element_opacity_all">全部</string>
 </resources>
