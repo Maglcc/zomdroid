@@ -143,6 +143,14 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     }
                 });
 
+                binding.elementOpacityAllBtn.setOnClickListener(v -> {
+                    int alpha = Math.round((float) binding.elementOpacitySb.getProgress() / 100 * 255);
+                    for (AbstractControlElement e : binding.inputControlsV.getControlElements()) {
+                        e.setAlpha(alpha);
+                    }
+                    binding.inputControlsV.invalidate();
+                });
+
 
                 // Sensitivity — only for TOUCHPAD and STICK_MOUSE
                 boolean hasSensitivity = (element.getType() == AbstractControlElement.Type.TOUCHPAD
