@@ -264,7 +264,7 @@ public class InstallModFragment extends Fragment {
     private void showWorkshopDownloadDialog() {
         // Input dialog for Workshop ID
         EditText input = new EditText(requireContext());
-        input.setHint("3619862853");
+        //input.setHint("3619862853");
         input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
         input.setPadding(48, 24, 48, 24);
 
