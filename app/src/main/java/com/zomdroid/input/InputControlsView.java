@@ -558,4 +558,8 @@ public class InputControlsView extends View {
     public float getRenderScale() {
         return renderScale;
     }
+
+    public List<AbstractControlElement> getControlElements() {
+        return controlElements;
+    }
 }
