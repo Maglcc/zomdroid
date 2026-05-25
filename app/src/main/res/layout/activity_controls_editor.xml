@@ -95,14 +95,28 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/element_scale_sb"
                     app:layout_constraintEnd_toStartOf="@+id/element_opacity_percent_tv"/>
-
+                
                 <TextView
                     android:id="@+id/element_opacity_percent_tv"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     app:layout_constraintStart_toEndOf="@+id/element_transparency_tv"
                     app:layout_constraintTop_toTopOf="@+id/element_transparency_tv"
+                    app:layout_constraintEnd_toStartOf="@+id/element_opacity_all_btn"/>
+                
+                <Button
+                    android:id="@+id/element_opacity_all_btn"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="0dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:textSize="11sp"
+                    android:text="@string/control_element_opacity_all"
+                    app:layout_constraintTop_toTopOf="@+id/element_transparency_tv"
+                    app:layout_constraintBottom_toBottomOf="@+id/element_transparency_tv"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
 
