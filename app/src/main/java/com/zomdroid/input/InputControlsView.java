@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 public class InputControlsView extends View {
     private static final String LOG_TAG = InputControlsView.class.getName();
