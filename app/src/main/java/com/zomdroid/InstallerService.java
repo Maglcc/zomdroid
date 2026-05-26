@@ -569,12 +569,12 @@ public class InstallerService extends Service implements TaskProgressListener {
                                 }
 
                                 // Also update SharedPreferences so controls apply immediately
-                                String json = new String(jsonBytes, java.nio.charset.StandardCharsets.UTF_8);
+                                /*String json = new String(jsonBytes, java.nio.charset.StandardCharsets.UTF_8);
                                 getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
                                         .edit()
                                         .putString(C.shprefs.keys.INPUT_CONTROLS, json)
                                         .apply();
-
+                                */
                                 found = true;
                                 break;
                             }

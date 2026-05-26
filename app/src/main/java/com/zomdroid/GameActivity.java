@@ -82,11 +82,12 @@ public class GameActivity extends AppCompatActivity implements GamepadManager.Ga
         // Give focus to game surface to ensure it receives input events
         setContentView(binding.getRoot());
         getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        //binding.getRoot().setOnApplyWindowInsetsListener((v, insets) -> {
-        //    boolean imeVisible = insets.isVisible(WindowInsets.Type.ime());
-        //    systemKeyboardVisible = imeVisible;
-        //    return v.onApplyWindowInsets(insets);
-        //});
+
+        // set instanceName before any inputControlsV calls
+        String gameInstanceName = getIntent().getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+        if (gameInstanceName != null) {
+            binding.inputControlsV.setInstanceName(gameInstanceName);
+        }
 
         binding.gameSv.setFocusable(true);
         binding.gameSv.setFocusableInTouchMode(true);
@@ -134,7 +135,8 @@ public class GameActivity extends AppCompatActivity implements GamepadManager.Ga
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
-        String gameInstanceName = getIntent().getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+        //String gameInstanceName = getIntent().getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+        gameInstanceName = getIntent().getStringExtra(EXTRA_GAME_INSTANCE_NAME);
         if (gameInstanceName == null)
             throw new RuntimeException("Expected game instance name to be passed as intent extra");
         GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(gameInstanceName);

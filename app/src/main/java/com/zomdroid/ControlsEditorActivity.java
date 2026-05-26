@@ -33,7 +33,7 @@ import com.zomdroid.databinding.ElementBindingFieldBinding;
 
 public class ControlsEditorActivity extends AppCompatActivity {
     public static final String EXTRA_BACKGROUND_PATH = "com.zomdroid.ControlsEditorActivity.EXTRA_BACKGROUND_PATH";
-
+    public static final String EXTRA_INSTANCE_NAME = "com.zomdroid.ControlsEditorActivity.EXTRA_INSTANCE_NAME";
     private ActivityControlsEditorBinding binding;
     private TextWatcher controlElementTextWatcher = null;
 
@@ -43,6 +43,12 @@ public class ControlsEditorActivity extends AppCompatActivity {
 
         binding = ActivityControlsEditorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // ПЕРВЫМ ДЕЛОМ — до любых других вызовов на inputControlsV
+        String instanceName = getIntent().getStringExtra(EXTRA_INSTANCE_NAME);
+        if (instanceName != null) {
+            binding.inputControlsV.setInstanceName(instanceName);
+        }
 
         getWindow().setDecorFitsSystemWindows(false);
         final WindowInsetsController controller = getWindow().getInsetsController();
@@ -55,11 +61,8 @@ public class ControlsEditorActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
         binding.inputControlsV.setEditMode(true);
-
         binding.inputControlsV.setBackgroundColor(0x00000000);
 
-        // Load background image into the ImageView behind InputControlsView
-        // This avoids touching InputControlsView state (which would reset the layout)
         String bgPath = getIntent().getStringExtra(EXTRA_BACKGROUND_PATH);
         if (bgPath != null) {
             Bitmap bg = BitmapFactory.decodeFile(bgPath);
@@ -112,14 +115,8 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementScalePercentTv.setText(getResources().getString(R.string.percentage_format, progress));
                         element.setScale((float) progress / 100);
                     }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                    }
+                    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
                 });
 
                 int opacityProgressValue = Math.round((float) element.getAlpha() / 255 * 100);
@@ -133,14 +130,8 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementOpacityPercentTv.setText(getResources().getString(R.string.percentage_format, progress));
                         element.setAlpha(Math.round((float) progress / 100 * 255));
                     }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                    }
+                    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
                 });
 
                 binding.elementOpacityAllBtn.setOnClickListener(v -> {
@@ -151,13 +142,11 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     binding.inputControlsV.invalidate();
                 });
 
-
                 // Sensitivity — only for TOUCHPAD and STICK_MOUSE
                 boolean hasSensitivity = (element.getType() == AbstractControlElement.Type.TOUCHPAD
                         || element.getType() == AbstractControlElement.Type.STICK_MOUSE);
 
                 if (hasSensitivity) {
-                    // Get current sensitivity from whichever element type it is
                     final float currentSens;
                     if (element instanceof com.zomdroid.input.TouchpadControlElement) {
                         currentSens = ((com.zomdroid.input.TouchpadControlElement) element).getSensitivity();
@@ -206,7 +195,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
                 if (fixedMnkStick) {
                     element.setInputType(AbstractControlElement.InputType.MNK);
                     applyInputType(element, AbstractControlElement.InputType.MNK);
-
                     binding.elementInputTypeS.setVisibility(View.GONE);
                 } else {
                     ArrayAdapter<AbstractControlElement.InputType> inputTypeAdapter =
@@ -225,7 +213,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
                                 element.setInputType(inputType);
                                 applyInputType(element, inputType);
                             }
-
                             @Override
                             public void onNothingSelected(AdapterView<?> parent) { }
                         });
@@ -238,70 +225,25 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     case BUTTON_RECT: {
                         binding.elementToggleTextRowLl.setVisibility(View.VISIBLE);
                         binding.elementToggleTextFieldsLl.setVisibility(View.VISIBLE);
+                        binding.elementTogglingCb.setVisibility(View.VISIBLE);
                         binding.elementTextEt.setVisibility(View.VISIBLE);
                         binding.elementTextEt.removeTextChangedListener(controlElementTextWatcher);
                         controlElementTextWatcher = new TextWatcher() {
                             @Override
-                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                            }
-
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
                             @Override
                             public void onTextChanged(CharSequence s, int start, int before, int count) {
                                 element.setText(s.toString());
                             }
-
                             @Override
-                            public void afterTextChanged(Editable s) {
-                            }
+                            public void afterTextChanged(Editable s) {}
                         };
                         binding.elementTextEt.setText(element.getText());
                         binding.elementTextEt.addTextChangedListener(controlElementTextWatcher);
 
                         binding.elementIconTv.setVisibility(View.VISIBLE);
                         binding.elementIconS.setVisibility(View.VISIBLE);
-/*                        BaseAdapter iconAdapter = new BaseAdapter() {
-                            @Override
-                            public int getCount() {
-                                return elementIcons.size();
-                            }
 
-                            @Override
-                            public Object getItem(int position) {
-                                return elementIcons.get(position);
-                            }
-
-                            @Override
-                            public long getItemId(int position) {
-                                return position;
-                            }
-
-                            @Override
-                            public View getView(int position, View convertView, ViewGroup parent) {
-                                LayoutInflater inflater = LayoutInflater.from(GameActivity.this);
-                                View view = convertView != null ? convertView :
-                                        inflater.inflate(R.layout.spinner_item_with_icon, parent, false);
-
-                                TextView textView = view.findViewById(R.id.text_tv);
-                                ImageView imageView = view.findViewById(R.id.icon_iv);
-
-                                ControlElementDescription.Icon icon = elementIcons.get(position);
-                                textView.setText(icon.name());
-                                imageView.setImageResource(icon.resId);
-
-
-//                                if (isDropdown) {
-//                                    // Customize dropdown item appearance
-//                                    view.setPadding(16, 16, 16, 16);
-//                                } else {
-//                                    // Customize selected item appearance
-//                                    view.setPadding(0, 0, 0, 0);
-//                                    // Optionally show just the icon when collapsed
-//                                    textView.setVisibility(View.GONE);
-//                                }
-
-                                return view;
-                            }
-                        };*/
                         ArrayAdapter<ControlElementDescription.Icon> adapterIcon = new ArrayAdapter<>(ControlsEditorActivity.this,
                                 R.layout.spinner_item,
                                 ControlElementDescription.Icon.values());
@@ -314,11 +256,8 @@ public class ControlsEditorActivity extends AppCompatActivity {
                                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                     element.setIcon((ControlElementDescription.Icon) parent.getSelectedItem());
                                 }
-
                                 @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-
-                                }
+                                public void onNothingSelected(AdapterView<?> parent) {}
                             });
                         });
 
@@ -337,8 +276,21 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     case TOUCHPAD: {
                         binding.elementToggleTextRowLl.setVisibility(View.GONE);
                         binding.elementToggleTextFieldsLl.setVisibility(View.GONE);
+                        binding.elementTogglingCb.setVisibility(View.GONE);
                         binding.elementTextEt.setVisibility(View.GONE);
-
+                        binding.elementIconTv.setVisibility(View.GONE);
+                        binding.elementIconS.setVisibility(View.GONE);
+                        break;
+                    }
+                    case DPAD_UP:
+                    case DPAD_RIGHT:
+                    case DPAD_DOWN:
+                    case DPAD_LEFT:
+                    default: {
+                        binding.elementToggleTextRowLl.setVisibility(View.GONE);
+                        binding.elementToggleTextFieldsLl.setVisibility(View.GONE);
+                        binding.elementTogglingCb.setVisibility(View.GONE);
+                        binding.elementTextEt.setVisibility(View.GONE);
                         binding.elementIconTv.setVisibility(View.GONE);
                         binding.elementIconS.setVisibility(View.GONE);
                         break;
@@ -389,8 +341,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
             }
         });
 
-        binding.controlElementSettingsCv.setVisibility(View.INVISIBLE); // originally GONE, but we need layout before first open()
-
+        binding.controlElementSettingsCv.setVisibility(View.INVISIBLE);
 
         binding.elementTextEt.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -398,7 +349,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
             }
             return false;
         });
-
 
         binding.elementDeleteB.setOnClickListener(v -> binding.inputControlsV.deleteSelectedElement());
 
@@ -419,6 +369,14 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         || element.getType() == AbstractControlElement.Type.BUTTON_RECT) {
                     binding.elementBindingsTv.setVisibility(View.VISIBLE);
                     binding.elementBindingsAddIb.setVisibility(View.VISIBLE);
+                    binding.elementTogglingCb.setVisibility(View.VISIBLE);
+
+                    binding.elementTogglingCb.setOnCheckedChangeListener(null);
+                    binding.elementTogglingCb.setChecked(element.getToggle());
+                    binding.elementTogglingCb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        element.setToggle(isChecked);
+                    });
+
                     binding.elementBindingsContainerLl.removeAllViews();
                     GLFWBinding[] bindings = element.getBindings();
                     for (int i = 0; i < bindings.length; i++) {
@@ -426,15 +384,15 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     }
 
                     binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
-
                     binding.elementStickBindingTv.setVisibility(View.GONE);
                     binding.elementStickBindingS.setVisibility(View.GONE);
+
                 } else if (element.getType() == AbstractControlElement.Type.DPAD
                         || element.getType() == AbstractControlElement.Type.STICK) {
                     binding.elementBindingsTv.setVisibility(View.GONE);
                     binding.elementBindingsAddIb.setVisibility(View.GONE);
                     binding.elementBindingsContainerLl.removeAllViews();
-
+                    binding.elementTogglingCb.setVisibility(View.GONE);
 
                     GLFWBinding bindingLeft = element.getBindingLeft();
                     ArrayAdapter<GLFWBinding> adapterLeft = new ArrayAdapter<>(this,
@@ -449,14 +407,10 @@ public class ControlsEditorActivity extends AppCompatActivity {
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 element.setBindingLeft((GLFWBinding) parent.getSelectedItem());
                             }
-
                             @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
+                            public void onNothingSelected(AdapterView<?> parent) {}
                         });
                     });
-
 
                     GLFWBinding bindingUp = element.getBindingUp();
                     ArrayAdapter<GLFWBinding> adapterUp = new ArrayAdapter<>(this,
@@ -471,14 +425,10 @@ public class ControlsEditorActivity extends AppCompatActivity {
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 element.setBindingUp((GLFWBinding) parent.getSelectedItem());
                             }
-
                             @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
+                            public void onNothingSelected(AdapterView<?> parent) {}
                         });
                     });
-
 
                     GLFWBinding bindingRight = element.getBindingRight();
                     ArrayAdapter<GLFWBinding> adapterRight = new ArrayAdapter<>(this,
@@ -493,14 +443,10 @@ public class ControlsEditorActivity extends AppCompatActivity {
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 element.setBindingRight((GLFWBinding) parent.getSelectedItem());
                             }
-
                             @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
+                            public void onNothingSelected(AdapterView<?> parent) {}
                         });
                     });
-
 
                     GLFWBinding bindingDown = element.getBindingDown();
                     ArrayAdapter<GLFWBinding> adapterDown = new ArrayAdapter<>(this,
@@ -515,26 +461,21 @@ public class ControlsEditorActivity extends AppCompatActivity {
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 element.setBindingDown((GLFWBinding) parent.getSelectedItem());
                             }
-
                             @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
+                            public void onNothingSelected(AdapterView<?> parent) {}
                         });
                     });
 
                     binding.elementDirectionalBindingsCl.setVisibility(View.VISIBLE);
-
                     binding.elementStickBindingTv.setVisibility(View.GONE);
                     binding.elementStickBindingS.setVisibility(View.GONE);
 
                 } else if (element.getType() == AbstractControlElement.Type.STICK_WASD
                         || element.getType() == AbstractControlElement.Type.STICK_MOUSE) {
-                    // скрыть все binding UI — эти стики “жёсткие”
                     binding.elementBindingsTv.setVisibility(View.GONE);
                     binding.elementBindingsAddIb.setVisibility(View.GONE);
                     binding.elementBindingsContainerLl.removeAllViews();
-
+                    binding.elementTogglingCb.setVisibility(View.GONE);
                     binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
                     binding.elementStickBindingTv.setVisibility(View.GONE);
                     binding.elementStickBindingS.setVisibility(View.GONE);
@@ -547,6 +488,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     case BUTTON_RECT: {
                         binding.elementBindingsTv.setVisibility(View.VISIBLE);
                         binding.elementBindingsAddIb.setVisibility(View.VISIBLE);
+                        binding.elementTogglingCb.setVisibility(View.VISIBLE);
 
                         binding.elementTogglingCb.setOnCheckedChangeListener(null);
                         binding.elementTogglingCb.setChecked(element.getToggle());
@@ -561,7 +503,6 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         }
 
                         binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
-
                         binding.elementStickBindingTv.setVisibility(View.GONE);
                         binding.elementStickBindingS.setVisibility(View.GONE);
                         break;
@@ -570,11 +511,8 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementBindingsTv.setVisibility(View.GONE);
                         binding.elementBindingsAddIb.setVisibility(View.GONE);
                         binding.elementBindingsContainerLl.removeAllViews();
-
                         binding.elementTogglingCb.setVisibility(View.GONE);
-
                         binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
-
                         binding.elementStickBindingTv.setVisibility(View.GONE);
                         binding.elementStickBindingS.setVisibility(View.GONE);
                         break;
@@ -583,9 +521,7 @@ public class ControlsEditorActivity extends AppCompatActivity {
                         binding.elementBindingsTv.setVisibility(View.GONE);
                         binding.elementBindingsAddIb.setVisibility(View.GONE);
                         binding.elementBindingsContainerLl.removeAllViews();
-
                         binding.elementTogglingCb.setVisibility(View.GONE);
-
                         binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
 
                         binding.elementStickBindingTv.setVisibility(View.VISIBLE);
@@ -602,15 +538,25 @@ public class ControlsEditorActivity extends AppCompatActivity {
                                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                     element.setBindingStick((GLFWBinding) parent.getSelectedItem());
                                 }
-
                                 @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-
-                                }
+                                public void onNothingSelected(AdapterView<?> parent) {}
                             });
                         });
                         binding.elementStickBindingS.setVisibility(View.VISIBLE);
-
+                        break;
+                    }
+                    case DPAD_UP:
+                    case DPAD_RIGHT:
+                    case DPAD_DOWN:
+                    case DPAD_LEFT:
+                    default: {
+                        binding.elementBindingsTv.setVisibility(View.GONE);
+                        binding.elementBindingsAddIb.setVisibility(View.GONE);
+                        binding.elementBindingsContainerLl.removeAllViews();
+                        binding.elementTogglingCb.setVisibility(View.GONE);
+                        binding.elementDirectionalBindingsCl.setVisibility(View.GONE);
+                        binding.elementStickBindingTv.setVisibility(View.GONE);
+                        binding.elementStickBindingS.setVisibility(View.GONE);
                         break;
                     }
                 }
@@ -619,7 +565,8 @@ public class ControlsEditorActivity extends AppCompatActivity {
         }
     }
 
-    private void addElementBindingField(@NonNull AbstractControlElement element, @NonNull AbstractControlElement.InputType inputType,
+    private void addElementBindingField(@NonNull AbstractControlElement element,
+                                        @NonNull AbstractControlElement.InputType inputType,
                                         @NonNull GLFWBinding binding, int bindingIndex) {
         ElementBindingFieldBinding fieldBinding = ElementBindingFieldBinding.inflate(getLayoutInflater());
 
@@ -634,14 +581,10 @@ public class ControlsEditorActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     element.setBinding(bindingIndex, (GLFWBinding) parent.getSelectedItem());
                 }
-
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
+                public void onNothingSelected(AdapterView<?> parent) {}
             });
         });
-
 
         fieldBinding.elementBindingDeleteIb.setOnClickListener(v -> {
             this.binding.elementBindingsContainerLl.removeView(fieldBinding.getRoot());
@@ -656,5 +599,4 @@ public class ControlsEditorActivity extends AppCompatActivity {
         super.onPause();
         binding.inputControlsV.saveControlElementsToDisk();
     }
-
 }

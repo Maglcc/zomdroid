@@ -53,11 +53,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp">
 
-
                 <TextView
                     android:id="@+id/element_scale_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="13sp"
                     android:gravity="start"
                     android:text="@string/control_element_scale"
                     app:layout_constraintStart_toStartOf="parent"
@@ -71,8 +73,7 @@
                     android:gravity="end"
                     app:layout_constraintStart_toEndOf="@+id/element_scale_tv"
                     app:layout_constraintTop_toTopOf="@+id/element_scale_tv"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
+                    app:layout_constraintEnd_toStartOf="@+id/element_opacity_all_btn" />
 
                 <SeekBar
                     android:id="@+id/element_scale_sb"
@@ -83,19 +84,21 @@
                     android:max="200"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/element_scale_tv"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
+                    app:layout_constraintEnd_toStartOf="@+id/element_opacity_all_btn" />
 
                 <TextView
                     android:id="@+id/element_transparency_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="13sp"
                     android:gravity="start"
                     android:text="@string/control_element_opacity"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/element_scale_sb"
                     app:layout_constraintEnd_toStartOf="@+id/element_opacity_percent_tv"/>
-                
+
                 <TextView
                     android:id="@+id/element_opacity_percent_tv"
                     android:layout_width="wrap_content"
@@ -104,20 +107,20 @@
                     app:layout_constraintStart_toEndOf="@+id/element_transparency_tv"
                     app:layout_constraintTop_toTopOf="@+id/element_transparency_tv"
                     app:layout_constraintEnd_toStartOf="@+id/element_opacity_all_btn"/>
-                
+
                 <Button
                     android:id="@+id/element_opacity_all_btn"
-                    style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:textSize="11sp"
+                    android:paddingTop="8dp"
                     android:text="@string/control_element_opacity_all"
-                    app:layout_constraintTop_toTopOf="@+id/element_transparency_tv"
-                    app:layout_constraintBottom_toBottomOf="@+id/element_transparency_tv"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/element_opacity_sb"
+                    app:layout_constraintBottom_toBottomOf="@+id/element_opacity_sb"/>
 
                 <SeekBar
                     android:id="@+id/element_opacity_sb"
@@ -135,6 +138,9 @@
                     android:id="@+id/element_sensitivity_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="13sp"
                     android:gravity="start"
                     android:text="@string/control_element_sensitivity"
                     android:visibility="gone"
@@ -164,7 +170,7 @@
                     app:layout_constraintTop_toBottomOf="@id/element_sensitivity_tv"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
-                <!-- Text (2/3) + Toggle (1/3) — labels row -->
+                <!-- Text + Toggle -->
                 <LinearLayout
                     android:id="@+id/element_toggle_text_row_ll"
                     android:layout_width="0dp"
@@ -172,6 +178,7 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:visibility="gone"
+                    android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/element_sensitivity_sb">
@@ -181,6 +188,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="13sp"
                         android:gravity="start|center_vertical"
                         android:text="@string/control_element_text" />
 
@@ -189,12 +199,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="13sp"
                         android:gravity="start|center_vertical"
                         android:text="Toggle" />
 
                 </LinearLayout>
 
-                <!-- Text (2/3) + Toggle checkbox (1/3) — fields row -->
                 <LinearLayout
                     android:id="@+id/element_toggle_text_fields_ll"
                     android:layout_width="0dp"
@@ -202,6 +214,7 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:visibility="gone"
+                    android:layout_marginTop="-8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/element_toggle_text_row_ll">
@@ -214,7 +227,7 @@
                         android:hint="@string/control_element_text_empty"
                         android:imeOptions="actionDone"
                         android:inputType="text|textNoSuggestions"
-                        android:maxLength="10"
+                        android:maxLength="11"
                         android:maxLines="1" />
 
                     <CheckBox
@@ -225,17 +238,19 @@
                         android:background="@null" />
 
                 </LinearLayout>
-
+                <!-- Icon -->
                 <TextView
                     android:id="@+id/element_icon_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="start|center_vertical"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="13sp"
                     android:text="@string/control_element_icon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/element_toggle_text_fields_ll"
                     app:layout_constraintEnd_toEndOf="parent"/>
-
 
                 <Spinner
                     android:textSize="12sp"
@@ -249,6 +264,9 @@
                     android:id="@+id/element_input_type_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="13sp"
                     android:text="@string/control_element_input_type"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/element_icon_s"/>
@@ -267,6 +285,9 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:gravity="start|center_vertical"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="13sp"
                     android:text="@string/control_element_bindings"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/element_bindings_add_ib"
@@ -305,11 +326,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="start|center_vertical"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="13sp"
                         android:text="@string/control_element_binding_left"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
-
 
                     <Spinner
                         android:textSize="12sp"
@@ -326,11 +349,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="start|center_vertical"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="13sp"
                         android:text="@string/control_element_binding_up"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/element_binding_left_s"
                         app:layout_constraintEnd_toEndOf="parent"/>
-
 
                     <Spinner
                         android:textSize="12sp"
@@ -347,11 +372,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="start|center_vertical"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="13sp"
                         android:text="@string/control_element_binding_right"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/element_binding_up_s"
                         app:layout_constraintEnd_toEndOf="parent"/>
-
 
                     <Spinner
                         android:textSize="12sp"
@@ -368,6 +395,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="start|center_vertical"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="13sp"
                         android:text="@string/control_element_binding_down"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/element_binding_right_s"
@@ -391,6 +421,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="start|center_vertical"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="13sp"
                     android:text="@string/control_element_stick_binding"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/element_directional_bindings_cl"
