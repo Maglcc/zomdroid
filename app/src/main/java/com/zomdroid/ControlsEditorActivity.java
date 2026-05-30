@@ -185,6 +185,50 @@ public class ControlsEditorActivity extends AppCompatActivity {
                     binding.elementSensitivitySb.setVisibility(View.GONE);
                 }
 
+                // Sensitivity — only for TOUCHPAD and STICK_MOUSE
+                boolean hasSensitivity = (element.getType() == AbstractControlElement.Type.TOUCHPAD
+                        || element.getType() == AbstractControlElement.Type.STICK_MOUSE);
+
+                if (hasSensitivity) {
+                    // Get current sensitivity from whichever element type it is
+                    final float currentSens;
+                    if (element instanceof com.zomdroid.input.TouchpadControlElement) {
+                        currentSens = ((com.zomdroid.input.TouchpadControlElement) element).getSensitivity();
+                    } else if (element instanceof com.zomdroid.input.MouseStickControlElement) {
+                        currentSens = ((com.zomdroid.input.MouseStickControlElement) element).getSensitivity();
+                    } else {
+                        currentSens = ControlElementDescription.DEFAULT_SENSITIVITY;
+                    }
+
+                    int sensProgress = Math.round(currentSens * 100);
+                    binding.elementSensitivityTv.setVisibility(View.VISIBLE);
+                    binding.elementSensitivityPercentTv.setVisibility(View.VISIBLE);
+                    binding.elementSensitivityPercentTv.setText(
+                            getResources().getString(R.string.percentage_format, sensProgress));
+                    binding.elementSensitivitySb.setVisibility(View.VISIBLE);
+                    binding.elementSensitivitySb.setOnSeekBarChangeListener(null);
+                    binding.elementSensitivitySb.setProgress(sensProgress);
+                    binding.elementSensitivitySb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            binding.elementSensitivityPercentTv.setText(
+                                    getResources().getString(R.string.percentage_format, progress));
+                            float s = progress / 100f;
+                            if (element instanceof com.zomdroid.input.TouchpadControlElement) {
+                                ((com.zomdroid.input.TouchpadControlElement) element).setSensitivity(s);
+                            } else if (element instanceof com.zomdroid.input.MouseStickControlElement) {
+                                ((com.zomdroid.input.MouseStickControlElement) element).setSensitivity(s);
+                            }
+                        }
+                        @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                        @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+                    });
+                } else {
+                    binding.elementSensitivityTv.setVisibility(View.GONE);
+                    binding.elementSensitivityPercentTv.setVisibility(View.GONE);
+                    binding.elementSensitivitySb.setVisibility(View.GONE);
+                }
+
                 // apply UI for current type
                 applyInputType(element, element.getInputType());
 
