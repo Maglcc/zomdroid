@@ -34,9 +34,15 @@ import com.zomdroid.game.GameInstance;
 import com.zomdroid.game.GameInstanceManager;
 
 import android.graphics.Typeface;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -203,6 +209,11 @@ public class InstallModFragment extends Fragment {
                 actionOpenModsLauncher.launch(ZIP_MIME)
         );
 
+        // Download from Workshop button
+        binding.installModDownloadWorkshopBtn.setOnClickListener(v ->
+                showWorkshopDownloadDialog()
+        );
+
         // Install button (ZIP)
         binding.installModInstallBtn.setOnClickListener(v -> {
             if (modZipUri == null) {
@@ -248,6 +259,106 @@ public class InstallModFragment extends Fragment {
             bindInstallerService();
         });
 
+    }
+
+    private void showWorkshopDownloadDialog() {
+        // Input dialog for Workshop ID
+        EditText input = new EditText(requireContext());
+        //input.setHint("3619862853");
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        input.setPadding(48, 24, 48, 24);
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.install_mod_workshop_dialog_title)
+                .setMessage(R.string.install_mod_workshop_dialog_message)
+                .setView(input)
+                .setPositiveButton(R.string.install_mod_workshop_download, (dialog, which) -> {
+                    String workshopId = input.getText().toString().trim();
+                    if (workshopId.isEmpty()) {
+                        Toast.makeText(requireContext(),
+                                R.string.install_mod_workshop_id_empty,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    requestGgntw(workshopId);
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void requestGgntw(String workshopId) {
+        String workshopUrl = "https://steamcommunity.com/sharedfiles/filedetails/?id=" + workshopId;
+        Toast.makeText(requireContext(), R.string.install_mod_workshop_requesting, Toast.LENGTH_SHORT).show();
+
+        new Thread(() -> {
+            try {
+                URL url = new URL("https://api.ggntw.com/steam.request");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json, text/plain, */*");
+                conn.setRequestProperty("Origin", "https://ggntw.com");
+                conn.setRequestProperty("Referer", "https://ggntw.com/");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                conn.setDoOutput(true);
+
+                String body = new JSONObject().put("url", workshopUrl).toString();
+                conn.getOutputStream().write(body.getBytes("UTF-8"));
+
+                int code = conn.getResponseCode();
+                InputStream is = code == 200 ? conn.getInputStream() : conn.getErrorStream();
+                java.util.Scanner scanner = new java.util.Scanner(is).useDelimiter("\\A");
+                String response = scanner.hasNext() ? scanner.next() : "";
+                Log.d(LOG_TAG, "ggntw response: " + response);
+
+                // Response может быть прямой URL строкой или JSON
+                String downloadUrl = null;
+                if (response.startsWith("http")) {
+                    downloadUrl = response.trim();
+                } else {
+                    try {
+                        JSONObject json = new JSONObject(response);
+                        downloadUrl = json.optString("url", json.optString("link", null));
+                    } catch (Exception ignored) {}
+                }
+
+                final String finalUrl = downloadUrl;
+                requireActivity().runOnUiThread(() -> {
+                    if (finalUrl == null || finalUrl.isEmpty()) {
+                        Toast.makeText(requireContext(),
+                                "ggntw error: " + response,
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    // Show URL for debugging
+                    //Toast.makeText(requireContext(),
+                    //         "URL: " + finalUrl,
+                    //         Toast.LENGTH_LONG).show();
+                    openWebViewForDownload(finalUrl);
+                });
+
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "ggntw request failed", e);
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(),
+                                R.string.install_mod_workshop_error,
+                                Toast.LENGTH_LONG).show()
+                );
+            }
+        }).start();
+    }
+
+    private void openWebViewForDownload(String url) {
+        try {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url));
+            startActivity(browserIntent);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to open URL in browser", e);
+            Toast.makeText(requireContext(),
+                    R.string.install_mod_workshop_error,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

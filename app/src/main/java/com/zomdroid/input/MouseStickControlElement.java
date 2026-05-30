@@ -14,7 +14,7 @@ public class MouseStickControlElement extends AbstractControlElement {
     private final MouseStickDrawable drawable;
 
     private int pointerId = -1;
-    private static final float SENSITIVITY = 2.0f;
+    private float sensitivity;
     private static final float TAP_SLOP    = 12f;
     private static final long  TAP_MAX_MS  = 250;
 
@@ -33,7 +33,7 @@ public class MouseStickControlElement extends AbstractControlElement {
 
         this.inputType = InputType.MNK;
         this.bindings.clear();
-
+        this.sensitivity = (desc.sensitivity > 0f) ? desc.sensitivity : ControlElementDescription.DEFAULT_SENSITIVITY;
         this.drawable = new MouseStickDrawable(parentView, desc);
 
         cursorFill.setStyle(Paint.Style.FILL);
@@ -88,8 +88,8 @@ public class MouseStickControlElement extends AbstractControlElement {
 
                 drawable.setInnerFromTouch(x, y);
 
-                float dx = (x - lastX) * SENSITIVITY;
-                float dy = (y - lastY) * SENSITIVITY;
+                float dx = (x - lastX) * sensitivity;
+                float dy = (y - lastY) * sensitivity;
 
                 lastX = x;
                 lastY = y;
@@ -169,6 +169,14 @@ public class MouseStickControlElement extends AbstractControlElement {
     @Override public void moveCenterPosition(float dx, float dy)  { drawable.moveCenterPosition(dx, dy); parentView.invalidate(); }
     @Override public float getCenterX()                           { return drawable.outerCenterX; }
 
+    public void setSensitivity(float s) {
+        this.sensitivity = Math.clamp(s, ControlElementDescription.MIN_SENSITIVITY, ControlElementDescription.MAX_SENSITIVITY);
+    }
+
+    public float getSensitivity() {
+        return sensitivity;
+    }
+
     @Override
     public ControlElementDescription describe() {
         return new ControlElementDescription(
@@ -182,7 +190,8 @@ public class MouseStickControlElement extends AbstractControlElement {
                 drawable.alpha,
                 InputType.MNK,
                 ControlElementDescription.Icon.NO_ICON,
-                false
+                false,
+                sensitivity
         );
     }
 

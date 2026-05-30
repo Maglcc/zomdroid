@@ -121,34 +121,40 @@ public class SettingsFragment extends Fragment {
                     return;
                 }
 
-                if (vulkanDriver == LauncherPreferences.VulkanDriver.FREEDRENO_8XX_Expr) {
+                if (vulkanDriver == LauncherPreferences.VulkanDriver.FREEDRENO_8XX) {
                     new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                             .setTitle(getString(R.string.vulkan_driver_freedreno_8xx_title))
                             .setMessage(getString(R.string.vulkan_driver_freedreno_8xx_message))
                             .setPositiveButton(getString(R.string.dialog_button_ok), null)
                             .show();
-                } else if (vulkanDriver == LauncherPreferences.VulkanDriver.FREEDRENO_840_v26) {
+                } else if (vulkanDriver == LauncherPreferences.VulkanDriver.FREEDRENO_840) {
                     new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                             .setTitle(getString(R.string.vulkan_driver_freedreno_840_title))
                             .setMessage(getString(R.string.vulkan_driver_freedreno_840_message))
                             .setPositiveButton(getString(R.string.dialog_button_ok), null)
                             .show();
-                } else if (vulkanDriver == LauncherPreferences.VulkanDriver.TURNIP_bbdd688_8gen2) {
+                } else if (vulkanDriver == LauncherPreferences.VulkanDriver.TURNIP_740) {
                     new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                             .setTitle(getString(R.string.vulkan_driver_turnip_8gen2_title))
                             .setMessage(getString(R.string.vulkan_driver_turnip_8gen2_message))
                             .setPositiveButton(getString(R.string.dialog_button_ok), null)
                             .show();
-                } else if (vulkanDriver == LauncherPreferences.VulkanDriver.TURNIP_bbdd688) {
+                } else if (vulkanDriver == LauncherPreferences.VulkanDriver.TURNIP_7XX) {
                     new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                             .setTitle(getString(R.string.vulkan_driver_turnip_bbdd688_title))
                             .setMessage(getString(R.string.vulkan_driver_turnip_bbdd688_message))
                             .setPositiveButton(getString(R.string.dialog_button_ok), null)
                             .show();
-                } else if (vulkanDriver == LauncherPreferences.VulkanDriver.Turnip_25_1_3_GMEM) {
+                } else if (vulkanDriver == LauncherPreferences.VulkanDriver.TURNIP_710) {
                     new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                             .setTitle(getString(R.string.vulkan_driver_turnip_gmem_title))
                             .setMessage(getString(R.string.vulkan_driver_turnip_gmem_message))
+                            .setPositiveButton(getString(R.string.dialog_button_ok), null)
+                            .show();
+                } else if (vulkanDriver == LauncherPreferences.VulkanDriver.Turnip_6XX) {
+                    new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle(getString(R.string.vulkan_driver_turnip_a6xx_title))
+                            .setMessage(getString(R.string.vulkan_driver_turnip_a6xx_message))
                             .setPositiveButton(getString(R.string.dialog_button_ok), null)
                             .show();
                 } else if (vulkanDriver == LauncherPreferences.VulkanDriver.FREEDRENO) {

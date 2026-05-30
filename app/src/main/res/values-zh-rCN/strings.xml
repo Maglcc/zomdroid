@@ -239,22 +239,19 @@
 
     <!-- Vulkan Driver dialogs -->
     <string name="vulkan_driver_freedreno_8xx_title">Freedreno 8xx</string>
-    <string name="vulkan_driver_freedreno_8xx_message">Freedreno 8xx 为实验性驱动。\n\n适用于骁龙 8 Gen 3/4/5/Elite 及 7 Gen 3 设备。</string>
-
+    <string name="vulkan_driver_freedreno_8xx_message">适用于Adreno 8xx GPU的自定义驱动 (by whitebelyash)。\n\nSnapdragon 8 Gen 3/4/5/Elite + 7 Gen 3。</string>
     <string name="vulkan_driver_freedreno_840_title">Freedreno 830/840</string>
-    <string name="vulkan_driver_freedreno_840_message">此 Freedreno 驱动最适合 Adreno 830/840。\n\n骁龙 8 Gen 4/5/Elite。</string>
-
-    <string name="vulkan_driver_turnip_8gen2_title">TURNIP bbdd688 8g2</string>
-    <string name="vulkan_driver_turnip_8gen2_message">仅适用于骁龙 8 Gen 2。\n\n修复升级至 HyperOS 3 后可能出现的画面闪烁问题。</string>
-
-    <string name="vulkan_driver_turnip_bbdd688_title">TURNIP bbdd688</string>
-    <string name="vulkan_driver_turnip_bbdd688_message">此驱动适用于 Adreno 7xx GPU。</string>
-
-    <string name="vulkan_driver_turnip_gmem_title">TURNIP 25.1.3 GMEM</string>
-    <string name="vulkan_driver_turnip_gmem_message">此驱动仅适用于 Adreno 710 GPU。骁龙 7 Gen 1。</string>
-
+    <string name="vulkan_driver_freedreno_840_message">针对Adreno 830/840 GPU优化的自定义驱动。\n\nSnapdragon 8 Gen 5/Elite。</string>
+    <string name="vulkan_driver_turnip_8gen2_title">TURNIP 740 (bbdd688)</string>
+    <string name="vulkan_driver_turnip_8gen2_message">适用于Adreno 740 GPU的自定义驱动。\n\nSnapdragon 8 Gen 2。修复HyperOS 3 / OneUI更新后的屏幕闪烁问题 (by Weab-chan)。</string>
+    <string name="vulkan_driver_turnip_bbdd688_title">TURNIP 7xx (bbdd688)</string>
+    <string name="vulkan_driver_turnip_bbdd688_message">适用于Adreno 7xx GPU的自定义驱动 (by Weab-chan)。\n\nSnapdragon 7系列。</string>
+    <string name="vulkan_driver_turnip_gmem_title">TURNIP 710</string>
+    <string name="vulkan_driver_turnip_gmem_message">适用于Adreno 710 GPU的自定义驱动（原名TURNIP 25.1.3 GMEM by duduproad）。\n\nSnapdragon 7 Gen 1。</string>
+    <string name="vulkan_driver_turnip_a6xx_title">TURNIP Adreno 6xx</string>
+    <string name="vulkan_driver_turnip_a6xx_message">由K11MCH1制作的适用于旧款Adreno 6xx GPU的自定义驱动。\n\nSnapdragon 600系列。如果默认Freedreno驱动不可用，请使用此驱动。</string>
     <string name="vulkan_driver_freedreno">Freedreno</string>
-    <string name="vulkan_driver_freedreno_message">此驱动适用于 Adreno 6xx/7xx（骁龙系列）。</string>
+    <string name="vulkan_driver_freedreno_message">适用于Adreno 7xx GPU的默认驱动。\n\nSnapdragon 7系列。部分6xx设备也可使用。</string>
 
     <!-- JVM args dialog -->
     <string name="jvm_args_dialog_title">JVM 参数</string>
@@ -472,4 +469,46 @@
     <string name="optimization_zbbetterfps_installing">正在安装 ZBBetterFPS…</string>
     <string name="optimization_zbbetterfps_installed">ZBBetterFPS 安装成功</string>
     <string name="optimization_zbbetterfps_gl4es_warning">⚠️ ZBBetterFPS 仅支持 ZINK 渲染器。如使用 GL4ES，请改用普通的 BetterFPS mod。</string>
+
+    <string name="control_element_sensitivity">灵敏度</string>
+
+    <!-- ===== Game Settings strings ===== -->
+    <string name="game_settings_menu">导入/导出游戏设置</string>
+    <string name="game_settings_import_title">导入</string>
+    <string name="game_settings_import_hint">选择要导入的 options.ini 文件。它将作为 options.ini 保存到所选实例的 Zomboid 文件夹中。</string>
+    <string name="game_settings_export_title">导出</string>
+    <string name="game_settings_export_hint">保存所选实例当前的 options.ini 文件。文件名将包含当前日期和时间。</string>
+    <string name="game_settings_importing">正在导入游戏设置…</string>
+    <string name="game_settings_imported">游戏设置已导入</string>
+    <string name="game_settings_exporting">正在导出游戏设置…</string>
+    <string name="game_settings_exported">游戏设置已导出</string>
+    <string name="game_settings_not_found">未找到 options.ini。游戏可能尚未运行过。</string>
+    <string name="game_settings_wrong_format">请选择 .ini 文件</string>
+    <string name="import_label">导入</string>
+    <string name="export_label">导出</string>
+
+    <!-- ===== Workshop Download strings ===== -->
+    <string name="install_mod_workshop_section">从 Steam Workshop 下载</string>
+    <string name="install_mod_workshop_disclaimer">由 ggntw.com 提供 — 第三方服务，随时可能停止运行。\n首次使用时，下载前可能会显示大量广告。</string>
+    <string name="install_mod_workshop_btn">从 Workshop 下载</string>
+    <string name="install_mod_workshop_dialog_title">Steam Workshop ID</string>
+    <string name="install_mod_workshop_dialog_message">从 mod 页面 URL 中输入 Workshop ID。\n\n示例：Workshop ID：3619862853</string>
+    <string name="install_mod_workshop_download">下载</string>
+    <string name="install_mod_workshop_id_empty">请输入 Workshop ID</string>
+    <string name="install_mod_workshop_requesting">正在请求下载链接…</string>
+    <string name="install_mod_workshop_error">无法获取下载链接，请稍后重试。</string>
+    <string name="install_mod_workshop_webview_title">完成下载</string>
+    <string name="install_mod_workshop_downloading">正在下载 mod…</string>
+    <string name="install_mod_workshop_downloaded">Mod 已下载，点击安装。</string>
+    <string name="install_mod_workshop_download_failed">下载失败，请重试。</string>
+
+    <!-- ===== Native Libs strings ===== -->
+    <string name="native_libs_menu">导入多人游戏库 (B41)</string>
+    <string name="native_libs_hint">🎮 在这里可以安装额外的本机库 libRakNet64.so 和 libZNetNoSteam64.so，用于 Build 41 的多人游戏支持。\n\n这些库最早出现在 Build 42.12+ 中。如需在 Build 41 上使用，请从 Build 42 实例文件夹复制：game/android/arm64-v8a — 这不是错误。</string>
+    <string name="native_libs_group_file">包含 .so 文件的 ZIP 压缩包</string>
+    <string name="native_libs_install">安装</string>
+    <string name="native_libs_installing">正在安装本机库…</string>
+    <string name="native_libs_installed">本机库已安装</string>
+
+    <string name="control_element_opacity_all">全部</string>
 </resources>

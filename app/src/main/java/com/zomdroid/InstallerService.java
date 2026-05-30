@@ -139,6 +139,15 @@ public class InstallerService extends Service implements TaskProgressListener {
             case INSTALL_ZBBETTERFPS:
                 doInstallZbBetterFps(intent);
                 break;
+            case IMPORT_GAME_SETTINGS:
+                doImportGameSettings(intent);
+                break;
+            case EXPORT_GAME_SETTINGS:
+                doExportGameSettings(intent);
+                break;
+            case INSTALL_NATIVE_LIBS:
+                doInstallNativeLibs(intent);
+                break;
         }
 
         return START_NOT_STICKY;
@@ -560,12 +569,12 @@ public class InstallerService extends Service implements TaskProgressListener {
                                 }
 
                                 // Also update SharedPreferences so controls apply immediately
-                                String json = new String(jsonBytes, java.nio.charset.StandardCharsets.UTF_8);
+                                /*String json = new String(jsonBytes, java.nio.charset.StandardCharsets.UTF_8);
                                 getSharedPreferences(C.shprefs.NAME, MODE_PRIVATE)
                                         .edit()
                                         .putString(C.shprefs.keys.INPUT_CONTROLS, json)
                                         .apply();
-
+                                */
                                 found = true;
                                 break;
                             }
@@ -949,7 +958,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                                 while ((r = zis.read(buf)) != -1) fos.write(buf, 0, r);
                             }
                         }
-                        zis.closeEntry();                       
+                        zis.closeEntry();
                     }
                 }
                 Log.d("ModFix", "Step 1 done. tmpDir contents:");
@@ -1014,7 +1023,7 @@ public class InstallerService extends Service implements TaskProgressListener {
                     }
                 }
 
-                finish(getString(R.string.mod_fix_installed), null);   
+                finish(getString(R.string.mod_fix_installed), null);
             } catch (Exception e) {
                 finishWithError(taskTitle, e.toString());
             } finally {
@@ -1416,6 +1425,23 @@ public class InstallerService extends Service implements TaskProgressListener {
                 copyDirectory(modRoot, normalDest);
                 Log.d("SmartMod", "Installed normal: " + normalDest.getAbsolutePath());
 
+                // Expand common/ into each version folder so assets are accessible
+                // (B42 looks in 42.x/ not in root, so common/ must be merged into each version folder)
+                File commonDir = new File(normalDest, "common");
+                if (commonDir.exists() && commonDir.isDirectory()) {
+                    File[] versionDirs = normalDest.listFiles(File::isDirectory);
+                    if (versionDirs != null) {
+                        for (File vd : versionDirs) {
+                            String name = vd.getName();
+                            if (name.equals("42") || name.startsWith("42.") ||
+                                name.equals("41") || name.startsWith("41.")) {
+                                copyDirectoryNoOverwrite(commonDir, vd);
+                                Log.d("SmartMod", "Expanded common/ into " + vd.getName());
+                            }
+                        }
+                    }
+                }
+
                 // Step 7: If needed, install lowercase inception copy
                 if (needsInception) {
                     String inceptionRelPath = "data/user/0/com.zomdroid/files/instances/"
@@ -1427,6 +1453,21 @@ public class InstallerService extends Service implements TaskProgressListener {
                     if (lowerDest.exists()) FileUtils.deleteDirectory(lowerDest);
                     copyDirectoryLowercase(modRoot, lowerDest);
                     Log.d("SmartMod", "Installed lowercase: " + lowerDest.getAbsolutePath());
+
+                    // Expand common/ into version folders for inception copy too
+                    File commonDirLower = new File(lowerDest, "common");
+                    if (commonDirLower.exists() && commonDirLower.isDirectory()) {
+                        File[] versionDirs = lowerDest.listFiles(File::isDirectory);
+                        if (versionDirs != null) {
+                            for (File vd : versionDirs) {
+                                String name = vd.getName();
+                                if (name.equals("42") || name.startsWith("42.") ||
+                                    name.equals("41") || name.startsWith("41.")) {
+                                    copyDirectoryNoOverwrite(commonDirLower, vd);
+                                }
+                            }
+                        }
+                    }
                 }
 
                 finish(getString(R.string.install_mod_smart_done), null);
@@ -1937,6 +1978,115 @@ public class InstallerService extends Service implements TaskProgressListener {
         }
     }
 
+    // -------------------- IMPORT GAME SETTINGS --------------------
+    // Imports options.ini from user-selected file into Zomboid/ folder of the instance.
+    // File is always saved as options.ini regardless of original name.
+    private void doImportGameSettings(Intent intent) {
+        String taskTitle = getString(R.string.game_settings_importing);
+        startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
+        taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
+
+        String gameInstanceName = intent.getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+        if (gameInstanceName == null) { finishWithError(taskTitle, "Game instance name is missing"); return; }
+        GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(gameInstanceName);
+        if (gameInstance == null) { finishWithError(taskTitle, "Game instance not found: " + gameInstanceName); return; }
+
+        Uri iniUri = intent.getParcelableExtra(EXTRA_ARCHIVE_URI);
+        if (iniUri == null) { finishWithError(taskTitle, "File URI is missing"); return; }
+
+        executorService.submit(() -> {
+            try {
+                // Ensure Zomboid/ folder exists
+                File zomboidDir = new File(gameInstance.getHomePath(), "Zomboid");
+                zomboidDir.mkdirs();
+
+                File destFile = new File(zomboidDir, "options.ini");
+                try (InputStream is = getContentResolver().openInputStream(iniUri);
+                     OutputStream os = new FileOutputStream(destFile, false)) {
+                    if (is == null) throw new IllegalStateException("openInputStream returned null");
+                    byte[] buf = new byte[64 * 1024]; int r;
+                    while ((r = is.read(buf)) != -1) os.write(buf, 0, r);
+                }
+                Log.d("GameSettings", "Imported options.ini to: " + destFile.getAbsolutePath());
+                finish(getString(R.string.game_settings_imported), null);
+            } catch (Exception e) {
+                finishWithError(taskTitle, e.toString());
+            }
+        });
+    }
+
+    // -------------------- EXPORT GAME SETTINGS --------------------
+    // Exports options.ini from Zomboid/ folder to user-selected output file.
+    private void doExportGameSettings(Intent intent) {
+        String taskTitle = getString(R.string.game_settings_exporting);
+        startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
+        taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
+
+        String gameInstanceName = intent.getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+        Uri outUri = intent.getParcelableExtra(EXTRA_OUTPUT_URI);
+
+        if (gameInstanceName == null) { finishWithError(taskTitle, "Game instance name is missing"); return; }
+        if (outUri == null) { finishWithError(taskTitle, "Output URI is missing"); return; }
+
+        GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(gameInstanceName);
+        if (gameInstance == null) { finishWithError(taskTitle, "Game instance not found: " + gameInstanceName); return; }
+
+        executorService.submit(() -> {
+            try {
+                File iniFile = new File(gameInstance.getHomePath(), "Zomboid/options.ini");
+                if (!iniFile.exists()) {
+                    finishWithError(taskTitle, getString(R.string.game_settings_not_found));
+                    return;
+                }
+                try (InputStream is = new java.io.FileInputStream(iniFile);
+                     OutputStream os = getContentResolver().openOutputStream(outUri)) {
+                    if (os == null) throw new IllegalStateException("openOutputStream returned null");
+                    byte[] buf = new byte[64 * 1024]; int r;
+                    while ((r = is.read(buf)) != -1) os.write(buf, 0, r);
+                }
+                Log.d("GameSettings", "Exported options.ini");
+                finish(getString(R.string.game_settings_exported), null);
+            } catch (Exception e) {
+                finishWithError(taskTitle, e.toString());
+            }
+        });
+    }
+
+    // -------------------- INSTALL NATIVE LIBS --------------------
+    // Extracts .so files from ZIP into game/android/arm64-v8a folder.
+    // Used to add multiplayer libraries (libRakNet64.so, libZNetNoSteam64.so) to B41 instances.
+    private void doInstallNativeLibs(Intent intent) {
+        String taskTitle = getString(R.string.native_libs_installing);
+        startForeground(NOTIFICATION_ID, buildNotification(taskTitle));
+        taskState.postValue(new TaskState(taskTitle, null, -1, 0, false, false));
+
+        String gameInstanceName = intent.getStringExtra(EXTRA_GAME_INSTANCE_NAME);
+        if (gameInstanceName == null) { finishWithError(taskTitle, "Game instance name is missing"); return; }
+        GameInstance gameInstance = GameInstanceManager.requireSingleton().getInstanceByName(gameInstanceName);
+        if (gameInstance == null) { finishWithError(taskTitle, "Game instance not found: " + gameInstanceName); return; }
+
+        Uri archiveUri = intent.getParcelableExtra(EXTRA_NATIVE_LIBS_URI);
+        if (archiveUri == null) { finishWithError(taskTitle, "Archive URI is missing"); return; }
+
+        executorService.submit(() -> {
+            try {
+                String nativeLibsPath = gameInstance.getGamePath() + "/android/arm64-v8a";
+                File nativeLibsDir = new File(nativeLibsPath);
+                nativeLibsDir.mkdirs();
+
+                try (InputStream is = getContentResolver().openInputStream(archiveUri)) {
+                    if (is == null) throw new IllegalStateException("openInputStream returned null");
+                    FileUtils.extractZipToDisk(is, nativeLibsPath, this,
+                            FileUtils.queryFileSize(getContentResolver(), archiveUri));
+                }
+                Log.i(LOG_TAG, "Native libs installed to: " + nativeLibsPath);
+                finish(getString(R.string.native_libs_installed), null);
+            } catch (Exception e) {
+                finishWithError(taskTitle, e.toString());
+            }
+        });
+    }
+
     private Notification buildNotification(String title) {
         Intent notificationIntent = new Intent(this, LauncherActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -2012,7 +2162,10 @@ public class InstallerService extends Service implements TaskProgressListener {
         INSTALL_MOD_SMART,
         INSTALL_ETO,
         INSTALL_ZOMBIEBUDDY,
-        INSTALL_ZBBETTERFPS
+        INSTALL_ZBBETTERFPS,
+        IMPORT_GAME_SETTINGS,
+        EXPORT_GAME_SETTINGS,
+        INSTALL_NATIVE_LIBS
     }
 
     public static class TaskState {

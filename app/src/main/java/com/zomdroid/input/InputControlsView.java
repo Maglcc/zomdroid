@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 public class InputControlsView extends View {
     private static final String LOG_TAG = InputControlsView.class.getName();
@@ -42,6 +43,7 @@ public class InputControlsView extends View {
     GestureDetector gestureDetector;
     private Gson gson = new Gson();
     private SharedPreferences sharedPreferences;
+    private String instanceName = null;
     private Boolean isGamepadConnected = null;
     private InputMode currentInputMode = InputMode.ALL;
     private final Context context;
@@ -104,9 +106,21 @@ public class InputControlsView extends View {
         }
 
         ArrayAdapter<AbstractControlElement.Type> adapter =
-                new ArrayAdapter<>(this.getContext(),
+                new ArrayAdapter<AbstractControlElement.Type>(this.getContext(),
                         R.layout.spinner_item,
-                        palette);
+                        palette) {
+                    @Override
+                    public android.view.View getView(int position, android.view.View convertView, android.view.ViewGroup parent) {
+                        android.view.View view = super.getView(position, convertView, parent);
+                        view.setPadding(
+                                (int)(16 * getContext().getResources().getDisplayMetrics().density),
+                                view.getPaddingTop(),
+                                view.getPaddingRight(),
+                                view.getPaddingBottom()
+                        );
+                        return view;
+                    }
+                };
 
         new MaterialAlertDialogBuilder(this.getContext())
                 .setTitle(this.getContext().getString(R.string.controls_editor_add_element))
@@ -271,9 +285,9 @@ public class InputControlsView extends View {
         }
 
         // If there is no per-game file yet, fall back to the layout saved in SharedPreferences.
-        if (json == null) {
-            json = this.sharedPreferences.getString(C.shprefs.keys.INPUT_CONTROLS, null);
-        }
+        //if (json == null) {
+        //    json = this.sharedPreferences.getString(C.shprefs.keys.INPUT_CONTROLS, null);
+        //}
 
         // If nothing was saved yet, load the bundled default gamepad layout.
         if (json == null) {
@@ -420,39 +434,33 @@ public class InputControlsView extends View {
     }
 
     /**
-     * <home>/instances/<instance>/game/controls/controls.json
+     * <home>/instances/<instanceName>/game/controls/controls.json
      */
     @Nullable
     private File getControlsConfigFileInGameDir() {
         String homePath = AppStorage.requireSingleton().getHomePath();
-        if (homePath == null || homePath.isEmpty()) {
-            return null;
-        }
+        if (homePath == null || homePath.isEmpty()) return null;
 
         File instancesRoot = new File(homePath, "instances");
-        if (!instancesRoot.isDirectory()) {
-            return null;
+        if (!instancesRoot.isDirectory()) return null;
+
+        File inst;
+        if (instanceName != null && !instanceName.isEmpty()) {
+            // Per-instance path
+            inst = new File(instancesRoot, instanceName);
+        } else {
+            // Fallback: первый найденный инстанс (старое поведение)
+            File[] dirs = instancesRoot.listFiles(File::isDirectory);
+            if (dirs == null || dirs.length == 0) return null;
+            inst = dirs[0];
+            Log.d(LOG_TAG, "instanceName not set, falling back to: " + inst.getName());
         }
 
-        File[] instanceDirs = instancesRoot.listFiles();
-        if (instanceDirs == null || instanceDirs.length == 0) {
-            return null;
-        }
+        if (!inst.isDirectory()) return null;
 
-        // <inst>/game/controls/controls.json
-        for (File inst : instanceDirs) {
-            if (!inst.isDirectory()) continue;
-
-            File gameDir = new File(inst, "game");
-            File zomboidDir = new File(gameDir, "controls");
-            File cfgFile = new File(zomboidDir, "controls.json");
-
-            // Просто лог, чтобы ты видела, куда оно целится
-            Log.d(LOG_TAG, "Controls config candidate path: " + cfgFile.getAbsolutePath());
-            return cfgFile;
-        }
-
-        return null;
+        File cfgFile = new File(inst, "game/controls/controls.json");
+        Log.d(LOG_TAG, "Controls config path: " + cfgFile.getAbsolutePath());
+        return cfgFile;
     }
 
     public void replaceControlsFromJson(@Nullable String json, boolean persist) {
@@ -545,5 +553,13 @@ public class InputControlsView extends View {
 
     public float getRenderScale() {
         return renderScale;
+    }
+
+    public List<AbstractControlElement> getControlElements() {
+        return controlElements;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
     }
 }

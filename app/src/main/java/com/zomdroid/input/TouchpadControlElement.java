@@ -17,9 +17,10 @@ public class TouchpadControlElement extends AbstractControlElement {
 
     private static final float BASE_WIDTH  = 560f;
     private static final float BASE_HEIGHT = 370f;
-    private static final float SENSITIVITY = 2.0f;
     private static final float TAP_SLOP    = 12f;
     private static final long  TAP_MAX_MS  = 250;
+
+    private float sensitivity;
 
     private final TouchpadDrawable drawable;
     private int    pointerId = -1;
@@ -38,6 +39,7 @@ public class TouchpadControlElement extends AbstractControlElement {
     public TouchpadControlElement(InputControlsView parentView,
                                   ControlElementDescription description) {
         super(parentView, description);
+        this.sensitivity = (description.sensitivity > 0f) ? description.sensitivity : ControlElementDescription.DEFAULT_SENSITIVITY;
         this.drawable = new TouchpadDrawable(parentView, description);
         debugCursorFill.setStyle(Paint.Style.FILL);
         debugCursorFill.setColor(Color.WHITE);
@@ -108,8 +110,8 @@ public class TouchpadControlElement extends AbstractControlElement {
 
                 float x = e.getX(idx);
                 float y = e.getY(idx);
-                float dx = (x - lastX) * SENSITIVITY;
-                float dy = (y - lastY) * SENSITIVITY;
+                float dx = (x - lastX) * sensitivity;
+                float dy = (y - lastY) * sensitivity;
                 lastX = x;  lastY = y;
 
                 cursorX = clamp(cursorX + dx, 0, parentView.getWidth());
@@ -200,6 +202,14 @@ public class TouchpadControlElement extends AbstractControlElement {
     @Override public void moveCenterPosition(float dx, float dy){ drawable.moveCenterPosition(dx, dy); parentView.invalidate(); }
     @Override public float getCenterX()                         { return drawable.centerX; }
 
+    public void setSensitivity(float s) {
+        this.sensitivity = Math.clamp(s, ControlElementDescription.MIN_SENSITIVITY, ControlElementDescription.MAX_SENSITIVITY);
+    }
+
+    public float getSensitivity() {
+        return sensitivity;
+    }
+
     @Override
     public ControlElementDescription describe() {
         return new ControlElementDescription(
@@ -209,7 +219,8 @@ public class TouchpadControlElement extends AbstractControlElement {
                 new GLFWBinding[0], null,
                 drawable.color, drawable.alpha,
                 InputType.MNK,
-                ControlElementDescription.Icon.NO_ICON, false);
+                ControlElementDescription.Icon.NO_ICON, false,
+                sensitivity);
     }
 
     private static double clamp(double v, double lo, double hi) {
